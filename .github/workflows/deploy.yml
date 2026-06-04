@@ -33,7 +33,7 @@ jobs:
       - name: Deploy to server via rsync
         uses: burnett01/rsync-deployments@7.0.1
         with:
-          switches: -avz --delete
+          switches: -avz --delete --exclude=scanner/ --exclude=.htaccess --exclude=.user.ini --exclude=.well-known/
           path: dist/
           remote_path: /www/wwwroot/backstage.click/
           remote_host: ${{ secrets.SSH_HOST }}

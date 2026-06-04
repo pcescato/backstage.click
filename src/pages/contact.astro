@@ -1,216 +1,236 @@
 ---
-/**
- * Contact page
- * URL: /contact
- */
-import PageLayout from '@/layouts/PageLayout.astro';
-import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
 import Badge from '@/components/ui/data-display/Badge/Badge.astro';
 import Button from '@/components/ui/form/Button/Button.astro';
-import Input from '@/components/ui/form/Input/Input.astro';
-import Textarea from '@/components/ui/form/Textarea/Textarea.astro';
-import Card from '@/components/ui/data-display/Card/Card.astro';
+import Tabs from '@/components/ui/overlay/Tabs/Tabs.astro';
 import { Hero } from '@/components/hero';
-import GoogleMap from '@/components/ui/data-display/GoogleMap/GoogleMap.astro';
-import siteConfig from '@/config/site.config';
+import { footerNavItems, legalLinks } from '@/config/nav.config';
 ---
 
-<PageLayout
-  title="Contact Us"
-  description="Get in touch with the Velocity team."
+<BaseLayout
+  title="Contact"
+  description="Réserver un créneau ou écrire directement pour échanger sur votre projet."
 >
-  <Hero layout="centered" size="sm" showGrid>
-    <Badge slot="badge" pill pulse>Get in Touch</Badge>
+  <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
 
-    <h1 slot="title">
-      Let's <span class="text-brand-500">connect.</span>
-    </h1>
+  <div class="min-h-screen pt-16">
+    <Hero
+      layout="centered"
+      size="lg"
+      showGrid
+      class="border-border border-b pt-12 pb-16 md:pt-20 md:pb-20"
+    >
+      <Badge slot="badge" variant="brand" pill class="px-3 py-1 text-sm">Contact</Badge>
 
-    <p slot="description">
-      Have a question, suggestion, or just want to say hello? We'd love to hear from you.
-    </p>
-  </Hero>
+      <h1 slot="title" class="max-w-4xl !leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
+        Réserver un créneau ou écrire directement
+      </h1>
 
-  <!-- Contact Section -->
-  <section class="py-20 bg-surface-secondary">
-    <div class="mx-auto max-w-6xl px-6">
-      <div class="grid gap-12 lg:grid-cols-2">
-        <!-- Form -->
-        <Card padding="lg">
-          <h2 class="text-2xl font-display font-bold text-foreground mb-6">Send us a message</h2>
+      <p slot="description" class="max-w-3xl">
+        30 minutes suffisent pour faire le point.
+      </p>
+    </Hero>
 
-          <form id="contact-form" action="/api/contact" method="POST" class="space-y-6">
-            <Input
-              label="Your Name"
-              name="name"
-              type="text"
-              placeholder="John Doe"
-              required
-              autocomplete="name"
-            />
-
-            <Input
-              label="Email Address"
-              name="email"
-              type="email"
-              placeholder="john@example.com"
-              required
-              autocomplete="email"
-            />
-
-            <Input
-              label="Subject"
-              name="subject"
-              type="text"
-              placeholder="How can we help?"
-            />
-
-            <Textarea
-              label="Message"
-              name="message"
-              placeholder="Tell us more about your project or question..."
-              rows={5}
-              required
-            />
-
-            <!-- Honeypot field for spam protection -->
-            <div class="hidden" aria-hidden="true">
-              <input type="text" name="honeypot" tabindex="-1" autocomplete="off" />
+    <section class="border-border bg-background border-b py-20">
+      <div class="mx-auto max-w-6xl px-6">
+        <Tabs
+          tabs={[
+            { id: 'rendez-vous', label: 'Prendre rendez-vous' },
+            { id: 'message', label: 'Écrire un message' },
+          ]}
+          defaultValue="rendez-vous"
+        >
+          <div data-tab-content="rendez-vous">
+            <div class="border-border overflow-hidden rounded-xl border bg-card shadow-lg transition-all duration-200 ease-out">
+              <iframe
+                src="https://cal.com/pascal-cescato/30min"
+                title="Prendre rendez-vous avec Pascal Cescato"
+                width="100%"
+                height="900px"
+                frameborder="0"
+                style="border:none; min-width:320px;"
+                class="block w-full"
+                loading="lazy"></iframe>
             </div>
+          </div>
 
-            <div id="form-message" class="hidden text-sm"></div>
-
-            <Button type="submit" class="w-full" id="submit-button">
-              <Icon name="mail" size="sm" />
-              Send Message
-            </Button>
-          </form>
-        </Card>
-
-        <!-- Right column: Map + Contact Info -->
-        <div class="flex flex-col gap-8">
-          {/* Map */}
-          <GoogleMap
-            size="sm"
-            ariaLabel={`Map showing ${siteConfig.name} location`}
-            placeholderTitle="Our Location"
-          />
-
-          {/* Contact Info */}
-          <div>
-            <h2 class="font-display text-2xl font-bold text-foreground mb-6">
-              Other ways to reach us
-            </h2>
-
-            <div class="space-y-4">
-              <!-- Email -->
-              <a href={`mailto:${siteConfig.email}`} class="block">
-                <Card hover padding="sm">
-                  <div class="flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-500/5 flex items-center justify-center text-brand-500 shrink-0">
-                      <Icon name="mail" size="md" />
-                    </div>
-                    <div>
-                      <p class="text-sm text-foreground-muted">Email</p>
-                      <p class="font-medium text-foreground">{siteConfig.email}</p>
-                    </div>
+          <div data-tab-content="message">
+            <div class="border-border rounded-xl border bg-card p-8 shadow-lg transition-all duration-200 ease-out">
+              <form id="contact-form" action="/api/contact.php" method="POST" class="space-y-4">
+                <div class="grid gap-4 md:grid-cols-2">
+                  <div class="space-y-1.5">
+                    <label for="contact-nom" class="text-sm font-medium leading-none">Nom *</label>
+                    <input
+                      id="contact-nom"
+                      name="nom"
+                      type="text"
+                      required
+                      autocomplete="name"
+                      class="h-10 w-full rounded-lg border border-border bg-background pl-4 pr-4 text-sm transition-colors duration-(--transition-fast) placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                    />
                   </div>
-                </Card>
-              </a>
 
-              <!-- GitHub -->
-              <a
-                href="https://github.com/southwellmedia/velocity"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="block"
-              >
-                <Card hover padding="sm">
-                  <div class="flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-500/5 flex items-center justify-center text-brand-500 shrink-0">
-                      <Icon name="github" size="md" />
-                    </div>
-                    <div>
-                      <p class="text-sm text-foreground-muted">GitHub</p>
-                      <p class="font-medium text-foreground">velocity</p>
-                    </div>
+                  <div class="space-y-1.5">
+                    <label for="contact-email" class="text-sm font-medium leading-none">
+                      Email *
+                    </label>
+                    <input
+                      id="contact-email"
+                      name="email"
+                      type="email"
+                      required
+                      autocomplete="email"
+                      class="h-10 w-full rounded-lg border border-border bg-background pl-4 pr-4 text-sm transition-colors duration-(--transition-fast) placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                    />
                   </div>
-                </Card>
-              </a>
+                </div>
 
-              <!-- Twitter -->
-              {siteConfig.twitter && (
-                <a
-                  href={`https://twitter.com/${siteConfig.twitter.site.replace('@', '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="block"
-                >
-                  <Card hover padding="sm">
-                    <div class="flex items-center gap-4">
-                      <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-500/5 flex items-center justify-center text-brand-500 shrink-0">
-                        <Icon name="twitter" size="md" />
-                      </div>
-                      <div>
-                        <p class="text-sm text-foreground-muted">Twitter</p>
-                        <p class="font-medium text-foreground">{siteConfig.twitter.site}</p>
-                      </div>
-                    </div>
-                  </Card>
-                </a>
-              )}
+                <div class="space-y-1.5">
+                  <label for="contact-sujet" class="text-sm font-medium leading-none">Sujet</label>
+                  <input
+                    id="contact-sujet"
+                    name="sujet"
+                    type="text"
+                    class="h-10 w-full rounded-lg border border-border bg-background pl-4 pr-4 text-sm transition-colors duration-(--transition-fast) placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  />
+                </div>
+
+                <div class="space-y-1.5">
+                  <label for="contact-message" class="text-sm font-medium leading-none">
+                    Message *
+                  </label>
+                  <textarea
+                    id="contact-message"
+                    name="message"
+                    rows="5"
+                    required
+                    class="min-h-[80px] w-full resize-y rounded-lg border border-border bg-background px-4 py-3 text-sm transition-colors duration-(--transition-fast) placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  ></textarea>
+                </div>
+
+                <div style="position:absolute;left:-9999px" aria-hidden="true">
+                  <input type="text" name="website" tabindex="-1" autocomplete="off" />
+                </div>
+
+                <div id="contact-error" class="hidden text-sm text-destructive"></div>
+
+                <Button type="submit" fullWidth id="contact-submit">
+                  Envoyer →
+                </Button>
+              </form>
+
+              <div id="contact-success" class="hidden text-center text-sm text-success">
+                Message envoyé. Je vous réponds sous 24h.
+              </div>
             </div>
+          </div>
+        </Tabs>
+      </div>
+    </section>
+
+    <section class="border-border bg-background-secondary border-b py-20">
+      <div class="mx-auto max-w-6xl px-6">
+        <div class="grid gap-6 md:grid-cols-3">
+          <div class="border-border rounded-xl border bg-background p-6 text-center">
+            <p class="text-foreground-muted text-sm font-medium">Email</p>
+            <a
+              href="mailto:courriel@backstage.click"
+              class="text-foreground mt-3 inline-flex text-lg font-semibold hover:underline"
+            >
+              courriel@backstage.click
+            </a>
+          </div>
+
+          <div class="border-border rounded-xl border bg-background p-6 text-center">
+            <p class="text-foreground-muted text-sm font-medium">Délai de réponse</p>
+            <p class="text-foreground mt-3 text-lg font-semibold">Sous 24h en semaine</p>
+          </div>
+
+          <div class="border-border rounded-xl border bg-background p-6 text-center">
+            <p class="text-foreground-muted text-sm font-medium">Localisation</p>
+            <p class="text-foreground mt-3 text-lg font-semibold">
+              Nouvelle-Aquitaine — Full remote
+            </p>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-</PageLayout>
+    </section>
+  </div>
 
-<script>
-  function initContactForm() {
-    const form = document.getElementById('contact-form') as HTMLFormElement;
-    const button = document.getElementById('submit-button') as HTMLButtonElement;
-    const message = document.getElementById('form-message') as HTMLDivElement;
+  <script>
+    function initContactForm() {
+      const form = document.getElementById('contact-form') as HTMLFormElement | null;
+      const button = document.getElementById('contact-submit') as HTMLButtonElement | null;
+      const success = document.getElementById('contact-success') as HTMLDivElement | null;
+      const error = document.getElementById('contact-error') as HTMLDivElement | null;
 
-    if (!form || !button || !message) return;
+      if (!form || !button || !success || !error) return;
+      if (form.dataset.formInit) return;
+      form.dataset.formInit = 'true';
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+      const defaultLabel = 'Envoyer →';
+      const defaultSuccessMessage =
+        success.textContent?.trim() || 'Message envoyé. Je vous réponds sous 24h.';
 
-      button.disabled = true;
-      button.textContent = 'Sending...';
-      message.classList.add('hidden');
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-      try {
-        const formData = new FormData(form);
-        const response = await fetch('/api/contact', {
-          method: 'POST',
-          body: formData,
-        });
+        button.disabled = true;
+        button.textContent = 'Envoi...';
+        error.classList.add('hidden');
+        success.classList.add('hidden');
 
-        const data = await response.json();
+        try {
+          const formData = new FormData(form);
+          const payload = {
+            nom: String(formData.get('nom') ?? ''),
+            email: String(formData.get('email') ?? ''),
+            sujet: String(formData.get('sujet') ?? ''),
+            message: String(formData.get('message') ?? ''),
+            website: String(formData.get('website') ?? ''),
+          };
 
-        if (data.success) {
-          message.textContent = 'Message sent successfully! We will get back to you soon.';
-          message.className = 'text-sm text-success';
-          form.reset();
-        } else {
-          const errors = data.errors ? Object.values(data.errors).flat().join(', ') : 'Something went wrong';
-          message.textContent = errors;
-          message.className = 'text-sm text-destructive';
+          const response = await fetch('/api/contact.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.success) {
+            success.textContent =
+              typeof data.message === 'string' && data.message !== ''
+                ? data.message
+                : defaultSuccessMessage;
+            form.classList.add('hidden');
+            success.classList.remove('hidden');
+            form.reset();
+            return;
+          }
+
+          error.textContent =
+            typeof data.message === 'string' && data.message !== ''
+              ? data.message
+              : 'Une erreur est survenue.';
+          error.classList.remove('hidden');
+        } catch {
+          error.textContent = 'Une erreur est survenue.';
+          error.classList.remove('hidden');
+        } finally {
+          button.disabled = false;
+          button.textContent = defaultLabel;
         }
-      } catch {
-        message.textContent = 'Failed to send message. Please try again later.';
-        message.className = 'text-sm text-destructive';
-      } finally {
-        button.disabled = false;
-        button.textContent = 'Send Message';
-        message.classList.remove('hidden');
-      }
-    });
-  }
+      });
+    }
 
-  initContactForm();
-  document.addEventListener('astro:after-swap', initContactForm);
-</script>
+    initContactForm();
+    document.addEventListener('astro:after-swap', initContactForm);
+  </script>
+
+  <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
+</BaseLayout>

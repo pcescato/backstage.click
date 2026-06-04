@@ -8,6 +8,11 @@ const STATIC_PAGES = [
   { slug: 'index', title: siteConfig.name, description: siteConfig.description },
   { slug: 'about', title: 'About', description: `Learn more about ${siteConfig.name}` },
   { slug: 'contact', title: 'Contact', description: `Get in touch with ${siteConfig.name}` },
+  {
+    slug: 'diagnostic',
+    title: 'Diagnostic gratuit',
+    description: 'Diagnostic de performances, sécurité et obsolescence de votre site',
+  },
   { slug: 'blog', title: 'Blog', description: `Latest articles and updates from ${siteConfig.name}` },
   { slug: 'components', title: 'Component Library', description: 'UI component showcase' },
 ];

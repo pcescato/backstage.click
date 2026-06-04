@@ -7,6 +7,7 @@ import Breadcrumbs from '@/components/seo/Breadcrumbs.astro';
 import ArticleHero from '@/components/blog/ArticleHero.astro';
 import ShareButtons from '@/components/blog/ShareButtons.astro';
 import RelatedPosts from '@/components/blog/RelatedPosts.astro';
+import { footerNavItems, legalLinks } from '@/config/nav.config';
 
 interface Props {
   title: string;
@@ -132,10 +133,17 @@ const fullUrl = new URL(Astro.url.pathname, Astro.site).toString();
   {
     tags.length > 0 && (
       <div class="mx-auto max-w-6xl px-6 pb-16">
-        <RelatedPosts currentSlug={slug} tags={tags} locale="en" maxPosts={3} />
+        <RelatedPosts currentSlug={slug} tags={tags} locale="fr" maxPosts={3} />
       </div>
     )
   }
 
-  <Footer slot="footer" layout="simple" background="secondary" showCopyright={false} />
+  <Footer
+    slot="footer"
+    layout="simple"
+    background="secondary"
+    nav={footerNavItems}
+    legalLinks={legalLinks}
+    showCopyright={false}
+  />
 </BaseLayout>

@@ -10,6 +10,7 @@
 import BaseLayout from './BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
+import { footerNavItems, legalLinks } from '@/config/nav.config';
 
 interface Props {
   title?: string;
@@ -61,5 +62,12 @@ const {
 
   <slot />
 
-  <Footer slot="footer" layout="simple" background="secondary" showCopyright={false} />
+  <Footer
+    slot="footer"
+    layout="simple"
+    background="secondary"
+    nav={footerNavItems}
+    legalLinks={legalLinks}
+    showCopyright={false}
+  />
 </BaseLayout>

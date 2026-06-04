@@ -1,0 +1,335 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Input from '@/components/ui/form/Input/Input.astro';
+import Textarea from '@/components/ui/form/Textarea/Textarea.astro';
+import Icon from '@/components/ui/primitives/Icon/Icon.astro';
+import { Hero } from '@/components/hero';
+import { footerNavItems, legalLinks } from '@/config/nav.config';
+
+const diagnosticCards = [
+  {
+    title: 'Performance Lighthouse',
+    description:
+      "Score de 0 à 100 sur mobile. En dessous de 50, une partie des visiteurs quitte la page avant d'avoir vu le contenu.",
+    iconPath:
+      'M226-559 78 33q14-28 29-54t33-52l-56-11-84 84Zm142 83 114 113q42-16 90-49t90-75q70-70 109.5-155.5T806-800q-72-5-158 34.5T492-656q-42 42-75 90t-49 90Zm178-65q-23-23-23-56.5t23-56.5q23-23 57-23t57 23q23 23 23 56.5T660-541q-23 23-57 23t-57-23Zm19 321 84-84-11-56q-26 18-52 32.5T532-299l33 79Zm313-653q19 121-23.5 235.5T708-419l20 99q4 20-2 39t-20 33L538-80l-84-197-171-171-197-84 167-168q14-14 33.5-20t39.5-2l99 20q104-104 218-147t235-24ZM157-321q35-35 85.5-35.5T328-322q35 35 34.5 85.5T327-151q-25 25-83.5 43T82-76q14-103 32-161.5t43-83.5Zm57 56q-10 10-20 36.5T180-175q27-4 53.5-13.5T270-208q12-12 13-29t-11-29q-12-12-29-11.5T214-265Z',
+    iconViewBox: '0 -960 960 960',
+    iconClass: 'h-12 w-12 shrink-0',
+    iconTransform: '',
+  },
+  {
+    title: 'Grade de sécurité',
+    description:
+      'De A+ à F, vérifiable publiquement en quelques secondes. Un grade F indique des headers de sécurité manquants, corrigeables en 30 minutes.',
+    iconPath:
+      'M10.95 15.55L16.6 9.9l-1.425-1.425L10.95 12.7l-2.1-2.1l-1.425 1.425zM12 22q-3.475-.875-5.737-3.988T4 11.1V5l8-3l8 3v6.1q0 3.8-2.262 6.913T12 22m0-2.1q2.6-.825 4.3-3.3t1.7-5.5V6.375l-6-2.25l-6 2.25V11.1q0 3.025 1.7 5.5t4.3 3.3m0-7.9',
+    iconViewBox: '0 0 24 24',
+    iconClass: 'h-12 w-12 shrink-0',
+    iconTransform: '',
+  },
+  {
+    title: 'Logiciels obsolètes',
+    description:
+      'Les dernières versions de PHP et de WordPress reçoivent régulièrement des correctifs de sécurité. Les précédentes ne sont plus maintenues et présentent un risque majeur pour la sécurité de votre site.',
+    iconPath:
+      'M12 22q-3.475-.875-5.738-3.988T4 11.1V5l8-3l8 3v3h-2V6.375l-6-2.25l-6 2.25V11.1q0 3.025 1.7 5.5t4.3 3.3q.175-.05.325-.1t.3-.125q.3.425.675.813t.8.712q-.5.275-1.025.475T12 22m4 0l-.575-2.3q-.9-.65-1.412-1.612T13.5 16t.513-2.087t1.412-1.613L16 10h4l.575 2.3q.9.65 1.413 1.613T22.5 16t-.513 2.088t-1.412 1.612L20 22zm3.775-4.225Q20.5 17.05 20.5 16t-.725-1.775T18 13.5t-1.775.725T15.5 16t.725 1.775T18 18.5t1.775-.725',
+    iconViewBox: '0 0 24 24',
+    iconClass: 'h-12 w-12 shrink-0',
+    iconTransform: '',
+  },
+] as const;
+
+const lighthouseMetrics = [
+  { label: 'Performance', value: '98/100', status: 'success' },
+  { label: 'Accessibilité', value: '95/100', status: 'success' },
+  { label: 'Bonnes pratiques', value: '100/100', status: 'success' },
+  { label: 'SEO', value: '61/100', status: 'warning' },
+] as const;
+
+const stackMetrics = [
+  { label: 'Sécurité', value: 'A+', status: 'success' },
+  { label: 'PHP', value: 'Non détecté (Astro statique)', status: 'neutral' },
+  { label: 'WordPress', value: 'Non détecté', status: 'neutral' },
+  { label: 'Serveur', value: 'Hébergement statique', status: 'neutral' },
+] as const;
+---
+
+<BaseLayout
+  title="Diagnostic gratuit"
+  description="Diagnostic gratuit de votre site : performances, sécurité, obsolescence et compatibilité WordPress."
+>
+  <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
+
+  <div class="min-h-screen pt-16">
+    <Hero
+      layout="centered"
+      size="lg"
+      showGrid
+      class="border-border border-b pt-12 pb-16 md:pt-20 md:pb-20"
+    >
+      <Badge slot="badge" variant="brand" pill class="px-3 py-1 text-sm">
+        Diagnostic gratuit
+      </Badge>
+
+      <h1 slot="title" class="max-w-4xl !leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
+        Votre site a peut-être un problème que vous ne voyez pas.
+      </h1>
+
+      <p slot="description" class="max-w-3xl">
+        Un diagnostic gratuit révèle en quelques minutes l'état réel de votre site :
+        performances, sécurité, obsolescence. Vous recevez le rapport complet par email.
+      </p>
+    </Hero>
+
+    <section class="border-border bg-background border-b py-20">
+      <div class="mx-auto max-w-6xl px-6">
+        <div class="mx-auto mb-12 max-w-3xl text-center">
+          <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+            Ce que le diagnostic révèle
+          </h2>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {
+            diagnosticCards.map((card) => (
+              <Card variant="elevated" padding="lg" class="border-border h-full border">
+                <div class="flex h-full flex-col gap-5">
+                  <div class="bg-secondary text-foreground inline-flex w-fit rounded-full p-3">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox={card.iconViewBox ?? '0 -960 960 960'}
+                      fill="currentColor"
+                      class={card.iconClass ?? 'h-10 w-10 shrink-0'}
+                      aria-hidden="true"
+                    >
+                      <path d={card.iconPath} transform={card.iconTransform || undefined}></path>
+                    </svg>
+                  </div>
+
+                  <div class="space-y-3">
+                    <h3 class="font-display text-foreground text-2xl font-bold">{card.title}</h3>
+                    <p class="text-foreground-muted leading-relaxed">{card.description}</p>
+                  </div>
+                </div>
+              </Card>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section id="exemple" class="border-border bg-background-secondary border-b py-20">
+      <div class="mx-auto max-w-6xl px-6">
+        <div class="mx-auto max-w-3xl text-center">
+          <Badge variant="info" pill class="px-3 py-1 text-sm">Exemple réel</Badge>
+          <h2 class="font-display text-foreground mt-4 text-3xl font-bold tracking-tight md:text-4xl">
+            La preuve par l'exemple
+          </h2>
+          <p class="text-foreground-muted mt-6 text-lg leading-relaxed">
+            Voici le diagnostic de ce site — backstage.click — tel qu'il sort de l'outil.
+          </p>
+        </div>
+
+        <Card variant="elevated" padding="lg" class="border-border mt-12 border">
+          <div class="grid gap-10 lg:grid-cols-2">
+            <div>
+              <h3 class="text-foreground text-lg font-semibold">Métriques Lighthouse</h3>
+
+              <div class="mt-6 space-y-4">
+                {
+                  lighthouseMetrics.map((metric) => (
+                    <div class="border-border flex items-center justify-between rounded-xl border bg-background px-4 py-3">
+                      <span class="text-foreground font-medium">{metric.label}</span>
+
+                      <div class="flex items-center gap-3">
+                        <span class="text-foreground text-lg font-bold">{metric.value}</span>
+                        {metric.status === 'success' ? (
+                          <span class="text-success" aria-label="Résultat valide">
+                            <Icon name="check" size="sm" />
+                          </span>
+                        ) : (
+                          <span class="text-[var(--warning)]" aria-label="Point de vigilance">
+                            <Icon name="alert-triangle" size="sm" />
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                }
+              </div>
+
+              <p class="text-foreground-subtle mt-4 text-sm italic">
+                61/100 — indexation volontairement désactivée sur cette instance WordPress de
+                développement.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-foreground text-lg font-semibold">Stack technique</h3>
+
+              <div class="mt-6 space-y-4">
+                {
+                  stackMetrics.map((metric) => (
+                    <div class="border-border flex items-center justify-between rounded-xl border bg-background px-4 py-3">
+                      <span class="text-foreground font-medium">{metric.label}</span>
+
+                      <div class="flex items-center gap-3">
+                        <span class="text-right text-sm font-medium text-foreground-muted md:text-base">
+                          {metric.value}
+                        </span>
+
+                        {metric.status === 'success' && (
+                          <span class="text-success" aria-label="Vérification réussie">
+                            <Icon name="check" size="sm" />
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </section>
+
+    <section id="demande" class="bg-background border-t border-border py-20">
+      <div class="mx-auto max-w-2xl px-6">
+        <div class="text-center">
+          <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+            Demander votre diagnostic gratuit
+          </h2>
+          <p class="text-foreground-muted mt-6 text-lg leading-relaxed">
+            Indiquez l'URL de votre site et votre email. Le rapport vous est envoyé sous 30
+            minutes.
+          </p>
+        </div>
+
+        <form id="diag-form" action="/api/scan_request.php" method="POST" class="mt-12 space-y-4">
+          <div class="grid gap-4 md:grid-cols-2">
+            <Input
+              id="diag-url"
+              label="URL de votre site *"
+              name="url_site"
+              type="url"
+              required
+              placeholder="https://votre-site.fr"
+            />
+
+            <Input
+              id="diag-email"
+              label="Votre email *"
+              name="email"
+              type="email"
+              required
+              autocomplete="email"
+            />
+          </div>
+
+          <Textarea
+            id="diag-message"
+            label="Message (optionnel)"
+            name="message"
+            rows={3}
+            placeholder="Une question particulière ?"
+          />
+
+          <div style="position:absolute;left:-9999px" aria-hidden="true">
+            <input type="text" name="website" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <div id="diag-error" class="hidden text-sm text-destructive"></div>
+
+          <Button type="submit" fullWidth id="diag-submit">
+            Recevoir mon diagnostic →
+          </Button>
+        </form>
+
+        <div id="diag-success" class="hidden text-center text-sm text-success">
+          Votre demande a bien été enregistrée. Le rapport arrive sous 30 minutes.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function initDiagnosticForm() {
+      const form = document.getElementById('diag-form') as HTMLFormElement | null;
+      const button = document.getElementById('diag-submit') as HTMLButtonElement | null;
+      const success = document.getElementById('diag-success') as HTMLDivElement | null;
+      const error = document.getElementById('diag-error') as HTMLDivElement | null;
+
+      if (!form || !button || !success || !error) return;
+      if (form.dataset.formInit) return;
+      form.dataset.formInit = 'true';
+
+      const defaultLabel = 'Recevoir mon diagnostic →';
+      const defaultSuccessMessage =
+        success.textContent?.trim() ||
+        'Votre demande a bien été enregistrée. Le rapport arrive sous 30 minutes.';
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        button.disabled = true;
+        button.textContent = 'Envoi...';
+        error.classList.add('hidden');
+        success.classList.add('hidden');
+
+        try {
+          const formData = new FormData(form);
+          const payload = {
+            url_site: String(formData.get('url_site') ?? ''),
+            email: String(formData.get('email') ?? ''),
+            message: String(formData.get('message') ?? ''),
+            website: String(formData.get('website') ?? ''),
+          };
+
+          const response = await fetch('/api/scan_request.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.success) {
+            success.textContent =
+              typeof data.message === 'string' && data.message !== ''
+                ? data.message
+                : defaultSuccessMessage;
+            form.classList.add('hidden');
+            success.classList.remove('hidden');
+            form.reset();
+            return;
+          }
+
+          error.textContent =
+            typeof data.message === 'string' && data.message !== ''
+              ? data.message
+              : 'Une erreur est survenue.';
+          error.classList.remove('hidden');
+        } catch {
+          error.textContent = 'Une erreur est survenue.';
+          error.classList.remove('hidden');
+        } finally {
+          button.disabled = false;
+          button.textContent = defaultLabel;
+        }
+      });
+    }
+
+    initDiagnosticForm();
+    document.addEventListener('astro:after-swap', initDiagnosticForm);
+  </script>
+
+  <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
+</BaseLayout>

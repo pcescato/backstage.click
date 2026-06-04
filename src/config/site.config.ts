@@ -7,6 +7,8 @@ export interface SiteConfig {
   ogImage: string;
   author: string;
   email: string;
+  locale: string;
+  timezone: string;
   phone?: string;
   address?: {
     street: string;
@@ -49,29 +51,20 @@ export interface SiteConfig {
 }
 
 const siteConfig: SiteConfig = {
-  name: 'Velocity',
-  description: 'A modern website built with Astro and Tailwind CSS',
-  url: SITE_URL || 'https://example.com',
-  ogImage: '/og-default.png',
-  author: 'Southwell Media',
-  // Demo contact info - replace with your actual business details
-  email: 'hello@example.com',
-  phone: '+1 (555) 123-4567',
-  address: {
-    street: '123 Main St',
-    city: 'Dallas',
-    state: 'TX',
-    zip: '75001',
-    country: 'US',
+  name: 'Backstage',
+  description:
+    'Audit, migration et optimisation de sites web pour organismes de formation et TPE/PME',
+  url: SITE_URL || 'https://backstage.click',
+  ogImage: '/og-default.svg',
+  author: 'Pascal Cescato',
+  email: 'courriel@backstage.click',
+  locale: 'fr',
+  timezone: 'Europe/Paris',
+  socialLinks: [],
+  twitter: {
+    site: '',
+    creator: '',
   },
-  socialLinks: [
-    'https://github.com/southwellmedia',
-  ],
-  // Twitter metadata - update with your actual handles or remove
-  // twitter: {
-  //   site: '@yourhandle',
-  //   creator: '@yourhandle',
-  // },
   verification: {
     google: GOOGLE_SITE_VERIFICATION,
     bing: BING_SITE_VERIFICATION,
@@ -80,7 +73,7 @@ const siteConfig: SiteConfig = {
   // Replace the SVG files there with your own branding
   branding: {
     logo: {
-      alt: 'Velocity',
+      alt: 'Backstage',
     },
     favicon: {
       svg: '/favicon.svg',

@@ -44,7 +44,7 @@ if (includeOrgSchema) {
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang={siteConfig.locale} class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -78,19 +78,6 @@ if (includeOrgSchema) {
     <!-- Client-side routing for view transitions -->
     <ClientRouter />
 
-    <!-- Theme script (runs before render to prevent flash) -->
-    <script is:inline>
-      (function () {
-        const theme = localStorage.getItem('theme');
-        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-        if (theme === 'dark' || (!theme && systemDark)) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-      })();
-    </script>
   </head>
 
   <body class="min-h-screen bg-background text-foreground antialiased">

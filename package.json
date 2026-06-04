@@ -28,6 +28,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "build:prod": "astro build && node scripts/update-csp.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "lint": "eslint .",
@@ -45,6 +46,7 @@
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@fontsource-variable/manrope": "^5.2.8",
     "@fontsource-variable/outfit": "^5.2.8",
+    "@fontsource/josefin-sans": "^5.2.8",
     "astro": "6.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

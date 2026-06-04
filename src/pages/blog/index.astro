@@ -10,15 +10,16 @@ import Input from '@/components/ui/form/Input/Input.astro';
 import CTA from '@/components/ui/marketing/CTA/CTA.astro';
 import { Hero } from '@/components/hero';
 import { getCollection } from 'astro:content';
+import { footerNavItems, legalLinks } from '@/config/nav.config';
 
 // Get all published posts
 const allPosts = await getCollection('blog', ({ data }) => {
   return import.meta.env.PROD ? data.draft !== true : true;
 });
 
-// Filter by English locale and sort by date
+// Filter by French locale and sort by date
 const posts = allPosts
-  .filter((post) => post.data.locale === 'en')
+  .filter((post) => post.data.locale === 'fr')
   .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
 
 // Separate featured posts (shown in hero section)
@@ -29,8 +30,8 @@ const nonFeaturedPosts = posts.filter((post) => !post.data.featured);
 const regularPosts = nonFeaturedPosts.length > 0 ? nonFeaturedPosts : posts;
 
 const getPostUrl = (postId: string) => {
-  // Remove locale prefix from id (e.g., "en/welcome-to-velocity" -> "welcome-to-velocity")
-  const slug = postId.replace('en/', '');
+  // Remove locale prefix from id (e.g., "fr/article" -> "article")
+  const slug = postId.replace('fr/', '');
   return `/blog/${slug}`;
 };
 ---
@@ -55,7 +56,7 @@ const getPostUrl = (postId: string) => {
     ]}
   />
 
-  <Hero layout="split" size="sm" class="bg-surface-secondary border-b border-border">
+  <Hero layout="split" size="sm" class="bg-surface-secondary border-border border-b">
     <Badge slot="badge">
       <Icon name="book" size="sm" class="text-brand-500" />
       All posts
@@ -139,13 +140,7 @@ const getPostUrl = (postId: string) => {
     <p slot="description">Get the latest articles and updates delivered to your inbox.</p>
 
     <form class="mx-auto flex max-w-md flex-col items-center gap-4 sm:flex-row">
-      <Input
-        type="email"
-        placeholder="Enter your email"
-        size="lg"
-        required
-        class="flex-1"
-      />
+      <Input type="email" placeholder="Enter your email" size="lg" required class="flex-1" />
       <Button size="lg" type="submit">
         Subscribe
         <Icon name="arrow-right" size="sm" />
@@ -153,5 +148,12 @@ const getPostUrl = (postId: string) => {
     </form>
   </CTA>
 
-  <Footer slot="footer" layout="simple" background="secondary" showCopyright={false} />
+  <Footer
+    slot="footer"
+    layout="simple"
+    background="secondary"
+    nav={footerNavItems}
+    legalLinks={legalLinks}
+    showCopyright={false}
+  />
 </BaseLayout>

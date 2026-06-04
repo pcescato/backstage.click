@@ -1,11 +1,14 @@
+import siteConfig from '@/config/site.config';
+
 /**
  * Format a date for display
  */
-export function formatDate(date: Date, locale = 'en-US'): string {
+export function formatDate(date: Date, locale = siteConfig.locale): string {
   return new Intl.DateTimeFormat(locale, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: siteConfig.timezone,
   }).format(date);
 }
 

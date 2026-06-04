@@ -30,34 +30,49 @@ const pageTitle = title ? `${title} — ${siteConfig.name}` : siteConfig.name;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-// Process image - use dynamic OG image if no custom image provided
+// Process image - use the configured default OG image if no custom image is provided
 let ogImage: string;
 if (image) {
   ogImage = image.startsWith('http') ? image : new URL(image, Astro.site).toString();
 } else {
-  // Generate dynamic OG image path based on current URL
-  const pathname = Astro.url.pathname.replace(/^\/|\/$/g, '') || 'index';
-  ogImage = new URL(`/og/${pathname}.png`, Astro.site).toString();
+  ogImage = new URL(siteConfig.ogImage, Astro.site).toString();
 }
 
 const robotsContent = [noindex ? 'noindex' : 'index', nofollow ? 'nofollow' : 'follow'].join(', ');
 
 // Normalize BCP-47 locale (e.g. "en") to OG language_TERRITORY format (e.g. "en_US")
 const localeMap: Record<string, string> = {
-  en: 'en_US', fr: 'fr_FR', de: 'de_DE', es: 'es_ES', it: 'it_IT',
-  pt: 'pt_BR', nl: 'nl_NL', ja: 'ja_JP', ko: 'ko_KR', zh: 'zh_CN',
-  ru: 'ru_RU', ar: 'ar_SA', hi: 'hi_IN', pl: 'pl_PL', sv: 'sv_SE',
+  en: 'en_US',
+  fr: 'fr_FR',
+  de: 'de_DE',
+  es: 'es_ES',
+  it: 'it_IT',
+  pt: 'pt_BR',
+  nl: 'nl_NL',
+  ja: 'ja_JP',
+  ko: 'ko_KR',
+  zh: 'zh_CN',
+  ru: 'ru_RU',
+  ar: 'ar_SA',
+  hi: 'hi_IN',
+  pl: 'pl_PL',
+  sv: 'sv_SE',
 };
-const rawLocale = Astro.currentLocale || 'en_US';
-const locale = rawLocale.includes('_') || rawLocale.includes('-')
-  ? rawLocale.replace('-', '_')
-  : (localeMap[rawLocale] || `${rawLocale}_${rawLocale.toUpperCase()}`);
+const rawLocale = Astro.currentLocale || siteConfig.locale;
+const locale =
+  rawLocale.includes('_') || rawLocale.includes('-')
+    ? rawLocale.replace('-', '_')
+    : localeMap[rawLocale] || `${rawLocale}_${rawLocale.toUpperCase()}`;
 
-// Determine OG image metadata — only emit width/height/type for the auto-generated fallback
+// Determine OG image metadata for the configured fallback or a custom image
 const isGeneratedOgImage = !image;
 const extToMime: Record<string, string> = {
-  '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
-  '.webp': 'image/webp', '.gif': 'image/gif', '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
 };
 function getImageType(url: string): string | undefined {
   const ext = url.match(/(\.\w+)(?:\?|$)/)?.[1]?.toLowerCase();
@@ -86,8 +101,16 @@ const ogImageType = isGeneratedOgImage ? 'image/png' : getImageType(ogImage);
 {ogImageType && <meta property="og:image:type" content={ogImageType} />}
 
 <!-- Article Metadata -->
-{article?.publishedTime && <meta property="article:published_time" content={article.publishedTime.toISOString()} />}
-{article?.modifiedTime && <meta property="article:modified_time" content={article.modifiedTime.toISOString()} />}
+{
+  article?.publishedTime && (
+    <meta property="article:published_time" content={article.publishedTime.toISOString()} />
+  )
+}
+{
+  article?.modifiedTime && (
+    <meta property="article:modified_time" content={article.modifiedTime.toISOString()} />
+  )
+}
 {article?.authors?.map((author) => <meta property="article:author" content={author} />)}
 {article?.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
 
@@ -97,8 +120,20 @@ const ogImageType = isGeneratedOgImage ? 'image/png' : getImageType(ogImage);
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
 {siteConfig.twitter?.site && <meta name="twitter:site" content={siteConfig.twitter.site} />}
-{siteConfig.twitter?.creator && <meta name="twitter:creator" content={siteConfig.twitter.creator} />}
+{
+  siteConfig.twitter?.creator && (
+    <meta name="twitter:creator" content={siteConfig.twitter.creator} />
+  )
+}
 
 <!-- Verification -->
-{siteConfig.verification?.google && <meta name="google-site-verification" content={siteConfig.verification.google} />}
-{siteConfig.verification?.bing && <meta name="msvalidate.01" content={siteConfig.verification.bing} />}
+{
+  siteConfig.verification?.google && (
+    <meta name="google-site-verification" content={siteConfig.verification.google} />
+  )
+}
+{
+  siteConfig.verification?.bing && (
+    <meta name="msvalidate.01" content={siteConfig.verification.bing} />
+  )
+}

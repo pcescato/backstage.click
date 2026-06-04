@@ -26,6 +26,9 @@ importers:
       '@fontsource-variable/outfit':
         specifier: ^5.2.8
         version: 5.2.8
+      '@fontsource/josefin-sans':
+        specifier: ^5.2.8
+        version: 5.2.8
       astro:
         specifier: 6.0.0
         version: 6.0.0(@types/node@22.19.7)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.1)(typescript@5.9.3)(yaml@2.8.2)
@@ -654,6 +657,9 @@ packages:
 
   '@fontsource-variable/outfit@5.2.8':
     resolution: {integrity: sha512-4oUDCZx/Tcz6HZP423w/niqEH31Gks5IsqHV2ZZz1qKHaVIZdj2f0/S1IK2n8jl6Xo0o3N+3RjNHlV9R73ozQA==}
+
+  '@fontsource/josefin-sans@5.2.8':
+    resolution: {integrity: sha512-bGY9VWF01JQc5pAOF3+tLlm75dpwJrRhd5CzY3/oyksvdZQbtwOHSDuu20VGxbBDx2/JQdllNvSJFgqI4QGGqg==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -3911,6 +3917,8 @@ snapshots:
   '@fontsource-variable/manrope@5.2.8': {}
 
   '@fontsource-variable/outfit@5.2.8': {}
+
+  '@fontsource/josefin-sans@5.2.8': {}
 
   '@humanfs/core@0.19.1': {}
 

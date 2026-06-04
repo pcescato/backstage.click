@@ -12,11 +12,20 @@ export interface NavItem {
 }
 
 export const navItems: NavItem[] = [
-  { label: 'Components', href: '/components', order: 1 },
-  { label: 'Blog', href: '/blog', order: 2 },
-  { label: 'About', href: '/about', order: 3 },
+  { label: 'Diagnostic', href: '/diagnostic', order: 1 },
+  { label: 'Prestations', href: '/prestations', order: 2 },
+  { label: 'GCF Pro', href: '/gcf-pro', order: 3 },
   { label: 'Contact', href: '/contact', order: 4 },
 ];
+
+export const footerNavItems: NavItem[] = [...navItems];
+
+export interface LegalLink {
+  label: string;
+  href: string;
+}
+
+export const legalLinks: LegalLink[] = [];
 
 /**
  * Get navigation items sorted by order

@@ -28,7 +28,6 @@ import { headerVariants, headerInnerVariants } from './header.variants';
 import Button from '@/components/ui/form/Button/Button.astro';
 import Icon from '@/components/ui/primitives/Icon/Icon.astro';
 import Logo from '@/components/ui/marketing/Logo/Logo.astro';
-import ThemeToggle from '@/components/layout/ThemeToggle.astro';
 import siteConfig from '@/config/site.config';
 
 export interface NavItem {
@@ -220,10 +219,6 @@ const buttonId = `${menuId}-button`;
           <slot name="actions" />
         ) : (
           <>
-            {showThemeToggle && (
-              <ThemeToggle class={isFloating ? 'hdr-invert-text' : undefined} />
-            )}
-
             {actions.map((action) => (
               <Button
                 variant="ghost"

@@ -20,7 +20,6 @@ import type { HTMLAttributes } from 'astro/types';
 import { cn } from '@/lib/cn';
 import { getNavItems, type NavItem as NavConfigItem } from '@/config/nav.config';
 import { footerVariants, footerColumnGridVariants } from './footer.variants';
-import Logo from '@/components/ui/marketing/Logo/Logo.astro';
 import Icon from '@/components/ui/primitives/Icon/Icon.astro';
 import siteConfig from '@/config/site.config';
 
@@ -146,10 +145,15 @@ function getSocialIcon(platform: string): string {
               <slot name="logo" />
             ) : (
               <a href="/" class="flex items-center gap-2">
-                <Logo size="sm" />
-                <span class="font-display text-lg font-bold text-brand-500">
-                  {siteConfig.name}
-                </span>
+                <img
+                  src="/backstage-logo.webp"
+                  alt="Backstage"
+                  width="140"
+                  height="40"
+                  class="h-8 w-auto"
+                  loading="eager"
+                  decoding="async"
+                />
               </a>
             )}
             {(hasTaglineSlot || tagline) && (
@@ -207,10 +211,15 @@ function getSocialIcon(platform: string): string {
                 <slot name="logo" />
               ) : (
                 <a href="/" class="flex items-center gap-2">
-                  <Logo size="sm" />
-                  <span class="font-display text-lg font-bold text-brand-500">
-                    {siteConfig.name}
-                  </span>
+                  <img
+                    src="/backstage-logo.webp"
+                    alt="Backstage"
+                    width="140"
+                    height="40"
+                    class="h-8 w-auto"
+                    loading="eager"
+                    decoding="async"
+                  />
                 </a>
               )}
               {(hasTaglineSlot || tagline) && (
@@ -314,10 +323,15 @@ function getSocialIcon(platform: string): string {
             <slot name="logo" />
           ) : (
             <a href="/" class="flex items-center gap-2">
-              <Logo size="md" />
-              <span class="font-display text-xl font-bold text-brand-500">
-                {siteConfig.name}
-              </span>
+              <img
+                src="/backstage-logo.webp"
+                alt="Backstage"
+                width="140"
+                height="40"
+                class="h-8 w-auto"
+                loading="eager"
+                decoding="async"
+              />
             </a>
           )
         )}

@@ -27,7 +27,6 @@ import { getNavItems, type NavItem as NavConfigItem } from '@/config/nav.config'
 import { headerVariants, headerInnerVariants } from './header.variants';
 import Button from '@/components/ui/form/Button/Button.astro';
 import Icon from '@/components/ui/primitives/Icon/Icon.astro';
-import Logo from '@/components/ui/marketing/Logo/Logo.astro';
 import siteConfig from '@/config/site.config';
 
 export interface NavItem {
@@ -165,16 +164,16 @@ const buttonId = `${menuId}-button`;
         (hasLogoSlot ? (
           <slot name="logo" />
         ) : (
-          <a href="/" class="flex items-center gap-2">
-            <Logo size={size === 'lg' ? 'md' : 'sm'} forceDark={isInvert} />
-            <span
-              class={cn(
-                'font-display text-xl font-bold tracking-tight',
-                isFloating ? 'hdr-logo-text' : (isInvert ? 'text-on-invert' : 'text-brand-500')
-              )}
-            >
-              {logoText || siteConfig.name}
-            </span>
+          <a href="/" class="flex items-center gap-2" aria-label={logoText || siteConfig.name}>
+            <img
+              src="/backstage-logo.webp"
+              alt="Backstage"
+              width="140"
+              height="40"
+              class="h-8 w-auto"
+              loading="eager"
+              decoding="async"
+            />
           </a>
         ))
     }

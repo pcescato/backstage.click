@@ -1,0 +1,206 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import { Hero } from '@/components/hero';
+import { footerNavItems, legalLinks } from '@/config/nav.config';
+
+const comparisonCards = [
+  {
+    title: 'SaaS classique',
+    className: 'bg-background-secondary',
+    iconPath:
+      'M3 6.75A2.75 2.75 0 0 1 5.75 4h12.5A2.75 2.75 0 0 1 21 6.75v10.5A2.75 2.75 0 0 1 18.25 20H5.75A2.75 2.75 0 0 1 3 17.25V6.75Zm2.75-.75a.75.75 0 0 0-.75.75v10.5c0 .414.336.75.75.75h12.5a.75.75 0 0 0 .75-.75V6.75a.75.75 0 0 0-.75-.75H5.75ZM7 8h10v2H7V8Zm0 4h10v2H7v-2Zm0 4h7v2H7v-2Z',
+    items: [
+      '~250 € / mois = 3 000 € / an',
+      'Données hébergées chez l’éditeur',
+      'Abonnement sans fin',
+      'RGPD : sous-traitant obligatoire',
+      'Résiliation = perte d’accès immédiate',
+    ],
+  },
+  {
+    title: 'GCF Pro',
+    className: 'bg-brand-500/10 border-brand-500/30',
+    iconPath:
+      'M4 22V4l2-2 2 2 2-2 2 2 2-2 2 2 2-2 2 2v18l-2-2-2 2-2-2-2 2-2-2-2 2-2-2Zm2-2.1.7-.7.7.7.7-.7.7.7.7-.7.7.7.7-.7.7.7.7-.7.7.7V4.45l-.7.7-.7-.7-.7.7-.7-.7-.7.7-.7-.7-.7.7-.7-.7V19.9ZM7 14v-2h10v2Zm0 4v-2h7v2Zm0-6v-2h10v2Z',
+    items: [
+      '3 900 € HT — une seule fois',
+      'Hébergé sur votre propre serveur',
+      'Amorti en 23 mois, économies ensuite',
+      'Souveraineté des données native',
+      'Vous restez propriétaire, pour toujours',
+    ],
+  },
+] as const;
+
+const features = [
+  {
+    title: 'Qualiopi natif',
+    description: 'Indicateurs automatisés, BPF export XLSX, module réclamations avec calcul délai 30 jours.',
+    iconPath:
+      'M5,13.18V19h14v-5.82l-7-3.11l-7,3.11ZM12,3l9,4v2l-1,.45V19A2,2 0 0,1 18,21H6A2,2 0 0,1 4,19V9.45L3,9V7l9-4ZM12,10l7,3.11V8.36l-7-3.11l-7,3.11v4.75L12,10Z',
+  },
+  {
+    title: 'Facturation complète',
+    description:
+      'Proformas, factures, avoirs, acomptes. Connecteurs VosFactures et Sellsy. Échéance septembre 2026 : facturation électronique intégrée.',
+    iconPath:
+      'M4 22V4l2-2 2 2 2-2 2 2 2-2 2 2 2-2 2 2v18l-2-2-2 2-2-2-2 2-2-2-2 2-2-2Zm2-2.1.7-.7.7.7.7-.7.7.7.7-.7.7.7.7-.7.7.7.7-.7.7.7V4.45l-.7.7-.7-.7-.7.7-.7-.7-.7.7-.7-.7-.7.7-.7-.7V19.9ZM7 14v-2h10v2Zm0 4v-2h7v2Zm0-6v-2h10v2Z',
+  },
+  {
+    title: 'Portails stagiaires',
+    description:
+      'Convocations automatiques, émargements électroniques, accès OTP passwordless pour stagiaires et entreprises.',
+    iconPath:
+      'M7 14q-1.475 0-2.487-1.012Q3.5 11.975 3.5 10.5q0-1.475 1.013-2.488Q5.525 7 7 7q1.475 0 2.488 1.012Q10.5 8.525 10.5 10q0 1.475-1.013 2.488Q8.475 14 7 14Zm0-2q.825 0 1.412-.587Q9 10.825 9 10q0-.825-.588-1.413Q7.825 8 7 8q-.825 0-1.413.587Q5 9.175 5 10q0 .825.587 1.413Q6.175 12 7 12Zm10 6q-1.4 0-2.7-.55T10.5 16.15V15q0-1.475 1.013-2.488Q12.525 11 14 11q1.475 0 2.488 1.012Q18.5 12.525 18.5 14v1.15q-.8.225-1.725.525Q15.2 16 14 16zm-6-3q-2.1 0-3.9.95Q5 15.9 5 17.5V19h14v-1.5q0-1.6-1.1-2.55Q17.1 15 15 15zm0 5H5q-.825 0-1.413-.587Q3 18.825 3 18V17.5q0-1.275.975-2.15T7 14.5q1.025 0 1.888.387Q10.75 15.275 11.375 16H7q-.425 0-.713.288Q6 16.575 6 17v1q0 .425.287.713Q6.575 19 7 19Zm12-3V17q0 .425-.288.713Q18.425 18 18 18h-4.375q.625-.725 1.488-1.113T15 16.5q2.05 0 3.025.85T21 17.5ZM14 14q-.825 0-1.413-.587Q12 12.825 12 12q0-.825.587-1.413Q13.175 10 14 10q.825 0 1.413.587Q16 11.175 16 12q0 .825-.587 1.413Q14.825 14 14 14Z',
+  },
+  {
+    title: 'IA intégrée',
+    description:
+      'Génération de contenu catalogue depuis PDF (GPT-4o ou Ollama local). Réduction de 70% du temps de création catalogue.',
+    iconPath:
+      'M19 9.5l1.6-3.1L24 4.8l-3.3-.3L19 1.4 17.3 4.5l-3.3.3 2.6 1.6zm-7 13.1l2.6-5 5.4-.5-3.9-3.3 1.2-5.2-4.3 3.1-4.3-3.1 1.2 5.2-3.9 3.3 5.4.5zM7 9.5L8.6 6.4 12 4.8l-3.3-.3L7 1.4 5.3 4.5 2 4.8l2.6 1.6z',
+  },
+] as const;
+---
+
+<BaseLayout
+  title="GCF Pro"
+  description="GCF Pro : logiciel de gestion on-premise à licence perpétuelle pour organismes de formation."
+>
+  <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
+
+  <div class="min-h-screen pt-16">
+    <Hero
+      layout="centered"
+      size="lg"
+      showGrid
+      class="border-border border-b pt-12 pb-16 md:pt-20 md:pb-20"
+    >
+      <Badge slot="badge" variant="brand" pill class="px-3 py-1 text-sm">Logiciel de gestion</Badge>
+
+      <h1 slot="title" class="max-w-4xl !leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
+        Fini les abonnements SaaS.
+        <br />
+        GCF Pro installé chez vous, pour toujours.
+      </h1>
+
+      <p slot="description" class="max-w-3xl">
+        Solution on-premise à licence perpétuelle. Vos données restent sur votre serveur. Vous
+        payez une seule fois.
+      </p>
+    </Hero>
+
+    <section class="border-border bg-background border-b py-20">
+      <div class="mx-auto max-w-6xl px-6">
+        <div class="mx-auto mb-12 max-w-3xl text-center">
+          <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+            Comparatif
+          </h2>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2">
+          {
+            comparisonCards.map((card) => (
+              <Card
+                variant="elevated"
+                padding="lg"
+                class={`border-border h-full border ${card.className}`}
+              >
+                <div class="flex h-full flex-col gap-5">
+                  <div class="bg-secondary text-foreground inline-flex w-fit rounded-full p-3">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      class="h-12 w-12 shrink-0"
+                      aria-hidden="true"
+                    >
+                      <path d={card.iconPath}></path>
+                    </svg>
+                  </div>
+
+                  <div class="space-y-3">
+                    <h3 class="font-display text-foreground text-2xl font-bold">{card.title}</h3>
+                    <ul class="text-foreground-muted space-y-2 leading-relaxed">
+                      {card.items.map((item) => <li>• {item}</li>)}
+                    </ul>
+                  </div>
+                </div>
+              </Card>
+            ))
+          }
+        </div>
+
+        <p class="text-foreground-muted mt-8 text-center">
+          Économies projetées après amortissement : 2 200 € / an.
+        </p>
+      </div>
+    </section>
+
+    <section class="border-border bg-background-secondary border-b py-20">
+      <div class="mx-auto max-w-6xl px-6">
+        <div class="mx-auto mb-12 max-w-3xl text-center">
+          <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+            Ce que couvre GCF Pro
+          </h2>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2">
+          {
+            features.map((feature) => (
+              <Card variant="elevated" padding="lg" class="border-border h-full border">
+                <div class="flex h-full flex-col gap-5">
+                  <div class="bg-secondary text-foreground inline-flex w-fit rounded-full p-3">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      class="h-8 w-8 shrink-0"
+                      aria-hidden="true"
+                    >
+                      <path d={feature.iconPath}></path>
+                    </svg>
+                  </div>
+
+                  <div class="space-y-3">
+                    <h3 class="font-display text-foreground text-2xl font-bold">
+                      {feature.title}
+                    </h3>
+                    <p class="text-foreground-muted leading-relaxed">{feature.description}</p>
+                  </div>
+                </div>
+              </Card>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="invert-section bg-background border-t border-border py-20">
+      <div class="mx-auto max-w-2xl px-6 text-center">
+        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+          Prêt à reprendre le contrôle ?
+        </h2>
+        <p class="text-foreground-muted mt-6 text-lg leading-relaxed">
+          Licence annuelle 1 490 € HT ou licence perpétuelle 3 900 € HT. La formation
+          Administrateur (3h) est éligible OPCO/CPF.
+        </p>
+        <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+          <Button href="https://gcfpro.fr" target="_blank">
+            Découvrir GCF Pro →
+          </Button>
+          <Button variant="outline" href="/contact">
+            Demander une démo
+          </Button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
+</BaseLayout>

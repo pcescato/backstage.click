@@ -5,7 +5,7 @@ export const heroSectionVariants = cva('relative overflow-hidden bg-background',
     size: {
       sm: 'pt-[var(--space-page-top-sm)] pb-[var(--space-section-sm)]',
       md: 'pt-[var(--space-page-top)] pb-[var(--space-section-md)]',
-      lg: 'pt-[calc(var(--space-page-top)_+_var(--space-8))] pb-8 md:pb-[var(--space-section-lg)]',
+      lg: 'pt-[calc(var(--space-page-top)_+_var(--space-8))] pb-4 md:pb-[var(--space-section-lg)]',
       xl: 'pt-[calc(var(--space-page-top)_+_var(--space-16))] pb-[var(--space-section-xl)]',
     },
   },

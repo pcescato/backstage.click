@@ -80,14 +80,14 @@
   /* -------------------------------------------------------------------------
      Inverted/Contrast Section — deep sky-dark
      ------------------------------------------------------------------------- */
-  --surface-invert: oklch(9.5% 0.012 222);
-  --surface-invert-secondary: oklch(13.5% 0.010 222);
-  --surface-invert-tertiary: oklch(17.5% 0.008 222);
-  --on-invert: var(--gray-50);
-  --on-invert-secondary: var(--gray-200);
-  --on-invert-muted: var(--gray-300);
-  --border-invert: oklch(21% 0.010 222);
-  --border-invert-strong: oklch(29% 0.008 222);
+  --surface-invert: oklch(63% 0.045 222);
+  --surface-invert-secondary: oklch(67% 0.042 222);
+  --surface-invert-tertiary: oklch(71% 0.038 222);
+  --on-invert: var(--gray-0);
+  --on-invert-secondary: var(--gray-100);
+  --on-invert-muted: var(--gray-200);
+  --border-invert: oklch(50% 0.050 222);
+  --border-invert-strong: oklch(42% 0.055 222);
 
   /* -------------------------------------------------------------------------
      Typography
@@ -123,6 +123,12 @@
   --theme-radius-lg: 0.5rem;     /* 8px  */
   --theme-radius-xl: 0.625rem;   /* 10px */
   --theme-radius-full: 9999px;
+}
+
+.invert-section {
+  --primary: var(--gray-0);
+  --primary-hover: var(--gray-100);
+  --primary-foreground: oklch(63% 0.045 222);
 }
 
 /* -------------------------------------------------------------------------

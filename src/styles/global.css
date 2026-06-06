@@ -220,8 +220,8 @@
     --color-foreground-secondary: var(--on-invert-secondary);
     --color-foreground-muted: var(--on-invert-muted);
     --color-foreground-subtle: var(--on-invert-muted);
-    --color-border: var(--border-invert);
-    --color-border-strong: var(--border-invert-strong);
+    --color-border: rgba(255, 255, 255, 0.6);
+    --color-border-strong: rgba(255, 255, 255, 0.9);
     --color-secondary: var(--surface-invert-secondary);
     --color-secondary-foreground: var(--on-invert);
     --color-secondary-hover: var(--surface-invert-tertiary);

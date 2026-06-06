@@ -1,26 +1,4 @@
 ---
-/**
- * Header Component
- * Flexible navigation header with variant-based configuration
- *
- * Variants:
- * - layout: 'default' | 'centered' | 'minimal'
- * - position: 'fixed' | 'sticky' | 'static'
- * - size: 'sm' | 'md' | 'lg'
- * - variant: 'default' | 'solid' | 'transparent'
- * - colorScheme: 'default' | 'invert' (use 'invert' for dark backgrounds)
- * - shape: 'bar' | 'floating' (use 'floating' for capsule header)
- *
- * Features:
- * - Dynamic navigation from nav.config.ts (default) or custom nav prop
- * - Optional CTA button with customization
- * - Mobile menu with Escape key support
- * - Theme toggle
- * - GitHub/action buttons
- * - Full slot support for customization
- * - Inverted color scheme for use on dark/image backgrounds
- * - Floating capsule shape with scroll-reactive bg + color flip
- */
 import type { HTMLAttributes } from 'astro/types';
 import { cn } from '@/lib/cn';
 import { getNavItems, type NavItem as NavConfigItem } from '@/config/nav.config';
@@ -43,107 +21,111 @@ export interface HeaderAction {
 }
 
 interface Props extends HTMLAttributes<'header'> {
-  /** Layout style: default (logo left, nav right), centered (logo center), minimal (logo + cta only) */
   layout?: 'default' | 'centered' | 'minimal';
-  /** Position behavior */
   position?: 'fixed' | 'sticky' | 'static';
-  /** Header height */
   size?: 'sm' | 'md' | 'lg';
-  /** Background variant */
   variant?: 'default' | 'solid' | 'transparent';
-  /** Color scheme for text/icons - use 'invert' for dark backgrounds */
   colorScheme?: 'default' | 'invert';
-  /** Shape: 'bar' (full-width, default) or 'floating' (centered capsule) */
   shape?: 'bar' | 'floating';
-  /** Override default navigation (replaces getNavRoutes()) */
   nav?: NavItem[];
-  /** Additional navigation items (e.g., #features for landing pages) */
   extraNav?: NavItem[];
-  /** Show CTA button */
   showCta?: boolean;
-  /** CTA button configuration */
-  cta?: { label?: string; href?: string };
-  /** Action buttons (GitHub, etc.) */
+  cta?: { label?: string; href?: string; icon?: string; trailingIcon?: string };
   actions?: HeaderAction[];
-  /** Show theme toggle (default: true) */
   showThemeToggle?: boolean;
-  /** Show mobile menu (default: true) */
   showMobileMenu?: boolean;
-  /** Show active state for current page (default: true) */
   showActiveState?: boolean;
-  /** Logo text override */
   logoText?: string;
-  /** Hide logo entirely */
   hideLogo?: boolean;
-  /** Show language switcher */
   showLanguageSwitcher?: boolean;
+  showSocialLinks?: boolean;
+  showScrollProgress?: boolean;
+  scrollProgressPosition?: 'top' | 'bottom';
+  autoHide?: boolean;
+  invertOnReturn?: boolean;
+  maxWidth?: '4xl' | '5xl' | '6xl' | '7xl' | 'full';
 }
 
 const {
   layout = 'default',
-  position = 'sticky',
-  size = 'md',
-  variant = 'default',
+  position = 'fixed',
+  size = 'lg',
+  variant = 'solid',
   colorScheme = 'default',
   shape = 'bar',
   nav,
   extraNav = [],
   showCta = false,
-  cta = { label: 'View Docs', href: 'https://docs.deployvelocity.com' },
+  cta = { label: 'Start a project', href: '/contact' },
   actions = [],
-  showThemeToggle = true,
+  showThemeToggle: _showThemeToggle = true,
   showMobileMenu = true,
   showActiveState = true,
   logoText,
   hideLogo = false,
+  showLanguageSwitcher: _showLanguageSwitcher = false,
+  showSocialLinks: _showSocialLinks = false,
+  showScrollProgress = false,
+  scrollProgressPosition = 'bottom',
+  autoHide = false,
+  invertOnReturn = true,
+  maxWidth = '6xl',
   class: className,
   ...attrs
 } = Astro.props;
 
-// Shape + color scheme helpers
 const isFloating = shape === 'floating';
 const isInvert = colorScheme === 'invert';
+const maxWidthClass = {
+  '4xl': 'max-w-4xl',
+  '5xl': 'max-w-5xl',
+  '6xl': 'max-w-6xl',
+  '7xl': 'max-w-7xl',
+  full: 'max-w-full',
+}[maxWidth];
 
-// Get navigation items
 const defaultNav = getNavItems().map((item: NavConfigItem) => ({
   label: item.label,
   href: item.href,
 }));
 const navItems: NavItem[] = nav || [...extraNav, ...defaultNav];
 
-// Current path for active state
 const currentPath = Astro.url.pathname;
-
-// Check if we're on the landing page
 const isLandingPage = currentPath === '/';
-
-// Process CTA href for landing page anchor links
 const ctaHref = cta.href?.startsWith('#') && !isLandingPage ? `/${cta.href}` : cta.href;
 
-// Check slots
 const hasLogoSlot = Astro.slots.has('logo');
 const hasNavSlot = Astro.slots.has('nav');
 const hasActionsSlot = Astro.slots.has('actions');
 const hasMobileMenuSlot = Astro.slots.has('mobile-menu');
 
-// Compute header classes
 const headerClasses = cn(
   headerVariants({ position, variant, shape }),
   isInvert && !isFloating && 'invert-section',
   className
 );
 
-// Compute inner container classes
-const innerClasses = headerInnerVariants({ size, shape });
+const innerClasses = cn(
+  headerInnerVariants({ size, shape }),
+  !isFloating && maxWidthClass,
+  'hdr-inner'
+);
 
-// Check if a nav item is active
 function isActive(href: string): boolean {
   if (!showActiveState) return false;
   if (href.startsWith('#')) return false;
   return currentPath === href || currentPath.startsWith(href + '/');
 }
 
-// Generate unique ID for this header instance
+function getNavIcon(href: string): string {
+  if (href.startsWith('/diagnostic')) return 'shield-check';
+  if (href.startsWith('/prestations')) return 'sparkles';
+  if (href.startsWith('/gcf-pro')) return 'layers';
+  if (href.startsWith('/contact')) return 'mail';
+  if (href.startsWith('#')) return 'hash';
+  return 'chevron-right';
+}
+
 const menuId = `mobile-menu-${Math.random().toString(36).slice(2, 9)}`;
 const buttonId = `${menuId}-button`;
 ---
@@ -155,10 +137,11 @@ const buttonId = `${menuId}-button`;
   data-header-shape={shape}
   data-header-variant={variant}
   data-header-color-scheme={colorScheme}
+  data-header-auto-hide={autoHide ? 'true' : 'false'}
+  data-header-invert-on-return={invertOnReturn ? 'true' : 'false'}
   {...attrs}
 >
   <div class={innerClasses}>
-    {/* Logo */}
     {
       !hideLogo &&
         (hasLogoSlot ? (
@@ -178,15 +161,14 @@ const buttonId = `${menuId}-button`;
         ))
     }
 
-    {/* Desktop Navigation */}
     {
       layout !== 'minimal' &&
         (hasNavSlot ? (
-          <nav class="hidden items-center gap-1 md:flex" aria-label="Main navigation">
+          <nav class="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
             <slot name="nav" />
           </nav>
         ) : (
-          <nav class="hidden items-center gap-1 md:flex" aria-label="Main navigation">
+          <nav class="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
             {navItems.map(({ label, href }) => (
               <a
                 href={href.startsWith('#') && !isLandingPage ? `/${href}` : href}
@@ -195,12 +177,12 @@ const buttonId = `${menuId}-button`;
                   'transition-all duration-(--transition-fast)',
                   isFloating && 'hdr-invert-text',
                   isFloating
-                    ? (isActive(href)
-                        ? 'hdr-nav-active font-semibold'
-                        : 'font-medium opacity-80 hover:opacity-100')
-                    : (isActive(href)
-                        ? 'nav-link-active font-semibold text-foreground bg-secondary'
-                        : 'nav-link-inactive font-medium text-foreground-muted hover:text-foreground hover:bg-secondary/70')
+                    ? isActive(href)
+                      ? 'hdr-nav-active font-semibold'
+                      : 'font-medium'
+                    : isActive(href)
+                      ? 'nav-link-active bg-secondary text-foreground font-semibold'
+                      : 'nav-link-inactive text-foreground-muted hover:bg-secondary/70 hover:text-foreground font-medium'
                 )}
                 aria-current={isActive(href) ? 'page' : undefined}
               >
@@ -211,55 +193,57 @@ const buttonId = `${menuId}-button`;
         ))
     }
 
-    {/* Actions Area */}
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 justify-self-end">
       {
         hasActionsSlot ? (
           <slot name="actions" />
         ) : (
           <>
-            {actions.map((action) => (
-              <Button
-                variant="ghost"
-                size="sm"
-                icon={action.iconOnly}
-                href={action.href}
-                target={action.target}
-                aria-label={action.label}
-                class={isFloating ? 'hdr-invert-text' : undefined}
-              >
-                <Icon name={action.icon} size="sm" />
-                {!action.iconOnly && action.label}
-              </Button>
-            ))}
+            <div class="hidden items-center gap-2 lg:flex">
+              {actions.map((action) => (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  icon={action.iconOnly}
+                  href={action.href}
+                  target={action.target}
+                  aria-label={action.label}
+                  class={isFloating ? 'hdr-invert-text' : undefined}
+                >
+                  <Icon name={action.icon} size="sm" />
+                  {!action.iconOnly && action.label}
+                </Button>
+              ))}
 
-            {showCta && (
-              <Button
-                size="sm"
-                href={ctaHref}
-                target="_blank"
-                class={isFloating ? 'hdr-invert-cta rounded-full' : undefined}
-              >
-                {cta.label}
-              </Button>
-            )}
+              {showCta && (
+                <Button
+                  size="sm"
+                  href={ctaHref}
+                  target={ctaHref?.startsWith('http') ? '_blank' : undefined}
+                  class={isFloating ? 'hdr-invert-cta rounded-full' : undefined}
+                >
+                  {cta.icon && <Icon name={cta.icon} size="sm" />}
+                  {cta.label}
+                  {cta.trailingIcon && <Icon name={cta.trailingIcon} size="sm" />}
+                </Button>
+              )}
+            </div>
           </>
         )
       }
 
-      {/* Mobile Menu Toggle */}
       {
         showMobileMenu && layout !== 'minimal' && (
           <button
             type="button"
             id={buttonId}
             class={cn(
-              'inline-flex items-center justify-center rounded-md p-2 md:hidden',
+              'hdr-hamburger inline-flex items-center justify-center rounded-md p-2 lg:hidden',
               'transition-colors',
               'focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none',
               isFloating
-                ? 'hdr-invert-text'
-                : 'text-foreground-muted hover:text-foreground hover:bg-secondary'
+                ? 'hdr-invert-text hover:bg-secondary/40'
+                : 'text-foreground hover:bg-secondary'
             )}
             aria-expanded="false"
             aria-controls={menuId}
@@ -277,74 +261,159 @@ const buttonId = `${menuId}-button`;
     </div>
   </div>
 
-  {/* Mobile Menu */}
   {
-    showMobileMenu &&
-      layout !== 'minimal' &&
-      (hasMobileMenuSlot ? (
-        <div
-          id={menuId}
-          class="hidden fixed inset-0 z-50 bg-background"
-          role="navigation"
-          aria-label="Mobile navigation"
-        >
-          <button
-            type="button"
-            class="absolute top-6 right-6 p-2 text-foreground hover:text-brand-500 transition-colors"
-            aria-label="Close menu"
-            data-menu-close
-          >
-            <Icon name="x" size="md" />
-          </button>
-          <div class="flex flex-col items-center justify-center h-full gap-8 px-6">
+    showScrollProgress && (
+      <div
+        id="scroll-progress-bar"
+        class={`bg-brand-500 absolute left-0 h-[2px] w-0 transition-none ${scrollProgressPosition === 'top' ? 'top-0' : 'bottom-0'}`}
+        aria-hidden="true"
+      />
+    )
+  }
+</header>
+
+{
+  showMobileMenu &&
+    layout !== 'minimal' &&
+    (hasMobileMenuSlot ? (
+      <div
+        id={menuId}
+        class="bg-background fixed inset-0 z-50 hidden lg:hidden"
+        role="navigation"
+        aria-label="Mobile navigation"
+      >
+        <div class="mx-auto flex h-full w-full max-w-6xl flex-col">
+          <div class="flex h-16 items-center justify-between px-6">
+            <a href="/" class="flex items-center gap-2" aria-label={logoText || siteConfig.name}>
+              <img
+                src="/backstage-logo.webp"
+                alt="Backstage"
+                width="140"
+                height="40"
+                class="h-8 w-auto"
+                loading="eager"
+                decoding="async"
+              />
+            </a>
+            <button
+              type="button"
+              class="text-foreground-muted hover:bg-secondary hover:text-foreground focus-visible:ring-ring inline-flex items-center justify-center rounded-md p-2 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+              aria-label="Close menu"
+              data-menu-close
+            >
+              <Icon name="x" size="md" />
+            </button>
+          </div>
+
+          <div class="mobile-menu-body flex-1 overflow-y-auto px-6 pt-4 pb-8">
             <slot name="mobile-menu" />
           </div>
         </div>
-      ) : (
-        <div
-          id={menuId}
-          class="hidden fixed inset-0 z-50 bg-background"
-          role="navigation"
-          aria-label="Mobile navigation"
-        >
-          <button
-            type="button"
-            class="absolute top-6 right-6 p-2 text-foreground hover:text-brand-500 transition-colors"
-            aria-label="Close menu"
-            data-menu-close
-          >
-            <Icon name="x" size="md" />
-          </button>
-          <div class="flex flex-col items-center justify-center h-full gap-8 px-6">
-            {navItems.map(({ label, href }) => (
-              <a
-                href={href.startsWith('#') && !isLandingPage ? `/${href}` : href}
-                class="text-3xl font-display font-bold text-foreground hover:text-brand-500 transition-colors text-center"
-                aria-current={isActive(href) ? 'page' : undefined}
-              >
-                {label}
-              </a>
-            ))}
+      </div>
+    ) : (
+      <div
+        id={menuId}
+        class="bg-background fixed inset-0 z-50 hidden lg:hidden"
+        role="navigation"
+        aria-label="Mobile navigation"
+      >
+        <div class="mx-auto flex h-full w-full max-w-6xl flex-col">
+          <div class="flex h-16 items-center justify-between px-6">
+            <a href="/" class="flex items-center gap-2" aria-label={logoText || siteConfig.name}>
+              <img
+                src="/backstage-logo.webp"
+                alt="Backstage"
+                width="140"
+                height="40"
+                class="h-8 w-auto"
+                loading="eager"
+                decoding="async"
+              />
+            </a>
+            <button
+              type="button"
+              class="text-foreground-muted hover:bg-secondary hover:text-foreground focus-visible:ring-ring inline-flex items-center justify-center rounded-md p-2 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+              aria-label="Close menu"
+              data-menu-close
+            >
+              <Icon name="x" size="md" />
+            </button>
+          </div>
+
+          <div class="mobile-menu-body flex-1 overflow-y-auto px-6 pt-4 pb-8">
+            <section class="mobile-menu-section">
+              <ul class="space-y-1">
+                {navItems.map(({ label, href }) => {
+                  const active = isActive(href);
+                  const resolvedHref = href.startsWith('#') && !isLandingPage ? `/${href}` : href;
+                  return (
+                    <li>
+                      <a
+                        href={resolvedHref}
+                        class={cn(
+                          'mobile-menu-row group flex items-center gap-3 rounded-xl px-3 py-3 text-base transition-colors',
+                          active ? 'mobile-menu-row-active' : 'mobile-menu-row-inactive'
+                        )}
+                        aria-current={active ? 'page' : undefined}
+                      >
+                        <span class="mobile-menu-tile">
+                          {href.startsWith('/diagnostic') ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 -960 960 960"
+                              fill="currentColor"
+                              class="h-4 w-4"
+                              aria-hidden="true"
+                            >
+                              <path d="M824 -80 716 -188Q694 -175 670.0 -167.5Q646 -160 620 -160Q545 -160 492.5 -212.5Q440 -265 440.0 -340.0Q440 -415 492.5 -467.5Q545 -520 620.0 -520.0Q695 -520 747.5 -467.5Q800 -415 800 -340Q800 -314 792.5 -290.0Q785 -266 772 -244L880 -136ZM620.0 -240.0Q662 -240 691.0 -269.0Q720 -298 720.0 -340.0Q720 -382 691.0 -411.0Q662 -440 620.0 -440.0Q578 -440 549.0 -411.0Q520 -382 520.0 -340.0Q520 -298 549.0 -269.0Q578 -240 620.0 -240.0ZM840 -560H760V-760Q760 -760 760.0 -760.0Q760 -760 760 -760H680V-640H280V-760H200Q200 -760 200.0 -760.0Q200 -760 200 -760V-200Q200 -200 200.0 -200.0Q200 -200 200 -200H400V-120H200Q167 -120 143.5 -143.5Q120 -167 120 -200V-760Q120 -793 143.5 -816.5Q167 -840 200 -840H367Q378 -875 410.0 -897.5Q442 -920 480 -920Q520 -920 551.5 -897.5Q583 -875 594 -840H760Q793 -840 816.5 -816.5Q840 -793 840 -760ZM480.0 -760.0Q497 -760 508.5 -771.5Q520 -783 520.0 -800.0Q520 -817 508.5 -828.5Q497 -840 480.0 -840.0Q463 -840 451.5 -828.5Q440 -817 440.0 -800.0Q440 -783 451.5 -771.5Q463 -760 480.0 -760.0Z" />
+                            </svg>
+                          ) : href.startsWith('/prestations') ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 -960 960 960"
+                              fill="currentColor"
+                              class="h-4 w-4"
+                              aria-hidden="true"
+                            >
+                              <path d="M160 -120Q127 -120 103.5 -143.5Q80 -167 80 -200V-760Q80 -793 103.5 -816.5Q127 -840 160 -840H720Q753 -840 776.5 -816.5Q800 -793 800 -760V-680H880V-600H800V-520H880V-440H800V-360H880V-280H800V-200Q800 -167 776.5 -143.5Q753 -120 720 -120ZM160 -200H720Q720 -200 720.0 -200.0Q720 -200 720 -200V-760Q720 -760 720.0 -760.0Q720 -760 720 -760H160Q160 -760 160.0 -760.0Q160 -760 160 -760V-200Q160 -200 160.0 -200.0Q160 -200 160 -200ZM240 -280H440V-440H240ZM480 -560H640V-680H480ZM240 -480H440V-680H240ZM480 -280H640V-520H480ZM160 -760Q160 -760 160.0 -760.0Q160 -760 160 -760V-200Q160 -200 160.0 -200.0Q160 -200 160 -200Q160 -200 160.0 -200.0Q160 -200 160 -200V-760Q160 -760 160.0 -760.0Q160 -760 160 -760Z" />
+                            </svg>
+                          ) : (
+                            <Icon name={getNavIcon(href)} size="sm" />
+                          )}
+                        </span>
+                        <span class="flex-1">{label}</span>
+                        <Icon name="chevron-right" size="sm" class="mobile-menu-chevron" />
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
 
             {showCta && (
-              <div class="border-border mt-3 border-t pt-3">
-                <Button fullWidth href={ctaHref} target="_blank">
+              <div class="mobile-menu-cta-wrap pt-4">
+                <Button
+                  fullWidth
+                  href={ctaHref}
+                  target={ctaHref?.startsWith('http') ? '_blank' : undefined}
+                >
+                  {cta.icon && <Icon name={cta.icon} size="sm" />}
                   {cta.label}
+                  {cta.trailingIcon && <Icon name={cta.trailingIcon} size="sm" />}
                 </Button>
               </div>
             )}
           </div>
         </div>
-      ))
-  }
-</header>
+      </div>
+    ))
+}
 
-{/* Mobile Menu Backdrop - positioned outside header to blur page content */}
 {
   showMobileMenu && layout !== 'minimal' && (
     <div
       id={`${menuId}-backdrop`}
-      class="pointer-events-none fixed inset-0 z-40 opacity-0 transition-opacity duration-200 md:hidden"
+      class="pointer-events-none fixed inset-0 z-40 opacity-0 transition-opacity duration-200 lg:hidden"
       aria-hidden="true"
     />
   )
@@ -352,7 +421,8 @@ const buttonId = `${menuId}-button`;
 
 <script>
   function initMobileMenu() {
-    document.querySelectorAll<HTMLElement>('header[data-menu-id]').forEach((header) => {
+    const menuHeaders = document.querySelectorAll<HTMLElement>('header[data-menu-id]');
+    menuHeaders.forEach((header) => {
       const menuId = header.dataset.menuId!;
       const buttonId = header.dataset.buttonId!;
       const isFloating = header.dataset.headerShape === 'floating';
@@ -368,11 +438,9 @@ const buttonId = `${menuId}-button`;
       button.dataset.menuInit = 'true';
 
       let isOpen = false;
-      let isAnimating = false;
 
       function open() {
-        if (isOpen || isAnimating) return;
-        isAnimating = true;
+        if (isOpen) return;
         isOpen = true;
 
         button!.setAttribute('aria-expanded', 'true');
@@ -380,70 +448,54 @@ const buttonId = `${menuId}-button`;
         closeIcon!.classList.remove('hidden');
 
         if (isFloating) {
-          // Force scrolled state + flatten bottom corners
           header.setAttribute('data-scrolled', '');
-          header.classList.remove('rounded-2xl');
-          header.classList.add('rounded-t-2xl');
         } else {
           header.classList.add('!bg-background');
         }
 
-        // Fade out and blur the page content
+        document.documentElement.style.overflow = 'hidden';
+
         const mainContent = document.querySelector('main');
         const footer = document.querySelector('footer');
         if (mainContent) mainContent.classList.add('mobile-menu-blur');
         if (footer) footer.classList.add('mobile-menu-blur');
 
-        // Show menu and backdrop
         menu!.classList.remove('hidden');
-        menu!.classList.add('flex');
+        menu!.classList.add('block');
         if (backdrop) {
           backdrop.classList.remove('pointer-events-none', 'animate-backdrop-out');
           backdrop.classList.add('animate-backdrop');
         }
-
-        isAnimating = false;
       }
 
       function close() {
-        if (!isOpen || isAnimating) return;
-        isAnimating = true;
+        if (!isOpen) return;
+        isOpen = false;
 
         button!.setAttribute('aria-expanded', 'false');
         menuIcon!.classList.remove('hidden');
         closeIcon!.classList.add('hidden');
 
-        menu!.classList.remove('flex');
+        menu!.classList.remove('block');
         menu!.classList.add('hidden');
-        if (backdrop) {
-          backdrop.classList.remove('animate-backdrop');
-          backdrop.classList.add('animate-backdrop-out');
-        }
 
-        // Restore page content
+        document.documentElement.style.overflow = '';
+
         const mainContent = document.querySelector('main');
         const footer = document.querySelector('footer');
         if (mainContent) mainContent.classList.remove('mobile-menu-blur');
         if (footer) footer.classList.remove('mobile-menu-blur');
 
         if (backdrop) {
-          backdrop.classList.add('pointer-events-none');
+          backdrop.classList.remove('animate-backdrop');
+          backdrop.classList.add('animate-backdrop-out', 'pointer-events-none');
         }
 
-        if (isFloating) {
-          // Restore rounded corners
-          header.classList.remove('rounded-t-2xl');
-          header.classList.add('rounded-2xl');
-          // Only remove scrolled if actually at top
-          if (window.scrollY <= 60) {
-            header.removeAttribute('data-scrolled');
-          }
-        } else {
+        if (!isFloating) {
           header.classList.remove('!bg-background');
+        } else if (window.scrollY <= 60) {
+          header.removeAttribute('data-scrolled');
         }
-
-        isOpen = false;
-        isAnimating = false;
       }
 
       function toggle() {
@@ -456,19 +508,16 @@ const buttonId = `${menuId}-button`;
 
       button.addEventListener('click', toggle);
 
-      // Close on backdrop click
       if (backdrop) {
         backdrop.addEventListener('click', close);
       }
 
-      // Close on Escape key
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && isOpen) {
           close();
         }
       });
 
-      // Close when clicking on mobile menu links
       menu.querySelectorAll('a').forEach((link) => {
         link.addEventListener('click', close);
       });
@@ -486,95 +535,152 @@ const buttonId = `${menuId}-button`;
 
 <script>
   const SCROLL_THRESHOLD = 60;
+  const AUTO_HIDE_THRESHOLD = 150;
+  const BAR_SCROLLED_CLASSES = [
+    'bg-background/80',
+    'backdrop-blur-lg',
+    'border-b',
+    'border-border/50',
+  ];
 
-  function initScrollWatcher() {
-    document.querySelectorAll<HTMLElement>('header[data-header-shape="floating"]').forEach((header) => {
+  function initScrollDriven() {
+    const scrollHeaders = document.querySelectorAll<HTMLElement>(
+      'header[data-header-shape="floating"], header[data-header-shape="bar"]'
+    );
+
+    scrollHeaders.forEach((header) => {
       if (header.dataset.scrollInit) return;
       header.dataset.scrollInit = 'true';
 
+      const isBar = header.dataset.headerShape === 'bar';
+      const isFloating = header.dataset.headerShape === 'floating';
+      const isAutoHide = header.dataset.headerAutoHide === 'true';
+      const isTransparentBar = isBar && header.dataset.headerVariant === 'transparent';
+
       let ticking = false;
+      let lastScrollY = window.scrollY;
 
       function onScroll() {
         if (ticking) return;
         ticking = true;
 
         requestAnimationFrame(() => {
-          if (window.scrollY > SCROLL_THRESHOLD) {
+          const currentScrollY = window.scrollY;
+          const menuId = header.dataset.menuId;
+          const menu = menuId ? document.getElementById(menuId) : null;
+          const menuOpen = menu && !menu.classList.contains('hidden');
+
+          if (currentScrollY > SCROLL_THRESHOLD) {
             header.setAttribute('data-scrolled', '');
-          } else {
-            // Don't remove if mobile menu is open
-            const menuId = header.dataset.menuId;
-            const menu = menuId ? document.getElementById(menuId) : null;
-            const menuOpen = menu && !menu.classList.contains('hidden');
-            if (!menuOpen) {
-              header.removeAttribute('data-scrolled');
+            if (isTransparentBar) {
+              header.classList.add(...BAR_SCROLLED_CLASSES);
+              header.classList.remove('bg-transparent');
+            }
+          } else if (!menuOpen) {
+            header.removeAttribute('data-scrolled');
+            header.removeAttribute('data-header-hidden');
+            if (isTransparentBar) {
+              header.classList.remove(...BAR_SCROLLED_CLASSES);
+              header.classList.add('bg-transparent');
             }
           }
+
+          if (isFloating && isAutoHide && !menuOpen) {
+            if (currentScrollY > AUTO_HIDE_THRESHOLD && currentScrollY > lastScrollY) {
+              header.setAttribute('data-header-hidden', '');
+            } else {
+              header.removeAttribute('data-header-hidden');
+            }
+          } else {
+            header.removeAttribute('data-header-hidden');
+          }
+
+          lastScrollY = currentScrollY;
           ticking = false;
         });
       }
 
       window.addEventListener('scroll', onScroll, { passive: true });
-
-      // Set initial state
-      onScroll();
+      requestAnimationFrame(onScroll);
     });
   }
 
-  initScrollWatcher();
-  document.addEventListener('astro:page-load', initScrollWatcher);
-  document.addEventListener('astro:after-swap', initScrollWatcher);
+  initScrollDriven();
+  document.addEventListener('astro:page-load', initScrollDriven);
+  document.addEventListener('astro:after-swap', initScrollDriven);
 </script>
 
 <style is:global>
   .mobile-menu-blur {
     opacity: 0.3;
     filter: blur(4px);
-    transition: opacity 200ms, filter 200ms;
+    transition:
+      opacity 200ms,
+      filter 200ms;
   }
 
-  /* ===== Floating header: scroll state ===== */
-  [data-header-shape="floating"][data-scrolled] {
+  [data-header-shape='floating'] {
+    transition-property:
+      translate, background, border-color, box-shadow, width, max-width, border-radius, margin-top;
+    transition-duration: 300ms;
+    transition-timing-function: ease;
+  }
+
+  [data-header-shape='floating'][data-header-hidden] {
+    translate: -50% calc(-100% - 1.5rem) !important;
+  }
+
+  [data-header-shape='floating'][data-scrolled] {
     background: color-mix(in oklch, var(--color-background) 92%, transparent);
     backdrop-filter: blur(24px);
     border-color: var(--color-border);
-    box-shadow: 0 4px 20px -6px rgba(0, 0, 0, 0.1);
+    box-shadow:
+      0 8px 32px -8px rgba(0, 0, 0, 0.14),
+      0 2px 8px -2px rgba(0, 0, 0, 0.08);
   }
 
-  /* ===== Floating header: color flip (invert → normal on scroll) ===== */
+  [data-header-shape='floating'] .hdr-inner {
+    max-width: 72rem;
+    margin-left: auto;
+    margin-right: auto;
+    transition: box-shadow 300ms;
+  }
 
-  /* Text elements: on-invert → foreground */
-  [data-header-shape="floating"][data-header-color-scheme="invert"] .hdr-invert-text {
+  [data-header-shape='floating'][data-header-color-scheme='invert'] .hdr-invert-text {
     color: var(--color-on-invert);
     transition: color 300ms;
   }
-  [data-header-shape="floating"][data-header-color-scheme="invert"][data-scrolled] .hdr-invert-text {
+
+  [data-header-shape='floating'][data-header-color-scheme='invert'][data-scrolled]
+    .hdr-invert-text {
     color: var(--color-foreground);
   }
 
-  /* Logo text: on-invert → brand-500 */
-  [data-header-shape="floating"][data-header-color-scheme="invert"] .hdr-logo-text {
-    color: var(--color-on-invert);
-    transition: color 300ms;
-  }
-  [data-header-shape="floating"][data-header-color-scheme="invert"][data-scrolled] .hdr-logo-text {
-    color: var(--color-brand-500);
-  }
-
-  /* Non-invert floating: use normal colors */
-  [data-header-shape="floating"][data-header-color-scheme="default"] .hdr-logo-text {
-    color: var(--color-brand-500);
-  }
-  [data-header-shape="floating"][data-header-color-scheme="default"] .hdr-invert-text {
+  [data-header-shape='floating'][data-header-color-scheme='default'] .hdr-invert-text {
     color: var(--color-foreground-muted);
     transition: color 300ms;
   }
-  [data-header-shape="floating"][data-header-color-scheme="default"] .hdr-invert-text:hover {
+
+  [data-header-shape='floating'][data-header-color-scheme='default'] .hdr-invert-text:hover {
     color: var(--color-foreground);
   }
 
-  /* ===== Floating nav link underline indicators ===== */
-  [data-header-shape="floating"] .nav-link::after {
+  [data-header-shape='floating'][data-header-color-scheme='invert'] .hdr-invert-cta {
+    background: white;
+    color: #111;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    transition:
+      background 300ms,
+      color 300ms,
+      border-color 300ms;
+  }
+
+  [data-header-shape='floating'][data-header-color-scheme='invert'][data-scrolled] .hdr-invert-cta {
+    background: var(--color-primary);
+    color: var(--color-primary-foreground);
+  }
+
+  [data-header-shape='floating'] .nav-link::after {
     content: '';
     position: absolute;
     bottom: 2px;
@@ -583,41 +689,116 @@ const buttonId = `${menuId}-button`;
     height: 2px;
     background: currentColor;
     border-radius: 1px;
-    transition: left 200ms, right 200ms;
+    transition:
+      left 200ms,
+      right 200ms;
   }
 
-  [data-header-shape="floating"] .nav-link:hover::after,
-  [data-header-shape="floating"] .nav-link.hdr-nav-active::after {
+  [data-header-shape='floating'] .nav-link:hover::after,
+  [data-header-shape='floating'] .nav-link.hdr-nav-active::after {
     left: 12px;
     right: 12px;
   }
 
-  /* ===== CTA: invert color flip ===== */
-  [data-header-shape="floating"][data-header-color-scheme="invert"] .hdr-invert-cta {
-    background: white;
-    color: #111;
-    border-color: transparent;
-    transition: background 300ms, color 300ms, border-color 300ms;
+  .mobile-menu-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
   }
-  [data-header-shape="floating"][data-header-color-scheme="invert"] .hdr-invert-cta:hover {
-    background: rgba(255, 255, 255, 0.9);
+
+  .mobile-menu-section + .mobile-menu-section {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid color-mix(in oklch, var(--color-border) 60%, transparent);
   }
-  [data-header-shape="floating"][data-header-color-scheme="invert"][data-scrolled] .hdr-invert-cta {
-    background: var(--color-primary);
-    color: var(--color-primary-foreground);
-    border-color: transparent;
+
+  .mobile-menu-label {
+    padding: 0.625rem 0.75rem 0.375rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-foreground-subtle);
   }
-  [data-header-shape="floating"][data-header-color-scheme="invert"][data-scrolled] .hdr-invert-cta:hover {
+
+  .mobile-menu-row {
+    color: var(--color-foreground-muted);
+  }
+
+  .mobile-menu-row-inactive:hover {
+    background-color: color-mix(in oklch, var(--color-secondary) 60%, transparent);
+    color: var(--color-foreground);
+  }
+
+  .mobile-menu-row-active {
+    background-color: color-mix(in oklch, var(--color-brand-500) 10%, transparent);
+    color: var(--color-brand-700);
+    font-weight: 600;
+  }
+
+  html.dark .mobile-menu-row-active {
+    background-color: color-mix(in oklch, var(--color-brand-400) 14%, transparent);
+    color: var(--color-brand-300);
+  }
+
+  .mobile-menu-tile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    border-radius: 0.625rem;
+    background-color: color-mix(in oklch, var(--color-secondary) 70%, transparent);
+    color: var(--color-foreground-muted);
+    transition:
+      background-color 200ms ease,
+      color 200ms ease;
+  }
+
+  .mobile-menu-row-inactive:hover .mobile-menu-tile {
+    background-color: var(--color-secondary);
+    color: var(--color-foreground);
+  }
+
+  .mobile-menu-row-active .mobile-menu-tile {
+    background-color: color-mix(in oklch, var(--color-brand-500) 18%, transparent);
+    color: var(--color-brand-700);
+  }
+
+  html.dark .mobile-menu-row-active .mobile-menu-tile {
+    background-color: color-mix(in oklch, var(--color-brand-400) 22%, transparent);
+    color: var(--color-brand-300);
+  }
+
+  .mobile-menu-chevron {
+    opacity: 0.4;
+    transition:
+      opacity 200ms ease,
+      transform 200ms ease;
+  }
+
+  .mobile-menu-row:hover .mobile-menu-chevron {
+    opacity: 0.8;
+    transform: translateX(2px);
+  }
+
+  .mobile-menu-row-active .mobile-menu-chevron {
     opacity: 0.9;
   }
 
-  /* ===== Reduced motion ===== */
+  .mobile-menu-cta-wrap {
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid color-mix(in oklch, var(--color-border) 60%, transparent);
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    [data-header-shape="floating"],
-    [data-header-shape="floating"] .hdr-invert-text,
-    [data-header-shape="floating"] .hdr-logo-text,
-    [data-header-shape="floating"] .hdr-invert-cta,
-    [data-header-shape="floating"] .nav-link::after {
+    [data-header-shape='floating'],
+    [data-header-shape='floating'] .hdr-inner,
+    [data-header-shape='floating'] .hdr-invert-text,
+    [data-header-shape='floating'] .hdr-invert-cta,
+    [data-header-shape='floating'] .nav-link::after {
       transition: none !important;
     }
   }

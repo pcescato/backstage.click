@@ -161,44 +161,44 @@ const buttonId = `${menuId}-button`;
         ))
     }
 
-    {
-      layout !== 'minimal' &&
-        (hasNavSlot ? (
-          <nav class="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
-            <slot name="nav" />
-          </nav>
-        ) : (
-          <nav class="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
-            {navItems.map(({ label, href }) => (
-              <a
-                href={href.startsWith('#') && !isLandingPage ? `/${href}` : href}
-                class={cn(
-                  'nav-link relative rounded-md px-3 py-2 text-sm',
-                  'transition-all duration-(--transition-fast)',
-                  isFloating && 'hdr-invert-text',
-                  isFloating
-                    ? isActive(href)
-                      ? 'hdr-nav-active font-semibold'
-                      : 'font-medium'
-                    : isActive(href)
-                      ? 'nav-link-active bg-secondary text-foreground font-semibold'
-                      : 'nav-link-inactive text-foreground-muted hover:bg-secondary/70 hover:text-foreground font-medium'
-                )}
-                aria-current={isActive(href) ? 'page' : undefined}
-              >
-                {label}
-              </a>
-            ))}
-          </nav>
-        ))
-    }
-
-    <div class="flex items-center gap-2 justify-self-end">
+    <div class="flex items-center gap-2 justify-self-end lg:col-start-3">
       {
         hasActionsSlot ? (
           <slot name="actions" />
         ) : (
           <>
+            {
+              layout !== 'minimal' &&
+                (hasNavSlot ? (
+                  <nav class="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
+                    <slot name="nav" />
+                  </nav>
+                ) : (
+                  <nav class="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
+                    {navItems.map(({ label, href }) => (
+                      <a
+                        href={href.startsWith('#') && !isLandingPage ? `/${href}` : href}
+                        class={cn(
+                          'nav-link relative rounded-md px-3 py-2 text-sm',
+                          'transition-all duration-(--transition-fast)',
+                          isFloating && 'hdr-invert-text',
+                          isFloating
+                            ? isActive(href)
+                              ? 'hdr-nav-active font-semibold'
+                              : 'font-medium'
+                            : isActive(href)
+                              ? 'nav-link-active bg-secondary text-foreground font-semibold'
+                              : 'nav-link-inactive text-foreground-muted hover:bg-secondary/70 hover:text-foreground font-medium'
+                        )}
+                        aria-current={isActive(href) ? 'page' : undefined}
+                      >
+                        {label}
+                      </a>
+                    ))}
+                  </nav>
+                ))
+            }
+
             <div class="hidden items-center gap-2 lg:flex">
               {actions.map((action) => (
                 <Button

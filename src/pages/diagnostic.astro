@@ -45,10 +45,10 @@ const diagnosticCards = [
 ] as const;
 
 const lighthouseMetrics = [
-  { label: 'Performance', value: '98/100', status: 'success' },
-  { label: 'Accessibilité', value: '95/100', status: 'success' },
+  { label: 'Performance', value: '96/100', status: 'success' },
+  { label: 'Accessibilité', value: '98/100', status: 'success' },
   { label: 'Bonnes pratiques', value: '100/100', status: 'success' },
-  { label: 'SEO', value: '61/100', status: 'warning' },
+  { label: 'SEO', value: '100/100', status: 'success' },
 ] as const;
 
 const stackMetrics = [
@@ -162,11 +162,6 @@ const stackMetrics = [
                   ))
                 }
               </div>
-
-              <p class="text-foreground-subtle mt-4 text-sm italic">
-                61/100 — indexation volontairement désactivée sur cette instance WordPress de
-                développement.
-              </p>
             </div>
 
             <div>

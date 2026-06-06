@@ -239,6 +239,13 @@ const stackMetrics = [
             <input type="text" name="website" tabindex="-1" autocomplete="off" />
           </div>
 
+          <input 
+            type="hidden" 
+            id="diag-source" 
+            name="source" 
+            value="" 
+          />
+
           <div id="diag-error" class="hidden text-sm text-destructive"></div>
 
           <Button type="submit" fullWidth id="diag-submit">
@@ -264,6 +271,28 @@ const stackMetrics = [
       if (form.dataset.formInit) return;
       form.dataset.formInit = 'true';
 
+      // Pré-remplissage depuis les paramètres URL
+      const params = new URLSearchParams(window.location.search);
+      
+      const siteParam = params.get('site');
+      const mailParam = params.get('mail');
+      const sourceParam = params.get('source');
+      
+      if (siteParam) {
+        const urlInput = document.getElementById('diag-url') as HTMLInputElement | null;
+        if (urlInput) urlInput.value = siteParam;
+      }
+      
+      if (mailParam) {
+        const emailInput = document.getElementById('diag-email') as HTMLInputElement | null;
+        if (emailInput) emailInput.value = mailParam;
+      }
+
+      if (sourceParam) {
+        const sourceInput = document.getElementById('diag-source') as HTMLInputElement | null;
+        if (sourceInput) sourceInput.value = sourceParam;
+      }
+
       const defaultLabel = 'Recevoir mon diagnostic →';
       const defaultSuccessMessage =
         success.textContent?.trim() ||
@@ -284,6 +313,7 @@ const stackMetrics = [
             email: String(formData.get('email') ?? ''),
             message: String(formData.get('message') ?? ''),
             website: String(formData.get('website') ?? ''),
+            source: String(formData.get('source') ?? params.get('source') ?? ''),
           };
 
           const response = await fetch('/api/scan_request.php', {

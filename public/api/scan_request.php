@@ -54,6 +54,15 @@ if (!empty($payload['website'])) {
 $urlSite = trim((string)($payload['url_site'] ?? ''));
 $email   = trim((string)($payload['email']    ?? ''));
 $message = trim((string)($payload['message']  ?? ''));
+$source  = trim((string)($payload['source']   ?? ''));
+
+// Sanitize source: max 64 chars, alphanumeric and base64 chars only
+if ($source !== '') {
+    $source = substr($source, 0, 64);
+    if (!preg_match('/^[A-Za-z0-9+\/=]+$/', $source)) {
+        $source = '';
+    }
+}
 
 $errors = [];
 
@@ -133,6 +142,7 @@ try {
                 url          VARCHAR(500) NOT NULL,
                 email        VARCHAR(255) NOT NULL,
                 message      TEXT NULL,
+                source       VARCHAR(64) NULL,
                 status       ENUM('pending','processing','done','error') DEFAULT 'pending',
                 created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
                 processed_at DATETIME NULL,
@@ -171,13 +181,14 @@ try {
 // ── Insertion dans la file ───────────────────────────────────────
 try {
     $stmt = $pdo->prepare("
-        INSERT INTO scan_queue (url, email, message)
-        VALUES (:url, :email, :message)
+        INSERT INTO scan_queue (url, email, message, source)
+        VALUES (:url, :email, :message, :source)
     ");
     $stmt->execute([
         ':url'     => $urlSite,
         ':email'   => $email,
         ':message' => $message !== '' ? $message : '',
+        ':source'  => $source !== '' ? $source : null,
     ]);
 } catch (PDOException $e) {
     http_response_code(500);

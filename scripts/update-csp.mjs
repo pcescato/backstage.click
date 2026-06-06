@@ -34,7 +34,7 @@ function loadEnvFile(filePath) {
       return;
     }
 
-    process.env[key] ??= value;
+    process.env[key] = (process.env[key] ?? value).replace(/\r/g, '');
   });
 }
 

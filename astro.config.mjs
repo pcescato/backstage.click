@@ -5,7 +5,7 @@ import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  site: process.env.SITE_URL || 'https://example.com',
+  site: 'https://backstage.click',
 
   env: {
     schema: {

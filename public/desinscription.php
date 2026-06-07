@@ -18,7 +18,7 @@ $showError = $isPostRequest
     ? (empty($postedEmail) || !filter_var($postedEmail, FILTER_VALIDATE_EMAIL) || !in_array($action, ['jamais', 'limite']))
     : ($email !== '' && !$isValidEmail);
 
-$logoUrl = 'https://backstage.click/backstage-logo.png';
+$logoUrl = 'https://backstage.click/backstage-logo.webp';
 
 if ($showThankYou && ($action === 'jamais' || $action === 'limite')) {
     try {
@@ -207,7 +207,7 @@ if ($showThankYou && ($action === 'jamais' || $action === 'limite')) {
             <div class="thank-you">
                 <p><?php echo htmlspecialchars($preferenceLabel, ENT_QUOTES, 'UTF-8'); ?></p>
             </div>
-            <p style="margin-top:24px;font-size:13px;color:#9ca3af;">
+            <p style="margin-top:24px;font-size:2rem;color:#9ca3af;">
                 <a href="https://backstage.click" 
                 style="color:#56bee4;text-decoration:none;font-weight:500;">
                     ← Retour à l'accueil

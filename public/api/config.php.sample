@@ -1,0 +1,29 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Configuration centralisée pour les endpoints API
+ * 
+ * IMPORTANT: Ne pas versionner config.php
+ * Copier ce fichier en config.php et le remplir avec les vraies valeurs
+ */
+
+// ── Configuration SMTP (pour contact.php) ────────────────────────────
+define('SMTP_HOST',       'smtp.example.com');
+define('SMTP_PORT',       465);
+define('SMTP_ENCRYPTION', 'ssl');           // 'ssl' ou 'tls'
+define('SMTP_USER',       'user@example.com');
+define('SMTP_PASS',       'votre_mot_de_passe_smtp');
+define('SMTP_FROM',       'noreply@example.com');
+define('SMTP_FROM_NAME',  'Nom du site');
+define('MAIL_TO',         'contact@example.com');
+
+// ── Configuration Base de données (pour scan_request.php) ───────────
+define('DB_HOST',  getenv('BACKSTAGE_DB_HOST') ?: 'localhost');
+define('DB_PORT',  (int)(getenv('BACKSTAGE_DB_PORT') ?: 3306));
+define('DB_NAME',  getenv('BACKSTAGE_DB_NAME') ?: 'backstage_scans');
+define('DB_USER',  getenv('BACKSTAGE_DB_USER') ?: 'backstage_user');
+define('DB_PASS',  getenv('BACKSTAGE_DB_PASS') ?: 'votre_mot_de_passe_db');
+
+// ── Configuration générale ───────────────────────────────────────────
+const ALLOWED_ORIGIN = 'https://backstage.click';

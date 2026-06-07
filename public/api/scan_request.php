@@ -7,12 +7,17 @@
 
 declare(strict_types=1);
 
-// ── Configuration BDD ────────────────────────────────────────────
-define('DB_HOST', getenv('BACKSTAGE_DB_HOST') ?: 'localhost');
-define('DB_PORT', (int)(getenv('BACKSTAGE_DB_PORT') ?: 3306));
-define('DB_NAME', getenv('BACKSTAGE_DB_NAME') ?: 'backstage_scans');
-define('DB_USER', getenv('BACKSTAGE_DB_USER') ?: 'backstage_scans');
-define('DB_PASS', getenv('BACKSTAGE_DB_PASS') ?: 'hxDpPfz5BTs2IYfD');
+// Charger la configuration centralisée
+$configPath = __DIR__ . '/config.php';
+if (!file_exists($configPath)) {
+    http_response_code(500);
+    header('Content-Type: application/json; charset=UTF-8');
+    die(json_encode([
+        'success' => false,
+        'message' => 'Fichier de configuration manquant. Veuillez copier config.php.sample en config.php.'
+    ]));
+}
+require $configPath;
 
 // ── Headers ──────────────────────────────────────────────────────
 header('Content-Type: application/json; charset=UTF-8');

@@ -1,16 +1,17 @@
 <?php
 declare(strict_types=1);
 
-define('SMTP_HOST',      'ssl0.ovh.net');
-define('SMTP_PORT',      465);
-define('SMTP_ENCRYPTION','ssl');
-define('SMTP_USER',      'pascal.cescato@backstage.click');
-define('SMTP_PASS',      'LE_MOT_DE_PASSE');
-define('SMTP_FROM',      'pascal.cescato@backstage.click');
-define('SMTP_FROM_NAME', 'Pascal CESCATO - Backstage');
-define('MAIL_TO',        'courriel@backstage.click');
+// Charger la configuration centralisée
+$configPath = __DIR__ . '/config.php';
+if (!file_exists($configPath)) {
+    http_response_code(500);
+    die(json_encode([
+        'success' => false,
+        'error' => 'Fichier de configuration manquant. Veuillez copier config.php.sample en config.php.'
+    ]));
+}
+require $configPath;
 
-const ALLOWED_ORIGIN = 'https://backstage.click';
 const RATE_LIMIT_WINDOW = 60;
 
 require __DIR__ . '/vendor/autoload.php';

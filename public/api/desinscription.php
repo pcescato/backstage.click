@@ -11,8 +11,12 @@ $postedEmail = isset($_POST['email']) ? trim((string) $_POST['email']) : '';
 $isValidEmail = $email !== '' && filter_var($email, FILTER_VALIDATE_EMAIL);
 $isPostRequest = $_SERVER['REQUEST_METHOD'] === 'POST';
 $showConfirmation = !$isPostRequest && $isValidEmail;
-$showThankYou = $isPostRequest && !empty($postedEmail) && !empty($action);
-$showError = (!$isValidEmail && ($email !== '' || $isPostRequest));
+$showThankYou = $isPostRequest 
+    && filter_var($postedEmail, FILTER_VALIDATE_EMAIL) 
+    && in_array($action, ['jamais', 'limite']);
+$showError = $isPostRequest 
+    ? (empty($postedEmail) || !filter_var($postedEmail, FILTER_VALIDATE_EMAIL) || !in_array($action, ['jamais', 'limite']))
+    : ($email !== '' && !$isValidEmail);
 
 $logoUrl = 'https://backstage.click/backstage-logo.png';
 
@@ -53,6 +57,7 @@ if ($showThankYou && ($action === 'jamais' || $action === 'limite')) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
     <title>Gestion des préférences email</title>
     <style>
         * {
@@ -62,7 +67,7 @@ if ($showThankYou && ($action === 'jamais' || $action === 'limite')) {
         }
         body {
             font-family: system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -71,11 +76,11 @@ if ($showThankYou && ($action === 'jamais' || $action === 'limite')) {
         }
         .card {
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
             max-width: 480px;
             width: 100%;
-            padding: 40px;
+            padding: 48px 40px;
             text-align: center;
         }
         .logo {
@@ -88,72 +93,88 @@ if ($showThankYou && ($action === 'jamais' || $action === 'limite')) {
             margin: 0 auto;
         }
         h1 {
-            font-size: 24px;
-            margin-bottom: 16px;
-            color: #111827;
+            font-size: 22px;
+            font-weight: 700;
+            color: #31556f;
+            margin-bottom: 8px;
         }
         .subtitle {
             font-size: 14px;
             color: #6b7280;
-            margin-bottom: 24px;
             line-height: 1.6;
+            margin-bottom: 24px;
         }
         .email-display {
-            background: #f3f4f6;
-            padding: 12px;
-            border-radius: 4px;
-            margin-bottom: 24px;
-            font-weight: 500;
-            color: #374151;
+            background: #f3f6f9;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 32px;
+            font-weight: 600;
+            color: #31556f;
+            text-align: center;
+            font-size: 15px;
             word-break: break-all;
         }
-        .button-group {
-            display: flex;
-            gap: 12px;
-            flex-direction: column;
-        }
         button {
-            padding: 12px 20px;
+            width: 100%;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
             border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
             cursor: pointer;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.2s;
+            margin-bottom: 12px;
         }
         button:hover {
-            opacity: 0.9;
+            opacity: 0.88;
         }
         .btn-never {
-            background-color: #ef4444;
+            background-color: #dc2626;
             color: white;
         }
         .btn-limited {
-            background-color: #10b981;
+            background-color: #16a34a;
             color: white;
         }
         .thank-you {
-            padding: 20px;
-            background: #f0fdf4;
-            border-left: 4px solid #10b981;
-            text-align: left;
-            margin-bottom: 16px;
-            border-radius: 4px;
+            text-align: center;
         }
-        .thank-you p {
+        .thank-you-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: #56bee4;
+            color: white;
+            font-size: 28px;
+            margin: 0 auto 16px;
+        }
+        .thank-you-message {
             color: #374151;
+            font-size: 15px;
             line-height: 1.6;
         }
         .error {
-            padding: 20px;
-            background: #fef2f2;
-            border-left: 4px solid #ef4444;
-            text-align: left;
-            margin-bottom: 16px;
-            border-radius: 4px;
+            text-align: center;
         }
-        .error p {
+        .error-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: #fecaca;
+            color: #dc2626;
+            font-size: 28px;
+            margin: 0 auto 16px;
+        }
+        .error-message {
             color: #374151;
+            font-size: 15px;
             line-height: 1.6;
         }
         form {
@@ -174,7 +195,8 @@ if ($showThankYou && ($action === 'jamais' || $action === 'limite')) {
         
         <?php if ($showError): ?>
             <div class="error">
-                <p>Lien invalide.</p>
+                <div class="error-icon">✕</div>
+                <div class="error-message">Lien invalide</div>
             </div>
         <?php elseif ($showThankYou): ?>
             <?php
@@ -185,6 +207,12 @@ if ($showThankYou && ($action === 'jamais' || $action === 'limite')) {
             <div class="thank-you">
                 <p><?php echo htmlspecialchars($preferenceLabel, ENT_QUOTES, 'UTF-8'); ?></p>
             </div>
+            <p style="margin-top:24px;font-size:13px;color:#9ca3af;">
+                <a href="https://backstage.click" 
+                style="color:#56bee4;text-decoration:none;font-weight:500;">
+                    ← Retour à l'accueil
+                </a>
+            </p>
         <?php elseif ($showConfirmation): ?>
             <p class="subtitle">
                 Vous avez demandé à ne plus être contacté par Pascal Cescato - Backstage.<br>

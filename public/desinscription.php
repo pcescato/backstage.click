@@ -87,7 +87,7 @@ if ($showThankYou && ($action === 'jamais' || $action === 'limite')) {
             margin-bottom: 24px;
         }
         .logo img {
-            width: 80px;
+            width: 300px;
             height: auto;
             display: block;
             margin: 0 auto;

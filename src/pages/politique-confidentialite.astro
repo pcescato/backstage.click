@@ -5,7 +5,7 @@ import Footer from '@/components/layout/Footer.astro';
 import { footerNavItems, legalLinks } from '@/config/nav.config';
 ---
 
-<Layout title="Politique de confidentialité — Backstage">
+<BaseLayout title="Politique de confidentialité — Backstage">
   <main class="prose max-w-3xl mx-auto px-6 py-16">
     <h1>Politique de confidentialité</h1>
 
@@ -74,4 +74,6 @@ import { footerNavItems, legalLinks } from '@/config/nav.config';
       Chaque email commercial envoyé depuis ce domaine contient un lien de désabonnement. Vous pouvez à tout moment modifier votre préférence via ce lien ou en nous contactant directement.
     </p>
   </main>
-</Layout>
+  <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
+</BaseLayout>
+

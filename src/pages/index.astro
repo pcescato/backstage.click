@@ -8,6 +8,7 @@ import Button from '@/components/ui/form/Button/Button.astro';
 import Input from '@/components/ui/form/Input/Input.astro';
 import Tabs from '@/components/ui/overlay/Tabs/Tabs.astro';
 import Textarea from '@/components/ui/form/Textarea/Textarea.astro';
+import Checkbox from '@/components/ui/form/Checkbox/Checkbox.astro';
 import { footerNavItems, legalLinks } from '@/config/nav.config';
 ---
 
@@ -360,6 +361,12 @@ import { footerNavItems, legalLinks } from '@/config/nav.config';
                   <div class="hidden" aria-hidden="true">
                     <input type="text" name="honeypot" tabindex="-1" autocomplete="off" />
                   </div>
+
+                  <Checkbox id="index-rgpd" name="rgpd_consent" required>
+                    <span slot="label" class="text-sm font-medium text-foreground">
+                      J'accepte la <a href="/politique-confidentialite" target="_blank" rel="noopener noreferrer" class="text-primary underline hover:text-primary/80 transition-colors">politique de confidentialité</a> *
+                    </span>
+                  </Checkbox>
 
                   <div id="form-message" class="hidden text-sm"></div>
 

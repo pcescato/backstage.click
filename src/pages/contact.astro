@@ -4,6 +4,7 @@ import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import Badge from '@/components/ui/data-display/Badge/Badge.astro';
 import Button from '@/components/ui/form/Button/Button.astro';
+import Checkbox from '@/components/ui/form/Checkbox/Checkbox.astro';
 import Tabs from '@/components/ui/overlay/Tabs/Tabs.astro';
 import { Hero } from '@/components/hero';
 import { footerNavItems, legalLinks } from '@/config/nav.config';
@@ -114,6 +115,12 @@ import { footerNavItems, legalLinks } from '@/config/nav.config';
                   <input type="text" name="website" tabindex="-1" autocomplete="off" />
                 </div>
 
+                <Checkbox id="contact-rgpd" name="rgpd_consent" required>
+                  <span slot="label" class="text-sm font-medium text-foreground">
+                    J'accepte la <a href="/politique-confidentialite" target="_blank" rel="noopener noreferrer" class="text-primary underline hover:text-primary/80 transition-colors">politique de confidentialité</a> *
+                  </span>
+                </Checkbox>
+
                 <div id="contact-error" class="hidden text-sm text-destructive"></div>
 
                 <Button type="submit" fullWidth id="contact-submit">
@@ -190,6 +197,7 @@ import { footerNavItems, legalLinks } from '@/config/nav.config';
             sujet: String(formData.get('sujet') ?? ''),
             message: String(formData.get('message') ?? ''),
             website: String(formData.get('website') ?? ''),
+            rgpd_consent: formData.get('rgpd_consent') === 'on',
           };
 
           const response = await fetch('/api/contact.php', {

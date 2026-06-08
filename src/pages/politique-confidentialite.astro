@@ -9,15 +9,18 @@ import { footerNavItems, legalLinks } from '@/config/nav.config';
 
   <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
 
-  <main class="prose max-w-3xl mx-auto px-6 py-16">
-    <h1>Politique de confidentialité</h1>
+  <div class="min-h-screen pt-24">
+    <section class="bg-background py-16">
+      <div class="mx-auto max-w-3xl px-6">
+        <h1 class="font-display text-foreground text-4xl font-bold tracking-tight md:text-5xl">
+          Mentions légales
+        </h1>
 
-    <p class="text-sm text-gray-500">Dernière mise à jour : juin 2026</p>
-
-    <h2>1. Responsable du traitement</h2>
+        <div class="text-foreground-muted mt-12 space-y-10 leading-relaxed">
+          <section class="space-y-4">
     <p>
-      Pascal Cescato — Backstage<br>
-      Villeneuve-sur-Lot, France<br>
+      Pascal Cescato — Backstage<br />
+      Villeneuve-sur-Lot, France<br />
       <a href="mailto:pascal.cescato@backstage.click">pascal.cescato@backstage.click</a>
     </p>
 
@@ -76,7 +79,13 @@ import { footerNavItems, legalLinks } from '@/config/nav.config';
     <p>
       Chaque email commercial envoyé depuis ce domaine contient un lien de désabonnement. Vous pouvez à tout moment modifier votre préférence via ce lien ou en nous contactant directement.
     </p>
-  </main>
+  </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </div>
+
   <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
 </BaseLayout>
 

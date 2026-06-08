@@ -69,13 +69,15 @@ const checkboxId = id || generateId('checkbox');
 
     <!-- Label and description -->
     {
-      (label || description) && (
+      (label || description || Astro.slots.has('label')) && (
         <div class="grid gap-0.5 leading-tight">
-          {label && (
+          {Astro.slots.has('label') ? (
+            <slot name="label" />
+          ) : label ? (
             <span class="text-sm font-medium text-foreground">
               {label}
             </span>
-          )}
+          ) : null}
           {description && (
             <span
               id={`${checkboxId}-description`}

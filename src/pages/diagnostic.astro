@@ -7,10 +7,10 @@ import Card from '@/components/ui/data-display/Card/Card.astro';
 import Button from '@/components/ui/form/Button/Button.astro';
 import Input from '@/components/ui/form/Input/Input.astro';
 import Textarea from '@/components/ui/form/Textarea/Textarea.astro';
+import Checkbox from '@/components/ui/form/Checkbox/Checkbox.astro';
 import Icon from '@/components/ui/primitives/Icon/Icon.astro';
 import { Hero } from '@/components/hero';
 import { footerNavItems, legalLinks } from '@/config/nav.config';
-import { cn } from '@/lib/cn';
 
 const diagnosticCards = [
   {
@@ -247,56 +247,15 @@ const stackMetrics = [
             value="" 
           />
 
-          <div class="group">
-            <label
-              for="diag-rgpd"
-              class={cn(
-                'relative flex items-start gap-3 cursor-pointer',
-                'select-none'
-              )}
-            >
-              <div class="relative flex items-center justify-center mt-0.5">
-                <input
-                  type="checkbox"
-                  id="diag-rgpd"
-                  name="rgpd_consent"
-                  required
-                  class="peer sr-only"
-                />
-                <div
-                  class={cn(
-                    'h-[18px] w-[18px] shrink-0 rounded-[5px]',
-                    'border-2 border-border',
-                    'bg-background',
-                    'transition-all duration-150 ease-out',
-                    'peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background',
-                    'peer-checked:bg-foreground peer-checked:border-foreground',
-                    'group-hover:border-foreground-muted',
-                    'peer-checked:group-hover:bg-foreground/90'
-                  )}
-                />
-                <svg
-                  class={cn(
-                    'absolute h-3 w-3 text-background',
-                    'opacity-0 scale-50',
-                    'transition-all duration-150 ease-out',
-                    'peer-checked:opacity-100 peer-checked:scale-100'
-                  )}
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M2.5 6L5 8.5L9.5 3.5" />
-                </svg>
-              </div>
-              <span class="text-sm font-medium text-foreground">
-                J'accepte la <a href="/politique-confidentialite" target="_blank" rel="noopener noreferrer" class="text-primary underline hover:text-primary/80 transition-colors">politique de confidentialité</a> *
-              </span>
-            </label>
-          </div>
+          <Checkbox
+            id="diag-rgpd"
+            name="rgpd_consent"
+            required
+          >
+            <span slot="label" class="text-sm font-medium text-foreground">
+              J'accepte la <a href="/politique-confidentialite" target="_blank" rel="noopener noreferrer" class="text-primary underline hover:text-primary/80 transition-colors">politique de confidentialité</a> *
+            </span>
+          </Checkbox>
 
           <div id="diag-error" class="hidden text-sm text-destructive"></div>
 

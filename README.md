@@ -1,7 +1,7 @@
 # Backstage
 
 <p align="center">
-  <img src="src/assets/branding/logo-full.svg" alt="Backstage" width="370" />
+  <img src="public/backstage-logo.webp" alt="Backstage" width="370" />
 </p>
 
 <p align="center">
@@ -24,28 +24,3 @@
 **Propriétaire**: [Pascal CESCATO](https://github.com/pcescato)
 
 **Site**: [https://backstage.click](https://backstage.click)
-
----
-
-## Commandes
-
-| Commande | Description |
-|----------|-------------|
-| `pnpm dev` | Démarrer le serveur de développement |
-| `pnpm build` | Build pour la production |
-| `pnpm preview` | Prévisualiser le build production |
-| `pnpm check` | Vérificateur de type Astro |
-| `pnpm lint` | ESLint |
-| `pnpm format` | Prettier |
-| `pnpm test` | Vitest |
-| `pnpm test:e2e` | Playwright E2E |
-
----
-
-## License
-
-MIT — voir [LICENSE](LICENSE) pour les détails.
-
----
-
-**Basé sur**: [Velocity](https://github.com/southwellmedia/velocity) | [Astro](https://docs.astro.build) | [Tailwind v4](https://tailwindcss.com/docs)

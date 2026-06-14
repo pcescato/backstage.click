@@ -1,9 +1,11 @@
+# Backstage
+
 <p align="center">
-  <img src="src/assets/branding/logo-full.svg" alt="Velocity" width="370" />
+  <img src="src/assets/branding/logo-full.svg" alt="Backstage" width="370" />
 </p>
 
 <p align="center">
-  <strong>Astro 6 Boilerplate</strong> — A production-ready starter template built on Astro 6 and Tailwind CSS v4.
+  <strong>Backstage</strong> — Un site web construit avec <strong>Velocity</strong> et <strong>Astro</strong>
 </p>
 
 <p align="center">
@@ -15,51 +17,24 @@
 
 ---
 
-## What's Included
+## À propos
 
-- **57 components** across 7 categories — all accessible, typed, and dark-mode ready
-- **Design token system** with OKLCH colors, fluid typography, and two built-in themes
-- **SEO toolkit** — meta tags, JSON-LD, sitemap, robots.txt, and auto-generated OG images
-- **Content collections** — type-safe blog, pages, authors, and FAQs with Zod validation
-- **API routes** — contact form and newsletter endpoints with validation
-- **React islands** — optional client-side interactivity where needed
-- **i18n-ready** — locale-aware schemas; full i18n via the [CLI](https://github.com/southwellmedia/create-velocity-astro)
+**Backstage** est un site web moderne construit sur la base de **[Velocity](https://github.com/southwellmedia/velocity)** — un boilerplate Astro 6 production-ready avec Tailwind CSS v4.
+
+**Propriétaire**: [Pascal CESCATO](https://github.com/pcescato)
+
+**Site**: [https://backstage.click](https://backstage.click)
 
 ---
 
-## Quick Start
+## Commandes
 
-```bash
-# Clone
-git clone https://github.com/southwellmedia/velocity.git my-project
-cd my-project
-
-# Install (requires Node 22.12+)
-pnpm install
-
-# Configure
-cp .env.example .env
-
-# Develop
-pnpm dev
-```
-
-Or use the CLI for the full experience including i18n:
-
-```bash
-pnpm create velocity-astro my-project
-```
-
----
-
-## Commands
-
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start dev server |
-| `pnpm build` | Production build |
-| `pnpm preview` | Preview production build |
-| `pnpm check` | Astro type checker |
+| Commande | Description |
+|----------|-------------|
+| `pnpm dev` | Démarrer le serveur de développement |
+| `pnpm build` | Build pour la production |
+| `pnpm preview` | Prévisualiser le build production |
+| `pnpm check` | Vérificateur de type Astro |
 | `pnpm lint` | ESLint |
 | `pnpm format` | Prettier |
 | `pnpm test` | Vitest |
@@ -67,54 +42,10 @@ pnpm create velocity-astro my-project
 
 ---
 
-## Project Structure
-
-```
-src/
-  components/
-    ui/           # 31 UI components (form, data-display, feedback, overlay, etc.)
-    patterns/     # 7 composed patterns (ContactForm, SearchInput, StatCard, etc.)
-    layout/       # Header, Footer, ThemeToggle, Analytics
-    blog/         # ArticleHero, BlogCard, ShareButtons, RelatedPosts
-    landing/      # Credibility, TechStack, FeatureTabs, and more
-    seo/          # SEO, JsonLd, Breadcrumbs
-  content/        # Blog posts, authors, FAQs
-  config/         # Site and navigation config
-  styles/         # Global CSS and design tokens
-  pages/          # Routes, API endpoints, OG image generation
-```
-
----
-
-## Configuration
-
-**Site config**: `src/config/site.config.ts` — name, description, URL, social links
-
-**Design tokens**: `src/styles/tokens/` — colors, typography, spacing
-
-**Themes**: `src/styles/themes/` — switch between `default` and `midnight`, or create your own
-
-**Environment**: `.env` — see `.env.example` for available variables
-
-View all components at `/components` in development.
-
----
-
-## Contributing
-
-1. Fork the repo
-2. Create a feature branch
-3. Ensure `pnpm lint` and `pnpm check` pass
-4. Open a PR
-
----
-
 ## License
 
-MIT — see [LICENSE](LICENSE) for details.
+MIT — voir [LICENSE](LICENSE) pour les détails.
 
 ---
 
-**Links**: [Docs](https://github.com/southwellmedia/velocity-docs) | [CLI](https://github.com/southwellmedia/create-velocity-astro) | [Astro](https://docs.astro.build) | [Tailwind v4](https://tailwindcss.com/docs)
-
-**Built by [Southwell Media](https://southwellmedia.com)**
+**Basé sur**: [Velocity](https://github.com/southwellmedia/velocity) | [Astro](https://docs.astro.build) | [Tailwind v4](https://tailwindcss.com/docs)

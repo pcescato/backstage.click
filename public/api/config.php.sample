@@ -25,5 +25,12 @@ define('DB_NAME',  getenv('BACKSTAGE_DB_NAME') ?: 'backstage_scans');
 define('DB_USER',  getenv('BACKSTAGE_DB_USER') ?: 'backstage_user');
 define('DB_PASS',  getenv('BACKSTAGE_DB_PASS') ?: 'votre_mot_de_passe_db');
 
+// ── Configuration Base de données (pour track.php) ───────────────────
+define('TRACK_DB_HOST', getenv('TRACK_DB_HOST') ?: 'localhost');
+define('TRACK_DB_PORT', (int)(getenv('TRACK_DB_PORT') ?: 3306));
+define('TRACK_DB_NAME', getenv('TRACK_DB_NAME') ?: 'backstage_tracking');
+define('TRACK_DB_USER', getenv('TRACK_DB_USER') ?: 'tracking_user');
+define('TRACK_DB_PASS', getenv('TRACK_DB_PASS') ?: 'votre_mot_de_passe_db');
+
 // ── Configuration générale ───────────────────────────────────────────
 const ALLOWED_ORIGIN = 'https://backstage.click';

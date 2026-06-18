@@ -80,7 +80,7 @@
   /* -------------------------------------------------------------------------
      Inverted/Contrast Section — deep sky-dark
      ------------------------------------------------------------------------- */
-  --surface-invert: oklch(63% 0.045 222);
+  --surface-invert: oklch(45.9% 0.032 223);
   --surface-invert-secondary: oklch(67% 0.042 222);
   --surface-invert-tertiary: oklch(71% 0.038 222);
   --on-invert: var(--gray-0);

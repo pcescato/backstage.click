@@ -291,10 +291,10 @@ const stackMetrics = [
     }
 
     function initDiagnosticForm() {
-      const form = document.getElementById('diag-form') as HTMLFormElement | null;
-      const button = document.getElementById('diag-submit') as HTMLButtonElement | null;
-      const success = document.getElementById('diag-success') as HTMLDivElement | null;
-      const error = document.getElementById('diag-error') as HTMLDivElement | null;
+      const form = document.getElementById('diag-form');
+      const button = document.getElementById('diag-submit');
+      const success = document.getElementById('diag-success');
+      const error = document.getElementById('diag-error');
 
       if (!form || !button || !success || !error) return;
       if (form.dataset.formInit) return;
@@ -302,23 +302,23 @@ const stackMetrics = [
 
       // Pré-remplissage depuis les paramètres URL
       const params = new URLSearchParams(window.location.search);
-      
+
       const siteParam = params.get('site');
       const mailParam = params.get('mail');
       const sourceParam = params.get('source');
-      
+
       if (siteParam) {
-        const urlInput = document.getElementById('diag-url') as HTMLInputElement | null;
+        const urlInput = document.getElementById('diag-url');
         if (urlInput) urlInput.value = siteParam;
       }
-      
+
       if (mailParam) {
-        const emailInput = document.getElementById('diag-email') as HTMLInputElement | null;
+        const emailInput = document.getElementById('diag-email');
         if (emailInput) emailInput.value = mailParam;
       }
 
       if (sourceParam) {
-        const sourceInput = document.getElementById('diag-source') as HTMLInputElement | null;
+        const sourceInput = document.getElementById('diag-source');
         if (sourceInput) sourceInput.value = sourceParam;
       }
 

@@ -98,7 +98,7 @@ function buildCspHeader(hashes) {
     `script-src 'self'${hashSegment} https://cal.com`,
     'frame-src https://cal.com',
     "style-src 'self' 'unsafe-inline'",
-    "font-src 'self' data:",
+    "font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com",
     "img-src 'self' data: https:",
     "connect-src 'self' https://cal.com",
     "base-uri 'self'",

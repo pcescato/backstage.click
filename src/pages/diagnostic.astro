@@ -284,7 +284,6 @@ const stackMetrics = [
         trackingUrl.searchParams.set('site', site);
         trackingUrl.searchParams.set('mail', mail);
         trackingUrl.searchParams.set('source', source);
-        
         fetch(trackingUrl.toString()).catch(() => {
           // Silent failure - tracking should not affect UX
         });

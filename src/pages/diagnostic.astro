@@ -272,6 +272,25 @@ const stackMetrics = [
   </div>
 
   <script>
+    // Track diagnostic page visit
+    function trackDiagnosticVisit() {
+      const params = new URLSearchParams(window.location.search);
+      const site = params.get('site') || '';
+      const mail = params.get('mail') || '';
+      const source = params.get('source') || '';
+
+      if (site || mail) {
+        const trackingUrl = new URL('https://backstage.click/api/diagnostic-visit.php');
+        trackingUrl.searchParams.set('site', site);
+        trackingUrl.searchParams.set('mail', mail);
+        trackingUrl.searchParams.set('source', source);
+        
+        fetch(trackingUrl.toString()).catch(() => {
+          // Silent failure - tracking should not affect UX
+        });
+      }
+    }
+
     function initDiagnosticForm() {
       const form = document.getElementById('diag-form') as HTMLFormElement | null;
       const button = document.getElementById('diag-submit') as HTMLButtonElement | null;
@@ -364,8 +383,12 @@ const stackMetrics = [
       });
     }
 
+    trackDiagnosticVisit();
     initDiagnosticForm();
-    document.addEventListener('astro:after-swap', initDiagnosticForm);
+    document.addEventListener('astro:after-swap', () => {
+      trackDiagnosticVisit();
+      initDiagnosticForm();
+    });
   </script>
 
   <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />

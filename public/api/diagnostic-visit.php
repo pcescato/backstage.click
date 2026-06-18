@@ -29,12 +29,12 @@ try {
     // Connect to backstage_scans database
     $dsn = sprintf(
         'mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
-        DB_HOST,
-        DB_PORT,
-        DB_NAME
+        TRACK_DB_HOST,
+        TRACK_DB_PORT,
+        TRACK_DB_NAME
     );
     
-    $pdo = new PDO($dsn, DB_USER, DB_PASS);
+    $pdo = new PDO($dsn, TRACK_DB_USER, TRACK_DB_PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Insert diagnostic visit

@@ -5,7 +5,8 @@ declare(strict_types=1);
  * Diagnostic visit tracking endpoint
  * 
  * Receives GET requests with: site, mail, source
- * Logs diagnostic page visits to backstage_scans.diagnostic_visits
+ * Logs diagnostic page visits to gfc_prospects.diagnostic_visits
+ * and immediately updates diagnostic_clicked on prospection or prospects_web.
  * 
  * Returns JSON: {success: true|false}
  */
@@ -49,7 +50,81 @@ try {
         ':source' => $source !== '' ? $source : null,
         ':ip'     => $_SERVER['REMOTE_ADDR'] ?? null,
     ]);
-    
+
+    // Update diagnostic_clicked on the prospect table immediately.
+    // source is base64-encoded with prefix: 'of:<id>' (prospection)
+    // or 'web:<id>' (prospects_web). Legacy plain integer (no prefix)
+    // uses email as discriminant to avoid cross-table id collision.
+    if ($source !== '') {
+        $decoded = base64_decode($source, true);
+
+        if ($decoded !== false && trim($decoded) !== '') {
+            // $table is set from two controlled string values only — no SQL injection risk
+            if (str_starts_with($decoded, 'web:')) {
+                // Prefixed format — route directly to prospects_web
+                $table      = 'prospects_web';
+                $prospectId = (int) substr($decoded, 4);
+
+                if ($prospectId > 0) {
+                    $updateStmt = $pdo->prepare(
+                        "UPDATE {$table}
+                         SET diagnostic_clicked = 1,
+                             diagnostic_clicked_at = NOW()
+                         WHERE id = :id
+                         AND diagnostic_clicked = 0"
+                    );
+                    $updateStmt->execute([':id' => $prospectId]);
+                }
+
+            } elseif (str_starts_with($decoded, 'of:')) {
+                // Prefixed format — route directly to prospection
+                $table      = 'prospection';
+                $prospectId = (int) substr($decoded, 3);
+
+                if ($prospectId > 0) {
+                    $updateStmt = $pdo->prepare(
+                        "UPDATE {$table}
+                         SET diagnostic_clicked = 1,
+                             diagnostic_clicked_at = NOW()
+                         WHERE id = :id
+                         AND diagnostic_clicked = 0"
+                    );
+                    $updateStmt->execute([':id' => $prospectId]);
+                }
+
+            } else {
+                // Legacy plain-numeric format — use email as discriminant
+                // to avoid updating the wrong table when the same id
+                // exists in both prospection and prospects_web.
+                $prospectId = (int) $decoded;
+
+                if ($prospectId > 0 && $mail !== '') {
+                    $updateStmt = $pdo->prepare(
+                        'UPDATE prospection
+                         SET diagnostic_clicked = 1,
+                             diagnostic_clicked_at = NOW()
+                         WHERE id = :id
+                         AND email = :email
+                         AND diagnostic_clicked = 0'
+                    );
+                    $updateStmt->execute([':id' => $prospectId, ':email' => $mail]);
+
+                    if ($updateStmt->rowCount() === 0) {
+                        $updateStmt = $pdo->prepare(
+                            'UPDATE prospects_web
+                             SET diagnostic_clicked = 1,
+                                 diagnostic_clicked_at = NOW()
+                             WHERE id = :id
+                             AND email = :email
+                             AND diagnostic_clicked = 0'
+                        );
+                        $updateStmt->execute([':id' => $prospectId, ':email' => $mail]);
+                    }
+                }
+            }
+        }
+    }
+
     ob_end_clean();
     
     header('Content-Type: application/json; charset=utf-8');

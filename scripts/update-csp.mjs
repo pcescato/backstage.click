@@ -96,7 +96,7 @@ function buildCspHeader(hashes) {
   return [
     "default-src 'self'",
     `script-src 'self'${hashSegment} https://assets.calendly.com`,
-    'frame-src https://assets.calendly.com',
+    'frame-src https://assets.calendly.com https://calendly.com',
     "style-src 'self' 'unsafe-inline'",
     "font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com",
     "img-src 'self' data: https:",

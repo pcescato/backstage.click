@@ -23,14 +23,17 @@ $logoUrl = 'https://backstage.click/backstage-logo.webp';
 if ($showThankYou && ($action === 'jamais' || $action === 'limite')) {
     try {
         $pdo = new PDO(
-            'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',
-            DB_USER,
-            DB_PASS,
+            'mysql:host=' . TRACK_DB_HOST . ';dbname=' . TRACK_DB_NAME . ';charset=utf8mb4',
+            TRACK_DB_USER,
+            TRACK_DB_PASS,
             [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
         );
         
+        $pdo->beginTransaction();
+
         $ipAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
         
+        // 1. On logue la désinscription quoi qu'il arrive
         $stmt = $pdo->prepare(
             'INSERT INTO desinscription (email, preference, ip) 
              VALUES (:email, :preference, :ip) 
@@ -45,7 +48,22 @@ if ($showThankYou && ($action === 'jamais' || $action === 'limite')) {
             ':preference' => $action,
             ':ip' => $ipAddr
         ]);
+
+        // 2. Si et seulement si le choix est 'jamais', on nettoie les tables de prospection
+        if ($action === 'jamais') {
+            $stmtDeleteProspection = $pdo->prepare('DELETE FROM prospection WHERE email = :email');
+            $stmtDeleteProspection->execute([':email' => $postedEmail]);
+
+            $stmtDeleteProspectsWeb = $pdo->prepare('DELETE FROM prospects_web WHERE email = :email');
+            $stmtDeleteProspectsWeb->execute([':email' => $postedEmail]);
+        }
+
+        $pdo->commit();
+
     } catch (PDOException $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         error_log('Desinscription error: ' . $e->getMessage());
         $showError = true;
         $showThankYou = false;

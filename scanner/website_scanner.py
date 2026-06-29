@@ -488,9 +488,11 @@ class LighthouseScanner:
 
     def scan(self, url: str) -> Dict:
         url = self._clean(url)
-        params = {'url': url, 'strategy': 'mobile', 'category': [
-            'performance', 'accessibility', 'best-practices', 'seo'
-        ]}
+        # Le paramètre 'category' est délibérément absent : l'API PageSpeed v5
+        # renvoie alors TOUTES les catégories par défaut (performance,
+        # accessibility, best-practices, seo), ce qui évite les erreurs de
+        # sérialisation HTTP 400 liées au formatage de ce paramètre.
+        params = {'url': url, 'strategy': 'mobile'}
         if self.api_key:
             params['key'] = self.api_key
         try:
@@ -674,9 +676,10 @@ class WebsiteScanner:
         try:
             print("   🔍 Fetching page...")
             response = requests.get(
-                url, timeout=10,
-                headers={'User-Agent': 'Mozilla/5.0 (Scanner/2.0)'},
-                verify=False
+                url, timeout=15,
+                headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36'},
+                verify=True,
+                allow_redirects=True
             )
             scan_data['https_enabled'] = url.startswith('https://')
 

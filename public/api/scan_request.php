@@ -104,7 +104,7 @@ $ip      = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'unkno
 $ip      = explode(',', $ip)[0];
 $rlKey   = 'scan_rl_' . md5($ip);
 $rlFile  = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $rlKey;
-$rlLimit = 600; // 10 minutes
+$rlLimit = 300; // 5 minutes
 
 if (file_exists($rlFile)) {
     $lastTime = (int)file_get_contents($rlFile);
@@ -205,5 +205,5 @@ try {
 http_response_code(200);
 echo json_encode([
     'success' => true,
-    'message' => 'Votre demande a bien été enregistrée. Le rapport vous sera envoyé par email sous 30 minutes.',
+    'message' => 'Votre demande a bien été enregistrée. Le rapport vous sera envoyé par email sous 10 minutes.',
 ]);

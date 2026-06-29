@@ -202,7 +202,7 @@ const stackMetrics = [
             Demander votre diagnostic gratuit
           </h2>
           <p class="text-foreground-muted mt-6 text-lg leading-relaxed">
-            Indiquez l'URL de votre site et votre email. Le rapport vous est envoyé sous 30
+            Indiquez l'URL de votre site et votre email. Le rapport vous est envoyé sous 10
             minutes.
           </p>
         </div>
@@ -247,25 +247,19 @@ const stackMetrics = [
             value="" 
           />
 
-          <Checkbox
-            id="diag-rgpd"
-            name="rgpd_consent"
-            required
-          >
-            <span slot="label" class="text-sm font-medium text-foreground">
-              J'accepte la <a href="/politique-confidentialite" target="_blank" rel="noopener noreferrer" class="text-primary underline hover:text-primary/80 transition-colors">politique de confidentialité</a> *
-            </span>
-          </Checkbox>
-
           <div id="diag-error" class="hidden text-sm text-destructive"></div>
 
           <Button type="submit" fullWidth id="diag-submit">
             Recevoir mon diagnostic →
           </Button>
+
+          <p class="text-foreground-muted text-center text-sm">
+            En soumettant ce formulaire, vous acceptez notre <a href="/politique-confidentialite" target="_blank" rel="noopener noreferrer" class="text-primary underline hover:text-primary/80 transition-colors">politique de confidentialité</a>.
+          </p>
         </form>
 
         <div id="diag-success" class="hidden text-center text-sm text-success">
-          Votre demande a bien été enregistrée. Le rapport arrive sous 30 minutes.
+          Votre demande a bien été enregistrée. Le rapport arrive sous 10 minutes.
         </div>
       </div>
     </section>
@@ -343,7 +337,6 @@ const stackMetrics = [
             message: String(formData.get('message') ?? ''),
             website: String(formData.get('website') ?? ''),
             source: String(formData.get('source') ?? params.get('source') ?? ''),
-            rgpd_consent: formData.get('rgpd_consent') === 'on',
           };
 
           const response = await fetch('/api/scan_request.php', {

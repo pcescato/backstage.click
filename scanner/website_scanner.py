@@ -19,7 +19,7 @@ from bs4 import BeautifulSoup
 import warnings
 warnings.filterwarnings('ignore')
 
-from db_config import BACKSTAGE_DB
+from db_config import BACKSTAGE_DB, LIGHTHOUSE_API_KEY
 
 
 def _get_conn(config: dict) -> pymysql.connections.Connection:
@@ -644,11 +644,27 @@ class OpportunityScorer:
         return score, priority, quick_wins
 
 
+BROWSER_HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
+    'Accept-Encoding': 'gzip, deflate, br, zstd',
+    'sec-ch-ua': '"Google Chrome";v="149", "Chromium";v="149", "Not)A;Brand";v="24"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'document',
+    'sec-fetch-mode': 'navigate',
+    'sec-fetch-site': 'none',
+    'sec-fetch-user': '?1',
+    'upgrade-insecure-requests': '1',
+}
+
+
 class WebsiteScanner:
 
     def __init__(self, db_config: dict = None, lighthouse_api_key: str = None):
         self.db = DatabaseManager(db_config)
-        self.lighthouse = LighthouseScanner(lighthouse_api_key)
+        self.lighthouse = LighthouseScanner(lighthouse_api_key or LIGHTHOUSE_API_KEY)
 
     def scan_url(self, url: str, contact_email: str = None) -> Dict:
         print(f"\n{'='*60}")
@@ -669,12 +685,23 @@ class WebsiteScanner:
 
         try:
             print("   🔍 Fetching page...")
-            response = requests.get(
+            session = requests.Session()
+            session.headers.update(BROWSER_HEADERS)
+            response = session.get(
                 url, timeout=15,
-                headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36'},
                 verify=True,
                 allow_redirects=True
             )
+
+            # Diagnostic : statut + headers reçus + détection page défi Cloudflare
+            print(f"   → HTTP {response.status_code}")
+            print(f"   → Headers reçus: {list(response.headers.keys())}")
+            if response.status_code in (403, 503):
+                snippet = response.text[:500].lower()
+                if 'cloudflare' in snippet or 'cf-browser' in snippet or 'attention required' in snippet:
+                    print("   ⚠️  Cloudflare challenge detected — security headers may be unavailable")
+                else:
+                    print(f"   ⚠️  Réponse bloquée ({response.status_code}). Extrait: {response.text[:300]}")
             scan_data['https_enabled'] = url.startswith('https://')
 
             print("   🔍 Checking WordPress...")

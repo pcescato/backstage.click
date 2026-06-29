@@ -448,24 +448,18 @@ class SecurityHeadersAnalyzer:
             'referrer-policy':           'has_referrer_policy',
             'permissions-policy':        'has_permissions_policy',
         }
-
-        earned = 0
-        max_possible = 0
         for header, cfg in SecurityHeadersAnalyzer.REQUIRED_HEADERS.items():
-            max_possible += cfg['grade_weight']
-            if header in headers:
-                earned += cfg['grade_weight']
-                result[flag_map[header]] = True
-
-        # Score normalisé sur 100 selon l'importance réelle de chaque en-tête.
-        result['score'] = round((earned / max_possible) * 100) if max_possible else 0
-        result['grade'] = SecurityHeadersAnalyzer._grade_from_score(result['score'])
+            header_lower = header.lower()
+            if header_lower in headers:
+                result['score'] += cfg['grade_weight']
+                result[flag_map[header_lower]] = True
 
         if 'server' in headers and re.search(r'[0-9]+\.[0-9]+', headers['server']):
             result['exposes_server_version'] = True
         if 'x-powered-by' in headers:
             result['exposes_php_version'] = True
 
+        result['grade'] = SecurityHeadersAnalyzer._grade_from_score(result['score'])
         return result
 
 

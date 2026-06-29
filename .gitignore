@@ -14,6 +14,7 @@ dist/
 scanner/venv/
 scanner/logs/
 scanner/db_config.py
+scanner/__pycache__/
 
 **/db_config.py
 *db_config*

@@ -402,18 +402,37 @@ class PHPDetector:
 
 class SecurityHeadersAnalyzer:
 
+    # Clés normalisées en minuscules : les serveurs/proxies (Cloudflare, nginx,
+    # etc.) renvoient souvent les en-têtes en minuscules. On compare donc
+    # toujours après `.lower()`.
     REQUIRED_HEADERS = {
-        'Strict-Transport-Security': {'grade_weight': 50, 'purpose': 'Force HTTPS'},
-        'Content-Security-Policy':   {'grade_weight': 30, 'purpose': 'Prevent XSS'},
-        'X-Frame-Options':           {'grade_weight': 10, 'purpose': 'Prevent clickjacking'},
-        'X-Content-Type-Options':    {'grade_weight': 5,  'purpose': 'Prevent MIME sniffing'},
-        'Referrer-Policy':           {'grade_weight': 3,  'purpose': 'Control referrer'},
-        'Permissions-Policy':        {'grade_weight': 2,  'purpose': 'Disable unused features'},
+        'strict-transport-security': {'grade_weight': 50, 'purpose': 'Force HTTPS'},
+        'content-security-policy':   {'grade_weight': 30, 'purpose': 'Prevent XSS'},
+        'x-frame-options':           {'grade_weight': 10, 'purpose': 'Prevent clickjacking'},
+        'x-content-type-options':    {'grade_weight': 5,  'purpose': 'Prevent MIME sniffing'},
+        'referrer-policy':           {'grade_weight': 3,  'purpose': 'Control referrer'},
+        'permissions-policy':        {'grade_weight': 2,  'purpose': 'Disable unused features'},
     }
+
+    # Barème souple 0-100 : la note est calculée en pourcentage du score maximal
+    # possible (somme des poids = 100), ce qui évite qu'un seul header manquant
+    # fasse chuter la note à F.
+    @staticmethod
+    def _grade_from_score(score: int) -> str:
+        if score >= 97:   return 'A+'
+        if score >= 85:   return 'A'
+        if score >= 70:   return 'B'
+        if score >= 50:   return 'C'
+        if score >= 30:   return 'D'
+        if score >= 10:   return 'E'
+        return 'F'
 
     @staticmethod
     def analyze(response) -> Dict:
-        headers = response.headers
+        # Normalisation : on construit un dictionnaire toutes-clés-en-minuscules
+        # pour rendre la détection insensible à la casse renvoyée par le serveur.
+        headers = {k.lower(): v for k, v in response.headers.items()}
+
         result = {
             'grade': 'F', 'score': 0,
             'has_hsts': False, 'has_csp': False,
@@ -422,30 +441,30 @@ class SecurityHeadersAnalyzer:
             'exposes_server_version': False, 'exposes_php_version': False,
         }
         flag_map = {
-            'Strict-Transport-Security': 'has_hsts',
-            'Content-Security-Policy':   'has_csp',
-            'X-Frame-Options':           'has_x_frame_options',
-            'X-Content-Type-Options':    'has_x_content_type_options',
-            'Referrer-Policy':           'has_referrer_policy',
-            'Permissions-Policy':        'has_permissions_policy',
+            'strict-transport-security': 'has_hsts',
+            'content-security-policy':   'has_csp',
+            'x-frame-options':           'has_x_frame_options',
+            'x-content-type-options':    'has_x_content_type_options',
+            'referrer-policy':           'has_referrer_policy',
+            'permissions-policy':        'has_permissions_policy',
         }
+
+        earned = 0
+        max_possible = 0
         for header, cfg in SecurityHeadersAnalyzer.REQUIRED_HEADERS.items():
+            max_possible += cfg['grade_weight']
             if header in headers:
-                result['score'] += cfg['grade_weight']
+                earned += cfg['grade_weight']
                 result[flag_map[header]] = True
 
-        if 'Server' in headers and re.search(r'[0-9]+\.[0-9]+', headers['Server']):
-            result['exposes_server_version'] = True
-        if 'X-Powered-By' in headers:
-            result['exposes_php_version'] = True
+        # Score normalisé sur 100 selon l'importance réelle de chaque en-tête.
+        result['score'] = round((earned / max_possible) * 100) if max_possible else 0
+        result['grade'] = SecurityHeadersAnalyzer._grade_from_score(result['score'])
 
-        score = result['score']
-        if score >= 90:   result['grade'] = 'A+'
-        elif score >= 75: result['grade'] = 'A'
-        elif score >= 50: result['grade'] = 'B'
-        elif score >= 30: result['grade'] = 'C'
-        elif score >= 10: result['grade'] = 'D'
-        else:             result['grade'] = 'F'
+        if 'server' in headers and re.search(r'[0-9]+\.[0-9]+', headers['server']):
+            result['exposes_server_version'] = True
+        if 'x-powered-by' in headers:
+            result['exposes_php_version'] = True
 
         return result
 
@@ -454,10 +473,21 @@ class LighthouseScanner:
 
     API_URL = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed"
 
+    @staticmethod
+    def _clean(value: str) -> str:
+        """Nettoie la clé d'API et l'URL : retire espaces cachés et guillemets
+        résiduels issus du fichier .env (ex: KEY="abc" ou KEY='abc')."""
+        if value is None:
+            return ''
+        value = str(value).strip()
+        value = value.replace('"', '').replace("'", "")
+        return value.strip()
+
     def __init__(self, api_key: str = None):
-        self.api_key = api_key
+        self.api_key = self._clean(api_key) if api_key else None
 
     def scan(self, url: str) -> Dict:
+        url = self._clean(url)
         params = {'url': url, 'strategy': 'mobile', 'category': [
             'performance', 'accessibility', 'best-practices', 'seo'
         ]}
@@ -466,7 +496,25 @@ class LighthouseScanner:
         try:
             r = requests.get(self.API_URL, params=params, timeout=60)
             if r.status_code != 200:
-                return {'success': False, 'error': f"HTTP {r.status_code}"}
+                # Log explicite du corps brut renvoyé par Google pour comprendre
+                # la raison exacte du rejet (restriction IP, URL invalide, clé
+                # refusée, quota dépassé, etc.) avant de remonter l'erreur.
+                error_body = ''
+                try:
+                    error_body = r.text
+                except Exception:
+                    error_body = '<corps illisible>'
+                print(
+                    f"   ❌ Lighthouse API error HTTP {r.status_code}\n"
+                    f"   URL demandée   : {url}\n"
+                    f"   Réponse Google : {error_body}"
+                )
+                return {
+                    'success': False,
+                    'error': f"HTTP {r.status_code}",
+                    'status_code': r.status_code,
+                    'response_body': error_body,
+                }
             data = r.json()
             cats   = data.get('lighthouseResult', {}).get('categories', {})
             audits = data.get('lighthouseResult', {}).get('audits', {})

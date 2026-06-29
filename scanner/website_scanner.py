@@ -19,7 +19,13 @@ from bs4 import BeautifulSoup
 import warnings
 warnings.filterwarnings('ignore')
 
-from db_config import BACKSTAGE_DB, LIGHTHOUSE_API_KEY
+from db_config import BACKSTAGE_DB
+
+# LIGHTHOUSE_API_KEY est optionnelle : db_config.py peut ne pas l'exporter.
+try:
+    from db_config import LIGHTHOUSE_API_KEY
+except ImportError:
+    LIGHTHOUSE_API_KEY = None
 
 
 def _get_conn(config: dict) -> pymysql.connections.Connection:
@@ -659,12 +665,60 @@ BROWSER_HEADERS = {
     'upgrade-insecure-requests': '1',
 }
 
+# Chromium binaire Playwright (installation existante)
+PLAYWRIGHT_CHROME_PATH = '/root/.cache/ms-playwright/chromium-1194/chrome-linux/chrome'
+
+
+class PlaywrightResponse:
+    """Wrapper pour rendre une réponse Playwright compatible avec
+    requests.Response (utilisé par SecurityHeadersAnalyzer et PHPDetector)."""
+
+    def __init__(self, status: int, headers: dict, text: str):
+        self.status_code = status
+        self.headers = headers
+        self.text = text
+
 
 class WebsiteScanner:
 
     def __init__(self, db_config: dict = None, lighthouse_api_key: str = None):
         self.db = DatabaseManager(db_config)
         self.lighthouse = LighthouseScanner(lighthouse_api_key or LIGHTHOUSE_API_KEY)
+
+    @staticmethod
+    def _fetch_with_playwright(url: str) -> Optional[PlaywrightResponse]:
+        """Récupère une page via navigateur headless Playwright.
+        Contourne Cloudflare et les protections anti-bot.
+        Retourne None si Playwright n'est pas disponible ou échoue."""
+        try:
+            from playwright.sync_api import sync_playwright
+        except ImportError:
+            return None
+        try:
+            with sync_playwright() as p:
+                browser = p.chromium.launch(executable_path=PLAYWRIGHT_CHROME_PATH)
+                page = browser.new_page()
+                page.set_extra_http_headers(BROWSER_HEADERS)
+                resp = page.goto(url, wait_until='networkidle', timeout=30000)
+                if resp is None:
+                    browser.close()
+                    return None
+                status = resp.status
+                # resp.headers renvoie déjà les clés en minuscules
+                headers = dict(resp.headers)
+                content = page.content()
+                browser.close()
+                return PlaywrightResponse(status, headers, content)
+        except Exception as e:
+            print(f"   ⚠️  Playwright error: {e}")
+            return None
+
+    @staticmethod
+    def _fetch_with_requests(url: str) -> requests.Response:
+        """Récupère une page via requests (fallback si Playwright indisponible)."""
+        session = requests.Session()
+        session.headers.update(BROWSER_HEADERS)
+        return session.get(url, timeout=15, verify=True, allow_redirects=True)
 
     def scan_url(self, url: str, contact_email: str = None) -> Dict:
         print(f"\n{'='*60}")
@@ -684,16 +738,13 @@ class WebsiteScanner:
         }
 
         try:
-            print("   🔍 Fetching page...")
-            session = requests.Session()
-            session.headers.update(BROWSER_HEADERS)
-            response = session.get(
-                url, timeout=15,
-                verify=True,
-                allow_redirects=True
-            )
+            print("   🔍 Fetching page (Playwright)...")
+            response = self._fetch_with_playwright(url)
 
-            # Diagnostic : statut + headers reçus + détection page défi Cloudflare
+            if response is None:
+                print("   ⚠️  Playwright indisponible, fallback requests...")
+                response = self._fetch_with_requests(url)
+
             print(f"   → HTTP {response.status_code}")
             print(f"   → Headers reçus: {list(response.headers.keys())}")
             if response.status_code in (403, 503):

@@ -720,7 +720,9 @@ class WebsiteScanner:
                     launch_kwargs['executable_path'] = chrome_path
                 browser = p.chromium.launch(**launch_kwargs)
                 page = browser.new_page()
-                page.set_extra_http_headers(BROWSER_HEADERS)
+                # Ne PAS injecter BROWSER_HEADERS : le headless shell gère
+                # lui-même ses headers, et forcer Accept-Encoding/sec-fetch-*
+                # fait que Cloudflare sert l'origin sans ses headers de sécurité.
                 resp = page.goto(url, wait_until='networkidle', timeout=30000)
                 if resp is None:
                     browser.close()

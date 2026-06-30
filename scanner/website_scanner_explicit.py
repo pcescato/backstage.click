@@ -108,7 +108,10 @@ def fetch_with_playwright(url):
             print("[OK] Navigateur lancé")
 
             page = browser.new_page()
-            page.set_extra_http_headers(BROWSER_HEADERS)
+            # Ne PAS injecter BROWSER_HEADERS via set_extra_http_headers :
+            # le headless shell gère lui-même ses headers (Accept-Encoding, etc.)
+            # et forcer certains headers fait que Cloudflare sert l'origin
+            # au lieu de ses headers de sécurité.
             print(f"[...] Navigation vers {url}")
 
             resp = page.goto(url, wait_until='networkidle', timeout=30000)

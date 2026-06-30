@@ -51,11 +51,23 @@ BROWSER_HEADERS = {
     'upgrade-insecure-requests': '1',
 }
 
-# Chemins possibles pour le binaire Chromium de Playwright
-PLAYWRIGHT_CANDIDATES = [
-    '/root/.cache/ms-playwright/chromium-1194/chrome-linux/chrome',
-    os.path.expanduser('~/.cache/ms-playwright/chromium-1194/chrome-linux/chrome'),
-]
+# Détection dynamique du binaire Chromium (plusieurs versions possibles)
+def _find_chromium():
+    """Cherche le binaire chromium parmi toutes les versions installées."""
+    base = os.path.expanduser('~/.cache/ms-playwright')
+    if not os.path.isdir(base):
+        return None
+    # Chercher chromium-XXXX/chrome-linux/chrome
+    for entry in sorted(os.listdir(base), reverse=True):
+        if entry.startswith('chromium-'):
+            path = os.path.join(base, entry, 'chrome-linux', 'chrome')
+            if os.path.isfile(path) and os.access(path, os.X_OK):
+                return path
+        if entry.startswith('chromium_headless_shell-'):
+            path = os.path.join(base, entry, 'chrome-headless-shell-linux64', 'chrome-headless-shell')
+            if os.path.isfile(path) and os.access(path, os.X_OK):
+                return path
+    return None
 
 
 class PlaywrightResponse:
@@ -79,16 +91,13 @@ def fetch_with_playwright(url):
         return None
 
     # Trouver le binaire Chromium
-    chrome_path = None
-    for p in PLAYWRIGHT_CANDIDATES:
-        if os.path.isfile(p) and os.access(p, os.X_OK):
-            chrome_path = p
-            break
+    chrome_path = _find_chromium()
 
     if chrome_path:
         print(f"[OK] Chromium trouvé : {chrome_path}")
     else:
-        print("[WARN] Chromium non trouvé dans les chemins connus, lancement auto...")
+        print("[WARN] Chromium non trouvé → lancez: playwright install chromium")
+        print("       Tentative de lancement auto...")
 
     try:
         with sync_playwright() as p:
@@ -245,13 +254,21 @@ def run_lighthouse(url, api_key):
     clean_url = url.strip().replace('"', '').replace("'", "").strip()
 
     print(f"  URL    : {clean_url}")
-    print(f"  API Key: {'(présente, ' + key[:6] + '...)' if key else '(AUCUNE)'}")
+    print(f"  API Key: {'(présente, ' + key[:6] + '...' + key[-4:] + ')' if key else '(AUCUNE — quota public limité)'}")
 
-    params = {'url': clean_url, 'strategy': 'mobile'}
+    # Le paramètre category doit être répété pour chaque catégorie
+    # (l'API ne renvoie QUE performance par défaut si absent)
+    params = {
+        'url': clean_url,
+        'strategy': 'mobile',
+        'category': ['performance', 'accessibility', 'best-practices', 'seo'],
+    }
     if key:
         params['key'] = key
 
-    print(f"  Params envoyés : {json.dumps(params, indent=2)[:300]}")
+    # Affichage params sans exposer la clé complète
+    safe_params = {k: (v if k != 'key' else key[:6] + '...' + key[-4:] if key else '(aucune)') for k, v in params.items()}
+    print(f"  Params envoyés : {json.dumps(safe_params, indent=2)[:400]}")
 
     try:
         print("\n  [...] Appel API Google...")

@@ -488,11 +488,14 @@ class LighthouseScanner:
 
     def scan(self, url: str) -> Dict:
         url = self._clean(url)
-        # Le paramètre 'category' est délibérément absent : l'API PageSpeed v5
-        # renvoie alors TOUTES les catégories par défaut (performance,
-        # accessibility, best-practices, seo), ce qui évite les erreurs de
-        # sérialisation HTTP 400 liées au formatage de ce paramètre.
-        params = {'url': url, 'strategy': 'mobile'}
+        # Le paramètre 'category' est une liste : requests l'envoie comme
+        # paramètres répétés (category=performance&category=accessibility&...).
+        # Sans ce paramètre, l'API ne renvoie QUE performance par défaut.
+        params = {
+            'url': url,
+            'strategy': 'mobile',
+            'category': ['performance', 'accessibility', 'best-practices', 'seo'],
+        }
         if self.api_key:
             params['key'] = self.api_key
         try:
@@ -665,8 +668,23 @@ BROWSER_HEADERS = {
     'upgrade-insecure-requests': '1',
 }
 
-# Chromium binaire Playwright (installation existante)
-PLAYWRIGHT_CHROME_PATH = '/root/.cache/ms-playwright/chromium-1194/chrome-linux/chrome'
+# Chromium binaire Playwright (détection dynamique)
+def _find_chromium():
+    """Cherche le binaire chromium parmi toutes les versions installées."""
+    import os
+    base = os.path.expanduser('~/.cache/ms-playwright')
+    if not os.path.isdir(base):
+        return None
+    for entry in sorted(os.listdir(base), reverse=True):
+        if entry.startswith('chromium-'):
+            path = os.path.join(base, entry, 'chrome-linux', 'chrome')
+            if os.path.isfile(path) and os.access(path, os.X_OK):
+                return path
+        if entry.startswith('chromium_headless_shell-'):
+            path = os.path.join(base, entry, 'chrome-headless-shell-linux64', 'chrome-headless-shell')
+            if os.path.isfile(path) and os.access(path, os.X_OK):
+                return path
+    return None
 
 
 class PlaywrightResponse:
@@ -696,7 +714,11 @@ class WebsiteScanner:
             return None
         try:
             with sync_playwright() as p:
-                browser = p.chromium.launch(executable_path=PLAYWRIGHT_CHROME_PATH)
+                chrome_path = _find_chromium()
+                launch_kwargs = {}
+                if chrome_path:
+                    launch_kwargs['executable_path'] = chrome_path
+                browser = p.chromium.launch(**launch_kwargs)
                 page = browser.new_page()
                 page.set_extra_http_headers(BROWSER_HEADERS)
                 resp = page.goto(url, wait_until='networkidle', timeout=30000)

@@ -25,8 +25,11 @@ from website_scanner import WebsiteScanner
 from report_generator import ReportGenerator
 from scan_mailer import ScanMailer
 
-# ── Clé API Lighthouse (optionnelle — améliore les quotas) ──────
-LIGHTHOUSE_API_KEY = None  # Remplacer par votre clé si disponible
+# ── Clé API Lighthouse ─────────────────────────────────────────
+try:
+    from db_config import LIGHTHOUSE_API_KEY as _LH_KEY
+except ImportError:
+    _LH_KEY = None
 
 # ── Logging ─────────────────────────────────────────────────────
 LOG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs', 'worker.log')
@@ -100,7 +103,7 @@ def process_job(job: dict):
     conn = _get_conn()
     mark_processing(conn, queue_id)
 
-    scanner   = WebsiteScanner(lighthouse_api_key=LIGHTHOUSE_API_KEY)
+    scanner   = WebsiteScanner(lighthouse_api_key=_LH_KEY)
     reporter  = ReportGenerator()
     mailer    = ScanMailer()
 

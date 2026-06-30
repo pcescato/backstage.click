@@ -484,7 +484,15 @@ class LighthouseScanner:
         return value.strip()
 
     def __init__(self, api_key: str = None):
-        self.api_key = self._clean(api_key) if api_key else None
+        if api_key:
+            api_key = self._clean(api_key)
+        self.api_key = api_key
+        # Debug : afficher la clé utilisée (masquée) pour traçage
+        if self.api_key:
+            masked = self.api_key[:6] + '...' + self.api_key[-4:]
+            print(f"   [Lighthouse] Clé API utilisée : {masked}")
+        else:
+            print("   [Lighthouse] Aucune clé API — quota public limité")
 
     def scan(self, url: str) -> Dict:
         url = self._clean(url)

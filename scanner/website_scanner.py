@@ -687,6 +687,46 @@ def _find_chromium():
     return None
 
 
+def _resolve_public_dns(domain: str) -> Optional[str]:
+    """Résout un domaine via DNS-over-HTTPS (Cloudflare 1.1.1.1) pour
+    contourner les /etc/hosts ou DNS locaux qui pointent vers 127.0.0.1
+    sur le serveur de production."""
+    try:
+        r = requests.get(
+            f'https://1.1.1.1/dns-query?name={domain}&type=A',
+            headers={'Accept': 'application/dns-json'},
+            timeout=5,
+        )
+        if r.status_code == 200:
+            for answer in r.json().get('Answer', []):
+                if answer.get('type') == 1:  # A record
+                    return answer['data']
+    except Exception:
+        pass
+    return None
+
+
+def _build_chrome_dns_args(url: str) -> list:
+    """Si le domaine résout vers localhost sur le serveur, force Chrome à
+    utiliser l'IP publique (Cloudflare) via --host-resolver-rules."""
+    import socket
+    import urllib.parse
+    domain = urllib.parse.urlparse(url).hostname
+    if not domain:
+        return []
+    try:
+        system_ip = socket.gethostbyname(domain)
+    except Exception:
+        return []
+    if system_ip not in ('127.0.0.1', '::1'):
+        return []
+    public_ip = _resolve_public_dns(domain)
+    if public_ip:
+        print(f"   [DNS] {domain} → localhost détecté, redirection forcée vers {public_ip}")
+        return [f'--host-resolver-rules=MAP {domain} {public_ip}']
+    return []
+
+
 class PlaywrightResponse:
     """Wrapper pour rendre une réponse Playwright compatible avec
     requests.Response (utilisé par SecurityHeadersAnalyzer et PHPDetector)."""
@@ -718,6 +758,9 @@ class WebsiteScanner:
                 launch_kwargs = {}
                 if chrome_path:
                     launch_kwargs['executable_path'] = chrome_path
+                dns_args = _build_chrome_dns_args(url)
+                if dns_args:
+                    launch_kwargs['args'] = dns_args
                 browser = p.chromium.launch(**launch_kwargs)
                 page = browser.new_page()
                 # Ne PAS injecter BROWSER_HEADERS : le headless shell gère

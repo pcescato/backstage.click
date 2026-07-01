@@ -28,6 +28,21 @@ except ImportError:
     LIGHTHOUSE_API_KEY = None
 
 
+_FRENCH_MONTHS = {
+    '01': 'janvier', '02': 'février', '03': 'mars', '04': 'avril',
+    '05': 'mai', '06': 'juin', '07': 'juillet', '08': 'août',
+    '09': 'septembre', '10': 'octobre', '11': 'novembre', '12': 'décembre',
+}
+
+def _format_french_date(date_str: str) -> str:
+    """Convertit '2020-10-31' en 'octobre 2020'."""
+    try:
+        parts = date_str.split('-')
+        return f"{_FRENCH_MONTHS.get(parts[1], parts[1])} {parts[0]}"
+    except Exception:
+        return date_str
+
+
 def _get_conn(config: dict) -> pymysql.connections.Connection:
     return pymysql.connect(
         **config,
@@ -601,7 +616,7 @@ class OpportunityScorer:
                 quick_wins.append({
                     'type': 'php_upgrade',
                     'title': 'Mise à jour PHP (CRITIQUE)',
-                    'description': f"Mettre à jour PHP {scan_data.get('php_version')} → 8.2+ (EOL depuis {scan_data['php_eol_date']})",
+                    'description': f"Mettre à jour PHP {scan_data.get('php_version')} → 8.2+ (Fin du support technique officiel en {_format_french_date(scan_data['php_eol_date'])})",
                     'estimated_gain': '+25-35% performances, correctifs sécurité',
                     'estimated_effort': '2-4 heures',
                     'estimated_cost_min': 400,
@@ -929,7 +944,7 @@ class WebsiteScanner:
                 vulns.append({
                     'type': 'php_eol', 'severity': 'critical',
                     'title': 'PHP en fin de vie',
-                    'description': f"PHP {scan_data['php_version']} EOL depuis {scan_data['php_eol_date']}.",
+                    'description': f"PHP {scan_data['php_version']} EOL depuis {_format_french_date(scan_data['php_eol_date'])}.",
                     'recommendation': f"Mettre à jour vers PHP {scan_data.get('php_latest_version', '8.2')}.",
                 })
         if scan_data.get('wp_version_outdated'):

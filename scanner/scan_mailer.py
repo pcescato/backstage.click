@@ -102,7 +102,7 @@ class ScanMailer:
         else:
             lines += ["🎉 FÉLICITATIONS : Votre site possède une configuration saine et sécurisée."]
 
-        lines += [f"", f"Réserver un créneau de 30 min : https://cal.com/pascal-cescato/30min", f"", f"Pascal Cescato"]
+        lines += [f"", f"Réserver un créneau de 15 min : https://calendly.com/backstage-click/15min", f"", f"Pascal Cescato"]
         return "\n".join(lines)
 
     def _format_report_html(
@@ -157,7 +157,7 @@ class ScanMailer:
                   <p style="color:#FCEBEB;margin:0 0 20px;font-size:13px;line-height:1.4;">
                     Ces points critiques doivent être corrigés rapidement. Si vous n'avez pas de support technique actif sous la main, je peux sécuriser votre plateforme et planifier sa mise à niveau.
                   </p>
-                  <a href="https://cal.com/pascal-cescato/30min" style="display:inline-block;background:#fff;color:#A32D2D;font-weight:600;font-size:14px;padding:12px 28px;border-radius:99px;text-decoration:none;white-space:nowrap">
+                  <a href="https://calendly.com/backstage-click/15min" style="display:inline-block;background:#fff;color:#A32D2D;font-weight:600;font-size:14px;padding:12px 28px;border-radius:99px;text-decoration:none;white-space:nowrap">
                     Planifier une intervention rapide →
                   </a>
                 </td>
@@ -175,7 +175,7 @@ class ScanMailer:
                   <p style="color:#e0f0f8;margin:0 0 20px;font-size:13px;line-height:1.4;">
                     C'est excellent pour la pérennité de votre vitrine. Gardez ce diagnostic de côté si vous prévoyez de futures optimisations de performances.
                   </p>
-                  <a href="https://cal.com/pascal-cescato/30min" style="display:inline-block;background:#fff;color:#1a3a4a;font-weight:500;font-size:14px;padding:12px 28px;border-radius:99px;text-decoration:none;white-space:nowrap">
+                  <a href="https://calendly.com/backstage-click/15min" style="display:inline-block;background:#fff;color:#1a3a4a;font-weight:500;font-size:14px;padding:12px 28px;border-radius:99px;text-decoration:none;white-space:nowrap">
                     Échanger 15 minutes →
                   </a>
                 </td>

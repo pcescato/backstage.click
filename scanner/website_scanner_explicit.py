@@ -14,6 +14,7 @@ import os
 import re
 import json
 import requests
+from datetime import datetime
 
 # ── Chargement de db_config (pour LIGHTHOUSE_API_KEY) ───────────
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -287,6 +288,61 @@ def analyze_security_headers(headers_lower):
     return grade, score, pourcentage
 
 
+# ── Étape 3.5 : PHP Detailed Analysis ────────────────────────────
+def analyze_php_version(headers_lower):
+    """Détecte et analyse la version PHP"""
+    print("\n" + "=" * 60)
+    print("ÉTAPE 3.5 — PHP Version Analysis")
+    print("=" * 60)
+    
+    PHP_EOL_DATES = {
+        '5.6': '2018-12-31', '7.0': '2019-01-10', '7.1': '2019-12-01',
+        '7.2': '2020-11-30', '7.3': '2021-12-06', '7.4': '2022-11-28',
+        '8.0': '2023-11-26', '8.1': '2025-11-25', '8.2': '2026-12-08',
+        '8.3': '2027-12-31', '8.4': '2027-12-31',
+    }
+    PHP_LATEST_VERSION = "8.3"
+    
+    php_version = None
+    
+    # Cherche PHP dans X-Powered-By ou Server header
+    for header_name in ('x-powered-by', 'server'):
+        if header_name in headers_lower:
+            m = re.search(r'PHP/([0-9.]+)', headers_lower[header_name])
+            if m:
+                php_version = m.group(1)
+                print(f"  ✓ Détecté dans {header_name.upper()}: PHP/{php_version}")
+                break
+    
+    if not php_version:
+        print("  ✗ PHP non détecté via les headers")
+        return
+    
+    # Analyse version
+    parts = php_version.split('.')
+    if len(parts) >= 2:
+        major_minor = f"{parts[0]}.{parts[1]}"
+        
+        # EOL date
+        eol_date = PHP_EOL_DATES.get(major_minor)
+        if eol_date:
+            is_eol = datetime.now() > datetime.strptime(eol_date, '%Y-%m-%d')
+            status = "🔴 EOL" if is_eol else "🟡 Approaching EOL"
+            print(f"  {status}: {major_minor} atteint EOL le {eol_date}")
+        
+        # Outdated check
+        try:
+            cur = tuple(map(int, parts[:2]))
+            lat = tuple(map(int, PHP_LATEST_VERSION.split('.')))
+            is_outdated = cur < lat
+            if is_outdated:
+                print(f"  ⚠️  Outdated: PHP/{php_version} → PHP/{PHP_LATEST_VERSION}")
+            else:
+                print(f"  ✓ Current: PHP/{php_version} (Latest: {PHP_LATEST_VERSION})")
+        except Exception:
+            pass
+
+
 # ── Étape 4 : Lighthouse ─────────────────────────────────────────
 LIGHTHOUSE_API_URL = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed"
 
@@ -400,6 +456,9 @@ def main():
 
     # Étape 3 : Security
     grade, score, pct = analyze_security_headers(headers_lower)
+
+    # Étape 3.5 : PHP Analysis
+    analyze_php_version(headers_lower)
 
     # Étape 4 : Lighthouse
     run_lighthouse(url, LIGHTHOUSE_API_KEY)

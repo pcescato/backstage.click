@@ -381,10 +381,13 @@ class PHPDetector:
             'eol_date': None, 'latest_version': PHPDetector.PHP_LATEST_VERSION,
             'major_version': None, 'is_eol': False,
         }
-        headers = response.headers
-        for header_name in ('X-Powered-By', 'Server'):
-            if header_name in headers:
-                m = re.search(r'PHP/([0-9.]+)', headers[header_name])
+        # Normalisation : Playwright renvoie les clés en minuscules, requests renvoie la casse standard
+        # On normalise tout en minuscules pour la recherche
+        headers_lower = {k.lower(): v for k, v in response.headers.items()}
+        
+        for header_name in ('x-powered-by', 'server'):
+            if header_name in headers_lower:
+                m = re.search(r'PHP/([0-9.]+)', headers_lower[header_name])
                 if m:
                     result['version'] = m.group(1)
                     break

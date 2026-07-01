@@ -45,11 +45,8 @@ class ScanMailer:
 
         try:
             context = ssl.create_default_context()
-            with smtplib.SMTP_SSL(
-                SMTP_CONFIG['host'],
-                SMTP_CONFIG['port'],
-                context=context
-            ) as server:
+            with smtplib.SMTP(SMTP_CONFIG['host'], SMTP_CONFIG['port']) as server:
+                server.starttls(context=context)
                 server.login(SMTP_CONFIG['user'], SMTP_CONFIG['password'])
                 server.sendmail(
                     SMTP_CONFIG['from'],

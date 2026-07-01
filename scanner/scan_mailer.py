@@ -244,6 +244,12 @@ class ScanMailer:
           <td align="right" style="font-weight:500;font-size:13px;padding:6px 0">{scan.get('wp_version', 'None')}{' ⚠️ (obsolète)' if scan.get('wp_version_outdated') else ''}</td>
         </tr>
       </table>
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom:0.5px solid #e5e7eb">
+        <tr>
+          <td style="color:#5F5E5A;font-size:13px;padding:6px 0">PHP</td>
+          <td align="right" style="font-weight:500;font-size:13px;padding:6px 0">{scan.get('php_version', 'Non détecté')}{' ⚠️ (obsolète)' if scan.get('php_version_outdated') else ''}</td>
+        </tr>
+      </table>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td style="color:#5F5E5A;font-size:13px;padding:6px 0">Serveur</td>

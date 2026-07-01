@@ -437,7 +437,8 @@ class SecurityHeadersAnalyzer:
     def analyze(response) -> Dict:
         # Normalisation : on construit un dictionnaire toutes-clés-en-minuscules
         # pour rendre la détection insensible à la casse renvoyée par le serveur.
-        headers = {k.lower(): v for k, v in response.headers.items()}
+        headers = response.headers
+        h = {k.lower(): v for k, v in headers.items()}
 
         result = {
             'grade': 'F', 'score': 0,
@@ -456,13 +457,13 @@ class SecurityHeadersAnalyzer:
         }
         for header, cfg in SecurityHeadersAnalyzer.REQUIRED_HEADERS.items():
             header_lower = header.lower()
-            if header_lower in headers:
+            if header_lower in h:
                 result['score'] += cfg['grade_weight']
                 result[flag_map[header_lower]] = True
 
-        if 'server' in headers and re.search(r'[0-9]+\.[0-9]+', headers['server']):
+        if 'server' in h and re.search(r'[0-9]+\.[0-9]+', h['server'], re.IGNORECASE):
             result['exposes_server_version'] = True
-        if 'x-powered-by' in headers:
+        if 'x-powered-by' in h:
             result['exposes_php_version'] = True
 
         result['grade'] = SecurityHeadersAnalyzer._grade_from_score(result['score'])

@@ -615,7 +615,7 @@ class OpportunityScorer:
                 score += 35
                 quick_wins.append({
                     'type': 'php_upgrade',
-                    'title': 'Mise à jour PHP (CRITIQUE)',
+                    'title': 'Mise à jour PHP [CRITIQUE]',
                     'description': f"Mettre à jour PHP {scan_data.get('php_version')} → 8.2+ (Fin du support technique officiel en {_format_french_date(scan_data['php_eol_date'])})",
                     'estimated_gain': '+25-35% performances, correctifs sécurité',
                     'estimated_effort': '2-4 heures',
@@ -942,35 +942,35 @@ class WebsiteScanner:
         if scan_data.get('php_eol_date'):
             if datetime.now() > datetime.strptime(scan_data['php_eol_date'], '%Y-%m-%d'):
                 vulns.append({
-                    'type': 'php_eol', 'severity': 'critical',
+                    'type': 'php_eol', 'severity': 'critique',
                     'title': 'PHP en fin de vie',
-                    'description': f"PHP {scan_data['php_version']} EOL depuis {_format_french_date(scan_data['php_eol_date'])}.",
+                    'description': f"PHP {scan_data['php_version']} : fin du support technique officiel depuis {_format_french_date(scan_data['php_eol_date'])}.",
                     'recommendation': f"Mettre à jour vers PHP {scan_data.get('php_latest_version', '8.2')}.",
                 })
         if scan_data.get('wp_version_outdated'):
             vulns.append({
-                'type': 'wordpress_outdated', 'severity': 'high',
+                'type': 'wordpress_outdated', 'severity': 'critique',
                 'title': 'WordPress obsolète',
                 'description': f"WP {scan_data['wp_version']} < {scan_data.get('wp_latest_version')}",
                 'recommendation': 'Mettre à jour WordPress.',
             })
         if not scan_data.get('has_hsts') and scan_data.get('https_enabled'):
             vulns.append({
-                'type': 'missing_hsts', 'severity': 'medium',
+                'type': 'missing_hsts', 'severity': 'important',
                 'title': 'Header HSTS manquant',
                 'description': 'Vulnérable aux attaques de downgrade.',
                 'recommendation': 'Ajouter le header HSTS avec max-age=31536000',
             })
         if not scan_data.get('has_csp'):
             vulns.append({
-                'type': 'missing_csp', 'severity': 'medium',
+                'type': 'missing_csp', 'severity': 'important',
                 'title': 'Content-Security-Policy manquant',
                 'description': 'Pas de CSP, vulnérable aux XSS.',
                 'recommendation': 'Implémenter un header CSP.',
             })
         if scan_data.get('exposes_php_version') or scan_data.get('exposes_server_version'):
             vulns.append({
-                'type': 'information_disclosure', 'severity': 'low',
+                'type': 'information_disclosure', 'severity': 'moyen',
                 'title': 'Exposition des versions logicielles',
                 'description': 'Les headers exposent les versions du serveur.',
                 'recommendation': 'Masquer les versions dans Server/X-Powered-By.',

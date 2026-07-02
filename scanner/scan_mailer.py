@@ -102,7 +102,7 @@ class ScanMailer:
         else:
             lines += ["🎉 FÉLICITATIONS : Votre site possède une configuration saine et sécurisée."]
 
-        lines += [f"", f"Réserver un créneau de 15 min : https://calendly.com/backstage-click/15min", f"", f"Pascal Cescato"]
+        lines += [f"", f"Réserver un créneau de 30 min : https://calendly.com/backstage-click/15min", f"", f"Pascal Cescato"]
         return "\n".join(lines)
 
     def _format_report_html(

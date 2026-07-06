@@ -310,11 +310,11 @@ const stackMetrics = [
       const getSeverityClasses = (severity) => {
         switch (severity) {
           case 'red':
-            return { card: 'bg-destructive/10 border-destructive/30', point: 'bg-destructive' };
+            return { card: 'bg-[var(--destructive)]/10 border-[var(--destructive)]/30', point: 'bg-[var(--destructive)]' };
           case 'orange':
             return { card: 'bg-[var(--warning)]/10 border-[var(--warning)]/30', point: 'bg-[var(--warning)]' };
           case 'green':
-            return { card: 'bg-success/10 border-success/30', point: 'bg-success' };
+            return { card: 'bg-[var(--success)]/10 border-[var(--success)]/30', point: 'bg-[var(--success)]' };
           default:
             return { card: 'bg-[var(--warning)]/10 border-[var(--warning)]/30', point: 'bg-[var(--warning)]' };
         }

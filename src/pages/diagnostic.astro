@@ -284,6 +284,118 @@ const stackMetrics = [
       }
     }
 
+    function renderInstantDiagnostic() {
+      const params = new URLSearchParams(window.location.search);
+      const dataParam = params.get('data');
+
+      if (!dataParam) return;
+
+      let diagnosticData;
+      try {
+        const decodedJson = atob(dataParam);
+        diagnosticData = JSON.parse(decodedJson);
+      } catch {
+        // Silent failure - invalid data should not affect UX
+        return;
+      }
+
+      const { domain, performance_score, security_grade, php_outdated, php_version, points } = diagnosticData;
+
+      if (!domain) return;
+
+      const demandeSection = document.getElementById('demande');
+      if (!demandeSection) return;
+
+      // Helper function to get performance icon
+      const getPerformanceIcon = (score) => {
+        if (score >= 70) {
+          return { icon: 'check', color: 'text-success' };
+        } else if (score >= 50) {
+          return { icon: 'alert-triangle', color: 'text-[var(--warning)]' };
+        } else {
+          return { icon: 'alert-triangle', color: 'text-destructive' };
+        }
+      };
+
+      // Helper function to get security color
+      const getSecurityColor = (grade) => {
+        if (grade === 'A+' || grade === 'A') {
+          return 'text-success';
+        } else if (grade === 'B' || grade === 'C') {
+          return 'text-[var(--warning)]';
+        } else {
+          return 'text-destructive';
+        }
+      };
+
+      const perfIcon = getPerformanceIcon(performance_score);
+
+      const diagnosticHtml = `
+        <div class="bg-background border-t border-border py-20">
+          <div class="mx-auto max-w-2xl px-6">
+            <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+              Pré-diagnostic pour ${domain}
+            </h2>
+
+            <div class="mt-8 space-y-6">
+              <div class="border-border grid gap-4 md:grid-cols-2">
+                <div class="border-border flex items-center justify-between rounded-xl border bg-background px-4 py-3">
+                  <span class="text-foreground font-medium">Performance</span>
+                  <div class="flex items-center gap-3">
+                    <span class="text-foreground text-lg font-bold">${performance_score}/100</span>
+                    <span class="${perfIcon.color}" aria-label="Performance score">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="h-5 w-5" aria-hidden="true">
+                        ${perfIcon.icon === 'check' 
+                          ? '<path d="M382-240 154-468q-11-11-11-28t11-28q11-11 28-11t28 11l182 182 384-384q11-11 28-11t28 11q11 11 11 28T822-824L438-440q-12 12-28 12t-28-12Z"></path>'
+                          : '<path d="M60-120l60-204h684l60 204H60Zm60-264h684l-30-100H150l-30 100Zm30-160h624l-30-100H150l-30 100Zm0-160h624l-30-100H150l-30 100Z"></path>'}
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="border-border flex items-center justify-between rounded-xl border bg-background px-4 py-3">
+                  <span class="text-foreground font-medium">Sécurité</span>
+                  <div class="flex items-center gap-3">
+                    <span class="text-right text-sm font-medium text-foreground-muted md:text-base">
+                      ${security_grade}
+                    </span>
+                    <span class="${getSecurityColor(security_grade)}" aria-label="Security grade">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5" aria-hidden="true">
+                        <path d="M12 22q-3.475-.875-5.738-3.988T4 11.1V5l8-3l8 3v6.1q0 3.8-2.262 6.913T12 22m0-2.1q2.6-.825 4.3-3.3t1.7-5.5V6.375l-6-2.25l-6 2.25V11.1q0 3.025 1.7 5.5t4.3 3.3m0-7.9"></path>
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              ${php_outdated ? `
+                <div class="border-l-4 border-destructive bg-destructive/10 rounded-r px-4 py-3">
+                  <p class="text-foreground font-medium">🔴 Version PHP obsolète (${php_version})</p>
+                </div>
+              ` : ''}
+
+              ${Array.isArray(points) && points.length > 0 ? `
+                <div class="space-y-2">
+                  <p class="text-foreground-muted text-sm font-medium">Points détectés :</p>
+                  <ul class="text-foreground-muted space-y-2 text-sm md:text-base">
+                    ${points.map((point) => `<li class="flex gap-2">
+                      <span class="shrink-0">•</span>
+                      <span>${point}</span>
+                    </li>`).join('')}
+                  </ul>
+                </div>
+              ` : ''}
+
+              <p class="text-foreground-muted text-sm leading-relaxed italic border-l-2 border-border pl-4">
+                Ce pré-diagnostic rapide indique des points à vérifier. L'audit complet ci-dessous analyse en détail les failles de sécurité, le temps de chargement mobile précis et les recommandations de correction.
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      demandeSection.insertAdjacentHTML('beforebegin', diagnosticHtml);
+    }
+
     function initDiagnosticForm() {
       const form = document.getElementById('diag-form');
       const button = document.getElementById('diag-submit');
@@ -375,9 +487,11 @@ const stackMetrics = [
       });
     }
 
+    renderInstantDiagnostic();
     trackDiagnosticVisit();
     initDiagnosticForm();
     document.addEventListener('astro:after-swap', () => {
+      renderInstantDiagnostic();
       trackDiagnosticVisit();
       initDiagnosticForm();
     });

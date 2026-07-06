@@ -299,7 +299,7 @@ const stackMetrics = [
         return;
       }
 
-      const { domain, points } = diagnosticData;
+      const { domain, points, performance_score, accessibility_score, best_practices_score, seo_score, security_headers } = diagnosticData;
 
       if (!domain) return;
 
@@ -319,6 +319,88 @@ const stackMetrics = [
             return { card: 'bg-[var(--warning)]/10 border-[var(--warning)]/30', point: 'bg-[var(--warning)]' };
         }
       };
+
+      // Helper function to get icon and color for Lighthouse scores
+      const getScoreIcon = (score) => {
+        if (score >= 90) {
+          return { icon: 'check', color: 'text-success' };
+        } else if (score >= 50) {
+          return { icon: 'alert-triangle', color: 'text-[var(--warning)]' };
+        } else {
+          return { icon: 'alert-triangle', color: 'text-destructive' };
+        }
+      };
+
+      // Helper function for security header display name
+      const getHeaderDisplayName = (key) => {
+        const names = {
+          hsts: 'HSTS (Strict-Transport-Security)',
+          csp: 'CSP (Content-Security-Policy)',
+          x_frame_options: 'X-Frame-Options',
+          x_content_type_options: 'X-Content-Type-Options',
+          referrer_policy: 'Referrer-Policy',
+          permissions_policy: 'Permissions-Policy'
+        };
+        return names[key] || key;
+      };
+
+      // Build Lighthouse scores block
+      const lighthouseScoresHtml = (performance_score !== undefined || accessibility_score !== undefined || best_practices_score !== undefined || seo_score !== undefined) ? `
+        <div class="mt-8">
+          <h3 class="text-foreground text-lg font-semibold mb-6">Scores Lighthouse détaillés</h3>
+          <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            ${[
+              { label: 'Performance', value: performance_score },
+              { label: 'Accessibilité', value: accessibility_score },
+              { label: 'Bonnes pratiques', value: best_practices_score },
+              { label: 'SEO', value: seo_score }
+            ]
+            .filter(metric => metric.value !== undefined)
+            .map(metric => {
+              const scoreIcon = getScoreIcon(metric.value);
+              return `
+              <div class="border-border flex items-center justify-between rounded-xl border bg-background px-4 py-3">
+                <span class="text-foreground font-medium">${metric.label}</span>
+                <div class="flex items-center gap-3">
+                  <span class="text-foreground text-lg font-bold">${metric.value}/100</span>
+                  <span class="${scoreIcon.color}" aria-label="Score">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="h-5 w-5">
+                      ${scoreIcon.icon === 'check' 
+                        ? '<path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>'
+                        : '<path d="M60-210l-30-60 390-690 390 690-30 60-360-640-360 640Z"/>'
+                      }
+                    </svg>
+                  </span>
+                </div>
+              </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      ` : '';
+
+      // Build security headers block
+      const securityHeadersHtml = security_headers ? `
+        <div class="mt-8">
+          <h3 class="text-foreground text-lg font-semibold mb-6">Détail des en-têtes de sécurité</h3>
+          <div class="space-y-3">
+            ${Object.entries(security_headers)
+              .map(([key, value]) => `
+              <div class="border-border flex items-center justify-between rounded-xl border bg-background px-4 py-3">
+                <span class="text-foreground font-medium">${getHeaderDisplayName(key)}</span>
+                <span class="${value ? 'text-success' : 'text-destructive'}" aria-label="${value ? 'Activé' : 'Désactivé'}">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="h-5 w-5">
+                    ${value 
+                      ? '<path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>'
+                      : '<path d="m249-207-42-42 468-468 42 42-468 468Z"/>'
+                    }
+                  </svg>
+                </span>
+              </div>
+              `).join('')}
+          </div>
+        </div>
+      ` : '';
 
       const diagnosticHtml = `
         <section id="pre-diagnostic" class="bg-background border-t border-border py-20">
@@ -348,6 +430,9 @@ const stackMetrics = [
                   }).join('')}
                 </div>
               ` : ''}
+
+              ${lighthouseScoresHtml}
+              ${securityHeadersHtml}
 
               <p class="text-foreground-muted text-sm leading-relaxed italic border-l-2 border-border pl-4">
                 Ce pré-diagnostic rapide indique des points à vérifier. L'audit complet ci-dessous analyse en détail les failles de sécurité, le temps de chargement mobile précis et les recommandations de correction.

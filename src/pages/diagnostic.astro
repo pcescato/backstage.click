@@ -306,30 +306,22 @@ const stackMetrics = [
       const demandeSection = document.getElementById('demande');
       if (!demandeSection) return;
 
-      // Helper function to map severity to color classes
+      // Helper function to map severity to color classes (literal Tailwind classes for purge detection)
       const getSeverityClasses = (severity) => {
-        const severityMap = {
-          red: {
-            background: 'bg-destructive/10',
-            dot: 'text-destructive',
-            dotBg: 'bg-destructive'
-          },
-          orange: {
-            background: 'bg-[var(--warning)]/10',
-            dot: 'text-[var(--warning)]',
-            dotBg: 'bg-[var(--warning)]'
-          },
-          green: {
-            background: 'bg-success/10',
-            dot: 'text-success',
-            dotBg: 'bg-success'
-          }
-        };
-        return severityMap[severity] || severityMap.orange;
+        switch (severity) {
+          case 'red':
+            return { card: 'bg-destructive/10 border-destructive/30', point: 'bg-destructive' };
+          case 'orange':
+            return { card: 'bg-[var(--warning)]/10 border-[var(--warning)]/30', point: 'bg-[var(--warning)]' };
+          case 'green':
+            return { card: 'bg-success/10 border-success/30', point: 'bg-success' };
+          default:
+            return { card: 'bg-[var(--warning)]/10 border-[var(--warning)]/30', point: 'bg-[var(--warning)]' };
+        }
       };
 
       const diagnosticHtml = `
-        <div class="bg-background border-t border-border py-20">
+        <section id="pre-diagnostic" class="bg-background border-t border-border py-20">
           <div class="mx-auto max-w-2xl px-6">
             <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
               Pré-diagnostic pour ${domain}
@@ -339,12 +331,12 @@ const stackMetrics = [
               ${Array.isArray(points) && points.length > 0 ? `
                 <div class="space-y-4">
                   ${points.map((point) => {
-                    const colors = getSeverityClasses(point.severity);
+                    const classes = getSeverityClasses(point.severity);
                     return `
-                    <div class="${colors.background} rounded-xl px-4 py-4 border border-border/40">
+                    <div class="${classes.card} rounded-xl px-4 py-4 border">
                       <div class="flex gap-3">
                         <div class="shrink-0 pt-0.5">
-                          <div class="${colors.dotBg} h-3 w-3 rounded-full"></div>
+                          <div class="${classes.point} h-3 w-3 rounded-full"></div>
                         </div>
                         <div class="min-w-0 flex-1">
                           <p class="font-semibold text-foreground">${point.title}</p>
@@ -362,7 +354,7 @@ const stackMetrics = [
               </p>
             </div>
           </div>
-        </div>
+        </section>
       `;
 
       demandeSection.insertAdjacentHTML('beforebegin', diagnosticHtml);

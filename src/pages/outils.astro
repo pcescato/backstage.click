@@ -21,14 +21,14 @@ interface ToolCard {
 
 const tools: ToolCard[] = [
   {
-    title: 'Infrastructure emailing professionnelle',
+    title: 'Infrastructure professionnelle d\'emailing',
     tagline: 'Clé en main, conforme, livrée en 24-48h',
     description:
       "Vous envoyez encore vos campagnes depuis Gmail ou Outlook ? Risque de spam, zéro tracking fiable, conformité RGPD/CNIL approximative. Je mets en place une infrastructure complète, pensée pour la délivrabilité et la conformité dès le départ.",
     includes: [
       'Domaine d\'envoi dédié avec DKIM/SPF/DMARC correctement configurés',
       'Suivi de délivrabilité (envoyé / délivré / rejeté / retardé)',
-      'Suivi de délivrabilité mis en œuvre conformément à la recommandation CNIL du 12 mars 2026 sur les pixels de suivi',
+      'Suivi de délivrabilité mis en œuvre conformément à la recommandation CNIL du 12 mars 2026 sur les pixels de suivi*',
       'Gestion automatisée des désinscriptions',
       'Personnalisation de base (templates, segmentation simple)',
     ],
@@ -119,7 +119,7 @@ const tools: ToolCard[] = [
                   </div>
 
                   <p class="text-foreground-subtle text-xs leading-relaxed">
-                    Texte de référence :{' '}
+                    * Texte de référence :{' '}
                     <a
                       href="https://www.cnil.fr/fr/recommandation-pixel-suivi-courriels"
                       target="_blank"
@@ -143,7 +143,7 @@ const tools: ToolCard[] = [
                     </div>
                     <div class="space-y-1">
                       <p class="text-foreground-subtle text-xs uppercase tracking-wide">
-                        Tarif
+                        Tarif (à partir de)
                       </p>
                       <p class="text-foreground text-2xl font-bold">{tool.price}</p>
                     </div>

@@ -208,6 +208,48 @@ import { footerNavItems, legalLinks } from '@/config/nav.config';
           </Card>
         </div>
 
+        <Card variant="elevated" padding="lg" class="border-border mt-6 border">
+          <div class="flex flex-col items-start gap-6 md:flex-row md:items-center">
+            <div class="bg-secondary text-foreground inline-flex w-fit shrink-0 rounded-full p-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 -960 960 960"
+                fill="currentColor"
+                class="h-12 w-12 shrink-0"
+                aria-hidden="true"
+              >
+                <path d="M80-160v-560q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v560H80Zm400-280 320-200v-80L480-520 160-720v80l320 200Z"
+                ></path>
+              </svg>
+            </div>
+            <div class="flex-1 space-y-2">
+              <h3 class="font-display text-foreground text-xl md:text-2xl font-bold">
+                Des outils prêts à l'emploi, pas du sur-mesure théorique
+              </h3>
+              <p class="text-foreground-muted text-sm md:text-base leading-relaxed">
+                Infrastructure emailing conforme CNIL, et d'autres outils à venir — des briques
+                que j'utilise moi-même en production, packagées pour être déployées rapidement
+                chez vous.
+              </p>
+            </div>
+            <a
+              href="/outils"
+              class="text-foreground hover:text-brand-500 inline-flex shrink-0 items-center gap-2 text-sm font-medium"
+            >
+              Découvrir les outils
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 -960 960 960"
+                fill="currentColor"
+                class="h-4 w-4 shrink-0"
+                aria-hidden="true"
+              >
+                <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z"></path>
+              </svg>
+            </a>
+          </div>
+        </Card>
+
         <div class="mt-10 text-center">
           <Button size="lg" href="/contact/">
             Prendre rendez-vous
@@ -261,7 +303,7 @@ import { footerNavItems, legalLinks } from '@/config/nav.config';
           <Card variant="default" padding="md">
             <div class="flex items-start justify-between">
               <div>
-                <p class="text-foreground mt-1 text-2xl font-bold">98/100</p>
+                <p class="text-foreground mt-1 text-2xl font-bold">95/100</p>
                 <p class="text-foreground-muted text-sm">Lighthouse mobile - gcfpro.fr</p>
               </div>
               <div class="bg-secondary text-foreground-muted rounded-lg p-2.5">

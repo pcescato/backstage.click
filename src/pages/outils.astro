@@ -28,7 +28,7 @@ const tools: ToolCard[] = [
     includes: [
       'Domaine d\'envoi dédié avec DKIM/SPF/DMARC correctement configurés',
       'Suivi de délivrabilité (envoyé / délivré / rejeté / retardé)',
-      'Distinction automatique adresses personnelles / fonctionnelles — aucun tracking individuel sur les adresses nominatives',
+      'Suivi de délivrabilité mis en œuvre conformément à la recommandation CNIL du 12 mars 2026 sur les pixels de suivi',
       'Gestion automatisée des désinscriptions',
       'Personnalisation de base (templates, segmentation simple)',
     ],
@@ -111,12 +111,24 @@ const tools: ToolCard[] = [
                     <ul class="space-y-2">
                       {tool.includes.map((item) => (
                         <li class="text-foreground-muted flex items-start gap-2 text-sm leading-relaxed md:text-base">
-                          <span class="text-foreground mt-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 shrink-0 text-foreground-muted group-hover:text-foreground transition-colors" aria-hidden="true"> <path d="M20 6L9 17l-5-5"></path> </svg></span>
+                          <span class="text-foreground mt-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"> <path d="M20 6L9 17l-5-5"></path> </svg></span>
                           <span>{item}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
+
+                  <p class="text-foreground-subtle text-xs leading-relaxed">
+                    Texte de référence :{' '}
+                    <a
+                      href="https://www.cnil.fr/fr/recommandation-pixel-suivi-courriels"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-foreground underline underline-offset-2 hover:no-underline"
+                    >
+                      recommandation CNIL du 12 mars 2026 sur les pixels de suivi
+                    </a>
+                  </p>
 
                   <p class="text-foreground-subtle border-border border-t pt-4 text-sm leading-relaxed italic">
                     {tool.notice}
@@ -131,7 +143,7 @@ const tools: ToolCard[] = [
                     </div>
                     <div class="space-y-1">
                       <p class="text-foreground-subtle text-xs uppercase tracking-wide">
-                        Tarif (à partir de)
+                        Tarif
                       </p>
                       <p class="text-foreground text-2xl font-bold">{tool.price}</p>
                     </div>

@@ -14,8 +14,9 @@ export interface NavItem {
 export const navItems: NavItem[] = [
   { label: 'Diagnostic', href: '/diagnostic', order: 1 },
   { label: 'Prestations', href: '/prestations', order: 2 },
-  { label: 'GCF Pro', href: '/gcf-pro', order: 3 },
-  { label: 'Contact', href: '/contact', order: 4 },
+  { label: 'Outils', href: '/outils', order: 3 },
+  { label: 'GCF Pro', href: '/gcf-pro', order: 4 },
+  { label: 'Contact', href: '/contact', order: 5 },
 ];
 
 export const footerNavItems: NavItem[] = [...navItems];

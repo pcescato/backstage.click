@@ -13,6 +13,7 @@ interface ToolCard {
   tagline: string;
   description: string;
   includes: string[];
+  reference?: { label: string; url: string; text: string };
   notice: string;
   delay: string;
   price: string;
@@ -32,6 +33,11 @@ const tools: ToolCard[] = [
       'Gestion automatisée des désinscriptions',
       'Personnalisation de base (templates, segmentation simple)',
     ],
+    reference: {
+      label: '*',
+      url: 'https://www.cnil.fr/fr/recommandation-pixel-suivi-courriels',
+      text: 'recommandation CNIL du 12 mars 2026 sur les pixels de suivi',
+    },
     notice:
       "C'est l'infrastructure que j'utilise moi-même pour mes propres campagnes de prospection — pas une théorie, un outil qui tourne en production.",
     delay: '24-48h en cas standard, jusqu\'à 3-4 jours si personnalisation lourde',
@@ -39,7 +45,26 @@ const tools: ToolCard[] = [
     iconPath:
       'M80-160v-560q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v560H80Zm400-280 320-200v-80L480-520 160-720v80l320 200Z',
   },
-] as const;
+  {
+    title: 'Audit express MySQL / PostgreSQL',
+    tagline: 'Sécurité et configuration, sans accès admin requis',
+    description:
+      "Votre base tourne, mais personne n'a vérifié sa configuration depuis longtemps. L'audit express identifie les risques concrets — sécurité, intégrité, maintenance — sans exiger un accès administrateur sur votre serveur.",
+    includes: [
+      'Collecte de 10 métriques clés par moteur (sécurité, intégrité, stockage, performance, configuration), via scripts read-only sans privilèges admin',
+      'Score global déterministe et reproductible — pas une impression, un calcul',
+      'Matrice de risques priorisée (probabilité × sévérité)',
+      'Rapport exécutif en langage clair : recommandations concrètes, impact business, rationale technique',
+      'Audit réalisé depuis mon infrastructure via connexion sécurisée temporaire (tunnel SSH) — aucune installation, aucun accès permanent laissé sur vos serveurs',
+    ],
+    notice:
+      "Audit express, pas une revue de schéma complète : c'est un diagnostic ciblé sur les risques les plus courants, livré vite. Une analyse plus approfondie peut être proposée en complément si les résultats le justifient.",
+    delay: '24-48h après ouverture de l\'accès temporaire',
+    price: '1490€ HT',
+    iconPath:
+      'M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Z',
+  },
+];
 ---
 
 <BaseLayout
@@ -118,17 +143,19 @@ const tools: ToolCard[] = [
                     </ul>
                   </div>
 
-                  <p class="text-foreground-subtle text-xs leading-relaxed">
-                    * Texte de référence :{' '}
-                    <a
-                      href="https://www.cnil.fr/fr/recommandation-pixel-suivi-courriels"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-foreground underline underline-offset-2 hover:no-underline"
-                    >
-                      recommandation CNIL du 12 mars 2026 sur les pixels de suivi
-                    </a>
-                  </p>
+                  {tool.reference && (
+                    <p class="text-foreground-subtle text-xs leading-relaxed">
+                      {tool.reference.label} Texte de référence :{' '}
+                      <a
+                        href={tool.reference.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-foreground underline underline-offset-2 hover:no-underline"
+                      >
+                        {tool.reference.text}
+                      </a>
+                    </p>
+                  )}
 
                   <p class="text-foreground-subtle border-border border-t pt-4 text-sm leading-relaxed italic">
                     {tool.notice}

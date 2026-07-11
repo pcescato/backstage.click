@@ -42,6 +42,7 @@ const tools: ToolCard[] = [
       "C'est l'infrastructure que j'utilise moi-même pour mes propres campagnes de prospection — pas une théorie, un outil qui tourne en production.",
     delay: '24-48h en cas standard, jusqu\'à 3-4 jours si personnalisation lourde',
     price: '600€ HT',
+    cta: 'Demander cet outil →',
     iconPath:
       'M80-160v-560q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v560H80Zm400-280 320-200v-80L480-520 160-720v80l320 200Z',
   },
@@ -60,7 +61,8 @@ const tools: ToolCard[] = [
     notice:
       "Audit express, pas une revue de schéma complète : c'est un diagnostic ciblé sur les risques les plus courants. Une analyse plus approfondie peut être proposée en complément si les résultats le justifient.",
     delay: '24-48h après ouverture de l\'accès temporaire',
-    price: '1490€ HT',
+    price: '1290€ HT',
+    cta: 'Commander un audit →',
     iconPath:
       'M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Z',
   },
@@ -174,7 +176,7 @@ const tools: ToolCard[] = [
                       </p>
                       <p class="text-foreground text-2xl font-bold">{tool.price}</p>
                     </div>
-                    <Button href="/contact">Demander cet outil →</Button>
+                    <Button href="/contact">{tool.cta}</Button>
                   </div>
                 </div>
               </Card>

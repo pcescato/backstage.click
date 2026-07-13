@@ -22,16 +22,15 @@ if ($prospectId > 0
     );
     $pdo = new PDO($dsn, TRACK_DB_USER, TRACK_DB_PASS);
     $stmt = $pdo->prepare(
-      'INSERT INTO email_tracking 
-       (prospect_id, email, domain, ip, user_agent)
-       VALUES (:pid, :email, :domain, :ip, :ua)'
+      'REPLACE INTO email_tracking_rgpd
+       (prospect_id, email, domain, opened_at)
+       VALUES (:pid, :email, :domain, :opened)'
     );
     $stmt->execute([
       ':pid'    => $prospectId,
       ':email'  => $email,
       ':domain' => $domain,
-      ':ip'     => $_SERVER['REMOTE_ADDR'] ?? null,
-      ':ua'     => $_SERVER['HTTP_USER_AGENT'] ?? null,
+      ':opened' => date('Y-m-d'),
     ]);
   } catch (Exception $e) {
     error_log('Track error: ' . $e->getMessage());

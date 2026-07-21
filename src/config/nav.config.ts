@@ -9,11 +9,22 @@ export interface NavItem {
   label: string;
   href: string;
   order: number;
+  children?: { label: string; href: string }[];
 }
 
 export const navItems: NavItem[] = [
   { label: 'Diagnostic', href: '/diagnostic', order: 1 },
-  { label: 'Prestations', href: '/prestations', order: 2 },
+  {
+    label: 'Prestations',
+    href: '/prestations',
+    order: 2,
+    children: [
+      { label: 'CRM & ERP sur-mesure pour PME', href: '/prestations/crm-erp-pme' },
+      { label: 'WordPress : maintenance, optimisation et migration', href: '/prestations/wordpress' },
+      { label: 'DevOps : déploiement et hébergement', href: '/prestations/devops-deploiement' },
+      { label: 'IA & automatisation', href: '/prestations/ia-automatisation' },
+    ],
+  },
   { label: 'Outils', href: '/outils', order: 3 },
   { label: 'GCF Pro', href: '/gcf-pro', order: 4 },
   { label: 'Contact', href: '/contact', order: 5 },

@@ -1,0 +1,137 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Accordion from '@/components/ui/overlay/Accordion/Accordion.astro';
+import { Hero } from '@/components/hero';
+import { footerNavItems, legalLinks } from '@/config/nav.config';
+
+const faqItems = [
+  {
+    title: 'Combien coûte la maintenance WordPress d\'un site existant ?',
+    content: "Ça dépend du volume de contenu, du nombre de plugins et de l'état de sécurité initial. Un premier échange permet d'évaluer l'ampleur du travail et de proposer un forfait ou un abonnement de maintenance adapté.",
+  },
+  {
+    title: 'Faut-il migrer son WordPress vers un site statique ?',
+    content: "Pas systématiquement. Si votre site a besoin d'un back-office pour des utilisateurs non techniques, ou d'une boutique WooCommerce active, WordPress reste pertinent — auquel cas la maintenance et l'optimisation sont la bonne réponse. La migration a du sens quand le site est principalement du contenu éditorial (blog, vitrine) où la flexibilité d'un CMS n'apporte plus rien face au coût de maintenance.",
+  },
+  {
+    title: 'La migration vers Astro ou Hugo fait-elle perdre le référencement existant ?',
+    content: "Non, si elle est faite correctement. Le pipeline wp2md préserve les URLs, les métadonnées et la structure du contenu, avec un objectif de préservation SEO à 100%. C'est justement le risque principal d'une migration mal faite qu'il faut éviter.",
+  },
+  {
+    title: 'Quelle est la différence entre optimisation et migration ?',
+    content: "L'optimisation améliore un WordPress existant sans changer son architecture (cache, images, scripts). La migration change l'architecture elle-même en sortant de WordPress. La première est plus rapide et moins risquée ; la seconde apporte un gain de performance plus radical mais demande un vrai projet.",
+  },
+];
+---
+
+<BaseLayout
+  title="Maintenance, optimisation et migration WordPress"
+  description="Maintenance, optimisation Core Web Vitals et migration WordPress vers Astro/Hugo. Pipeline propriétaire wp2md : préservation SEO, réduction du temps de migration."
+>
+  <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
+
+  <div class="min-h-screen pt-16">
+    <Hero
+      layout="centered"
+      size="lg"
+      showGrid
+      class="border-border border-b pt-12 pb-6 md:pt-20 md:pb-12"
+    >
+      <Badge slot="badge" variant="brand" pill class="px-3 py-1 text-sm">
+        WordPress
+      </Badge>
+
+      <h1 slot="title" class="max-w-4xl !leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
+        WordPress : maintenance, optimisation et migration
+      </h1>
+
+      <p slot="description" class="max-w-3xl">
+        Un site WordPress mal maintenu accumule les mêmes symptômes : plugins obsolètes, failles de sécurité, temps de chargement qui se dégrade, Core Web Vitals qui plombent le référencement. Je m'occupe de la maintenance et de l'optimisation de sites WordPress existants, et j'accompagne aussi la migration vers des générateurs de site statique (Astro, Hugo) quand WordPress n'est plus le bon outil pour vos besoins.
+      </p>
+    </Hero>
+
+    <section class="border-border bg-background border-b py-20">
+      <div class="mx-auto max-w-4xl px-6">
+        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+          Maintenance et sécurisation
+        </h2>
+        <div class="text-foreground-muted mt-8 space-y-4 text-base leading-relaxed">
+          <p>
+            Mises à jour de plugins et du cœur WordPress, durcissement de la sécurité (limitation des points d'entrée, gestion des permissions, sauvegardes multi-destinations), résolution des erreurs récurrentes (Search Console, logs serveur). Une maintenance WordPress bien faite, c'est avant tout de la prévention : éviter que les petits problèmes s'accumulent jusqu'à devenir un chantier de refonte.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-border bg-background-secondary border-b py-20">
+      <div class="mx-auto max-w-4xl px-6">
+        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+          Optimisation Core Web Vitals
+        </h2>
+        <div class="text-foreground-muted mt-8 space-y-4 text-base leading-relaxed">
+          <p>
+            Un WordPress standard n'est pas condamné à être lent. Sur un site client WordPress sans optimisation particulière, le score Lighthouse atteint déjà 87/100 — ce qui montre la marge de progression possible avec un vrai travail d'optimisation : suppression des scripts tiers non essentiels, gestion du cache, compression des images, réduction du JavaScript bloquant. L'objectif réaliste sur un WordPress optimisé est un score dans les 90+, avec un impact direct sur le référencement (Core Web Vitals est un facteur de classement Google) et sur le taux de conversion.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-border bg-background border-b py-20">
+      <div class="mx-auto max-w-4xl px-6">
+        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+          Migration WordPress vers Astro ou Hugo
+        </h2>
+        <div class="text-foreground-muted mt-8 space-y-4 text-base leading-relaxed">
+          <p>
+            Quand WordPress devient plus un fardeau qu'un atout — lenteur du chargement sur smartphone, dépendance à des plugins payants, mises à jour permanentes, coûts de maintenance qui grimpent —, la migration vers un générateur de site statique (Astro, Hugo) est une option à considérer sérieusement. Un site statique n'a pas de base de données à sécuriser, pas de plugin à maintenir, et des temps de chargement nettement meilleurs.
+          </p>
+          <p>
+            J'ai développé wp2md, un pipeline propriétaire qui facilite cette migration : extraction du contenu WordPress, conversion en Markdown, préservation intégrale du référencement existant (URLs, métadonnées, structure), avec une réduction du temps de migration de 80% par rapport à une reprise manuelle. Cet outil est le résultat direct de mes propres migrations, dont celle de ce site.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-border bg-background-secondary border-b py-20">
+      <div class="mx-auto max-w-4xl px-6">
+        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+          Comment ça se passe
+        </h2>
+        <div class="text-foreground-muted mt-8 space-y-4 text-base leading-relaxed">
+          <p>
+            Premier échange pour évaluer si votre besoin est de la maintenance (site à conserver et faire durer) ou une migration (site à reconstruire sur une base plus légère). Pour une maintenance : audit initial, plan d'action priorisé, intervention. Pour une migration : audit du contenu existant, migration via wp2md, vérification du référencement post-migration, mise en production.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-border bg-background border-b py-20">
+      <div class="mx-auto max-w-4xl px-6">
+        <h2 class="font-display text-foreground mb-8 text-3xl font-bold tracking-tight md:text-4xl">
+          FAQ
+        </h2>
+        <Accordion items={faqItems} exclusive />
+      </div>
+    </section>
+
+    <section class="invert-section bg-background border-t border-border py-20">
+      <div class="mx-auto max-w-2xl px-6 text-center">
+        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+          Un site WordPress à optimiser ou à migrer ?
+        </h2>
+        <p class="text-foreground-muted mt-6 text-lg leading-relaxed">
+          15 minutes suffisent pour évaluer la meilleure option pour votre cas.
+        </p>
+        <div class="mt-10 flex justify-center">
+          <Button href="/contact">Prendre rendez-vous →</Button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
+</BaseLayout>

@@ -1,0 +1,170 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import Badge from '@/components/ui/data-display/Badge/Badge.astro';
+import Card from '@/components/ui/data-display/Card/Card.astro';
+import Button from '@/components/ui/form/Button/Button.astro';
+import Accordion from '@/components/ui/overlay/Accordion/Accordion.astro';
+import { Hero } from '@/components/hero';
+import { footerNavItems, legalLinks } from '@/config/nav.config';
+
+const faqItems = [
+  {
+    title: 'Combien coûte un CRM ou ERP sur-mesure pour une PME ?',
+    content: "Ça dépend du périmètre. Pour un ERP métier complet comme GCF Pro, le repère est de 3 900 € HT en licence à vie ou 1 490 € HT/an, hors installation et formation. Pour un CRM plus ciblé comme sav-crm, encore en phase de finalisation, le tarif se définit selon les besoins spécifiques du client. Le premier échange sert à cadrer un ordre de grandeur précis pour votre cas.",
+  },
+  {
+    title: 'Pourquoi éviter un framework comme Symfony pour un outil métier interne ?',
+    content: "Un framework généraliste apporte de la structure pour de gros projets avec plusieurs développeurs, mais pour un outil métier ciblé, il ajoute surtout de la complexité : montées de version à suivre, conventions à respecter, temps de développement allongé. Du PHP natif bien architecturé (MVC, sans ORM) est plus rapide à développer, plus simple à auditer, et sans dette de framework à traîner.",
+  },
+  {
+    title: 'Un CRM sur-mesure peut-il remplacer un abonnement SaaS existant ?',
+    content: "Souvent oui, en particulier quand votre métier a des contraintes que le SaaS générique gère mal (calculs réglementaires spécifiques, contrats liés à des équipements plutôt qu'à des contacts, synchronisation terrain). L'avantage supplémentaire : vos données restent chez vous, sans dépendre de la politique tarifaire ou de la pérennité d'un éditeur tiers.",
+  },
+  {
+    title: 'Est-ce que je reste dépendant de vous après la livraison ?',
+    content: "Non. Le code est en PHP natif, documenté, sans dépendance à un framework propriétaire. N'importe quel développeur PHP peut reprendre la maintenance. Je propose un contrat de maintenance si vous le souhaitez, mais ce n'est jamais une obligation contractuelle cachée.",
+  },
+];
+---
+
+<BaseLayout
+  title="CRM & ERP sur-mesure pour PME"
+  description="Développement de CRM et ERP métier sur-mesure pour PME et TPE. Sans ORM, sans framework overhead, sans abonnement SaaS. 20 ans de production réelle."
+>
+  <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
+
+  <div class="min-h-screen pt-16">
+    <Hero
+      layout="centered"
+      size="lg"
+      showGrid
+      class="border-border border-b pt-12 pb-6 md:pt-20 md:pb-12"
+    >
+      <Badge slot="badge" variant="brand" pill class="px-3 py-1 text-sm">
+        Applications métier
+      </Badge>
+
+      <h1 slot="title" class="max-w-4xl !leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
+        CRM et ERP sur-mesure pour PME
+      </h1>
+
+      <p slot="description" class="max-w-3xl">
+        Un CRM générique ne colle jamais tout à fait à votre métier. Vous adaptez vos process à l'outil, vous payez un abonnement par utilisateur qui grimpe avec la croissance, et le jour où vous voulez exporter vos données ou changer de solution, c'est un chantier. Je développe des CRM et ERP sur-mesure, pensés pour votre métier réel, hébergés chez vous ou chez un prestataire de votre choix, sans dépendance à un éditeur tiers.
+      </p>
+    </Hero>
+
+    <section class="border-border bg-background border-b py-20">
+      <div class="mx-auto max-w-4xl px-6">
+        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+          Le problème du logiciel générique
+        </h2>
+        <div class="text-foreground-muted mt-8 space-y-4 text-base leading-relaxed">
+          <p>
+            Un CRM ou un ERP du marché (Salesforce, HubSpot, Odoo, Sage) est conçu pour couvrir un maximum de cas d'usage. Résultat : vous payez des fonctionnalités inutiles, vous configurez pendant des mois pour approcher votre besoin réel, et certains process métier spécifiques restent impossibles à modéliser sans développement complémentaire — souvent facturé par l'éditeur lui-même.
+          </p>
+          <p>
+            Pour une PME avec un métier bien identifié (gestion de formation, SAV terrain, prospection B2B), un outil sur-mesure coûte souvent moins cher sur 3-5 ans qu'un abonnement SaaS cumulé, et surtout, il fait exactement ce dont vous avez besoin — ni plus, ni moins.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-border bg-background-secondary border-b py-20">
+      <div class="mx-auto max-w-4xl px-6">
+        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+          Mon approche
+        </h2>
+        <div class="text-foreground-muted mt-8 space-y-4 text-base leading-relaxed">
+          <p>
+            Je conçois des applications métier en PHP natif, architecture MVC, sans ORM et sans framework lourd type Symfony. Ce choix n'est pas idéologique : un ORM ajoute une couche d'abstraction entre votre code et votre base de données qui complique le débogage et dégrade les performances sur des requêtes complexes. Un framework overhead impose ses propres conventions, ses propres montées de version, sa propre dette technique — que vous n'avez pas choisie.
+          </p>
+          <p>
+            Le résultat : un code que vous pouvez faire auditer par n'importe quel développeur PHP, sans dépendre de ma disponibilité ni de la survie d'un framework à la mode. C'est votre outil, pas un abonnement.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-border bg-background border-b py-20">
+      <div class="mx-auto max-w-6xl px-6">
+        <div class="mx-auto mb-12 max-w-3xl text-center">
+          <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+            Deux réalisations concrètes
+          </h2>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2">
+          <Card variant="elevated" padding="lg" class="border-border h-full border">
+            <div class="flex h-full flex-col gap-5">
+              <div class="space-y-3">
+                <h3 class="font-display text-foreground text-xl md:text-2xl font-bold">GCF Pro</h3>
+                <p class="text-foreground-muted text-sm font-medium md:text-base">ERP pour organismes de formation Qualiopi</p>
+              </div>
+              <p class="text-foreground-muted text-sm leading-relaxed md:text-base">
+                Un ERP complet pour organismes de formation certifiés Qualiopi : gestion des stagiaires, des dossiers de financement, des sessions inter/intra, des capacités d'accueil avec contrainte assurantielle, tables de référence administrables. Développé en PHP/MVC natif, déployé en auto-hébergement. Disponible en licence à vie (3 900 € HT) ou en abonnement annuel (1 490 € HT/an), avec installation et formation incluses en option.
+              </p>
+              <div class="mt-auto pt-2">
+                <Button href="https://gcfpro.fr" target="_blank">Découvrir GCF Pro →</Button>
+              </div>
+            </div>
+          </Card>
+
+          <Card variant="elevated" padding="lg" class="border-border h-full border">
+            <div class="flex h-full flex-col gap-5">
+              <div class="space-y-3">
+                <h3 class="font-display text-foreground text-xl md:text-2xl font-bold">sav-crm</h3>
+                <p class="text-foreground-muted text-sm font-medium md:text-base">CRM/SAV pour artisans chauffagistes et plombiers</p>
+              </div>
+              <p class="text-foreground-muted text-sm leading-relaxed md:text-base">
+                Né d'un projet client réel (transformation d'une installation WordPress/Bookly/WooCommerce), devenu un produit autonome. Gestion multi-sites, contrats de maintenance rattachés aux équipements et non aux occupants, calcul de TVA selon l'âge du bâtiment, relances de renouvellement automatiques avec prise en compte des jours fériés français, synchronisation hors-ligne pour les techniciens sur le terrain. Une revue de sécurité indépendante a permis d'identifier et corriger les points critiques avant mise en production.
+              </p>
+              <p class="text-foreground-subtle text-sm italic">
+                Produit en cours de finalisation — tarif défini selon le périmètre de chaque projet.
+              </p>
+            </div>
+          </Card>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-border bg-background-secondary border-b py-20">
+      <div class="mx-auto max-w-4xl px-6">
+        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+          Comment ça se passe
+        </h2>
+        <div class="text-foreground-muted mt-8 space-y-4 text-base leading-relaxed">
+          <p>
+            Je travaille seul, sans intermédiaire commercial ni chef de projet entre vous et le code. Le cadrage initial (15 minutes suffisent pour un premier échange) permet de vérifier que votre besoin correspond bien à du sur-mesure — parfois un outil existant suffit, et je vous le dirai franchement. Ensuite : spécification fonctionnelle détaillée, développement, tests, mise en production, avec un point régulier à chaque étape clé.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-border bg-background border-b py-20">
+      <div class="mx-auto max-w-4xl px-6">
+        <h2 class="font-display text-foreground mb-8 text-3xl font-bold tracking-tight md:text-4xl">
+          FAQ
+        </h2>
+        <Accordion items={faqItems} exclusive />
+      </div>
+    </section>
+
+    <section class="invert-section bg-background border-t border-border py-20">
+      <div class="mx-auto max-w-2xl px-6 text-center">
+        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+          Un projet de CRM ou ERP métier ?
+        </h2>
+        <p class="text-foreground-muted mt-6 text-lg leading-relaxed">
+          15 minutes suffisent pour faire le point sur votre besoin et voir si le sur-mesure est la bonne réponse.
+        </p>
+        <div class="mt-10 flex justify-center">
+          <Button href="/contact">Prendre rendez-vous →</Button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
+</BaseLayout>

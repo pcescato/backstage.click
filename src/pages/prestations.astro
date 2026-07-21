@@ -12,39 +12,41 @@ interface ServiceCard {
   title: string;
   description: string;
   iconPath: string;
-  highlights?: string;
+  href: string;
 }
 
 const services: ServiceCard[] = [
   {
-    title: 'Prestations - PHP, WordPress, DevOps & IA',
+    title: 'CRM & ERP sur-mesure pour PME',
     description:
-      "Développement PHP sur-mesure, migration vers Astro/Hugo, DevOps Linux/Docker, intégration LLM. Plus de 20 ans de production réelle, sans intermédiaire",
-    highlights:
-      'GCF Pro (gestion OF, Qualiopi, BPF), plateforme CVC (Bookly, WooCommerce, 1 900+ références, CRM custom), outils de gestion et de prospection automatisés…',
+      "Développement d'applications métier sur-mesure : ERP Qualiopi, CRM/SAV terrain. PHP natif, sans ORM, sans abonnement SaaS. Réalisations : GCF Pro, sav-crm.",
     iconPath:
       'M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm140-40-56-56 103-104-104-104 57-56 160 160-160 160Zm180 0v-80h240v80H480Z',
+    href: '/prestations/crm-erp-pme',
   },
   {
-    title: 'WordPress & migration SSG',
+    title: 'WordPress : maintenance, optimisation et migration',
     description:
-      'Sécurisation, optimisation performances Core Web Vitals, WooCommerce complexe. Migration WordPress vers Astro ou Hugo via pipeline wp2md : préservation SEO 100%, réduction du temps de migration de 80%.',
+      'Sécurisation, Core Web Vitals, migration vers Astro ou Hugo via pipeline propriétaire wp2md. Préservation SEO, réduction du temps de migration de 80%.',
     iconPath:
       'm226-559 78 33q14-28 29-54t33-52l-56-11-84 84Zm142 83 114 113q42-16 90-49t90-75q70-70 109.5-155.5T806-800q-72-5-158 34.5T492-656q-42 42-75 90t-49 90Zm155-121.5q0-33.5 23-56.5t57-23q34 0 57 23t23 56.5q0 33.5-23 56.5t-57 23q-34 0-57-23t-23-56.5ZM565-220l84-84-11-56q-26 18-52 32.5T532-299l33 79Zm313-653q19 121-23.5 235.5T708-419l20 99q4 20-2 39t-20 33L538-80l-84-197-171-171-197-84 167-168q14-14 33.5-20t39.5-2l99 20q104-104 218-147t235-24ZM157-321q35-35 85.5-35.5T328-322q35 35 34.5 85.5T327-151q-25 25-83.5 43T82-76q14-103 32-161.5t43-83.5Zm57 56q-10 10-20 36.5T180-175q27-4 53.5-13.5T270-208q12-12 13-29t-11-29q-12-12-29-11.5T214-265Z',
+    href: '/prestations/wordpress',
   },
   {
-    title: 'DevOps & hébergement',
+    title: 'DevOps : déploiement et hébergement',
     description:
-      'Linux, Docker, GitHub Actions, OpenLiteSpeed. Déploiement automatisé, sauvegardes multi-destinations (SFTP, rsync, S3), monitoring. Ce site est lui-même déployé via ce pipeline.',
+      'Linux, Docker, Nginx, Caddy, LiteSpeed. Déploiement automatisé, sauvegardes multi-destinations, monitoring. Ce site est déployé via ce pipeline.',
     iconPath:
       'M120-160v-160h720v160H120Zm80-40h80v-80h-80v80Zm-80-440v-160h720v160H120Zm80-40h80v-80h-80v80Zm-80 280v-160h720v160H120Zm80-40h80v-80h-80v80Z',
+    href: '/prestations/devops-deploiement',
   },
   {
     title: 'IA & automatisation',
     description:
-      "Intégration LLM (OpenAI, Azure, Ollama local), génération assistée avec validation humaine. IA pragmatique : le bon outil au bon endroit, pas d'empilement technologique inutile.",
+      "Intégration LLM (OpenAI, Ollama local), automatisation avec n8n, maîtrise des coûts via OpenRouter. L'IA assiste, elle ne décide jamais seule.",
     iconPath:
       'M440-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h240v720Zm-80-80v-560H200v560h160Zm160-320v-320h240q33 0 56.5 23.5T840-760v240H520Zm80-80h160v-160H600v160Zm-80 480v-320h320v240q0 33-23.5 56.5T760-120H520Zm80-80h160v-160H600v160Z',
+    href: '/prestations/ia-automatisation',
   },
 ] as const;
 
@@ -98,7 +100,7 @@ const verifiedIconPath =
         <div class="grid gap-6 md:grid-cols-2">
           {
             services.map((service) => (
-              <Card variant="elevated" padding="lg" class="border-border h-full border">
+              <Card variant="elevated" padding="lg" href={service.href} hover class="border-border h-full border">
                 <div class="flex h-full flex-col gap-5">
                   <div class="bg-secondary text-foreground inline-flex w-fit rounded-full p-3">
                     <svg
@@ -117,12 +119,6 @@ const verifiedIconPath =
                       {service.title}
                     </h3>
                     <p class="text-foreground-muted text-sm md:text-base leading-relaxed">{service.description}</p>
-                    {service.highlights && (
-                      <p class="text-foreground-subtle text-sm leading-relaxed">
-                        <span class="text-foreground font-medium">Réalisations :</span>{' '}
-                        {service.highlights}
-                      </p>
-                    )}
                   </div>
                 </div>
               </Card>

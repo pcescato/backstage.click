@@ -21,5 +21,28 @@
     "provider": "google",
     "subsets": ["latin"],
     "fallback": "sans-serif"
+  },
+  {
+    "name": "Josefin Sans",
+    "variants": [
+      {
+        "style": "normal",
+        "weight": "400"
+      },
+      {
+        "style": "normal",
+        "weight": "600"
+      },
+      {
+        "style": "normal",
+        "weight": "700"
+      }
+    ],
+    "preload": true,
+    "display": "swap",
+    "cssVariable": "--font-display",
+    "provider": "google",
+    "subsets": ["latin"],
+    "fallback": "sans-serif"
   }
 ]

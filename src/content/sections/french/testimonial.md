@@ -1,5 +1,5 @@
 ---
-enable: true # Control the visibility of this section across all pages where it is used
+enable: false # Control the visibility of this section across all pages where it is used
 title: "Ne nous croyez pas sur parole, écoutez nos clients"
 
 image: "/images/testimonial/main.jpg"

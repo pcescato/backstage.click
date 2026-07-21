@@ -2,142 +2,122 @@
   "header": [
     {
       "enable": true,
-      "name": "Accueil",
-      "url": "/"
+      "name": "Diagnostic",
+      "url": "/diagnostic/"
     },
     {
       "enable": true,
-      "name": "Services",
-      "url": "/services/",
+      "name": "Prestations",
+      "url": "/prestations/",
       "hasChildren": true,
       "children": [
         {
           "enable": true,
-          "name": "Tous les services",
-          "url": "/services/"
+          "name": "Toutes les prestations",
+          "url": "/prestations/"
         },
         {
           "enable": true,
-          "name": "Développement web et mobile",
-          "url": "/services/service-02/"
+          "name": "CRM & ERP sur-mesure pour PME",
+          "url": "/prestations/crm-erp-pme/"
         },
         {
           "enable": true,
-          "name": "UI/UX et identité de marque",
-          "url": "/services/service-05/"
+          "name": "WordPress : maintenance, optimisation et migration",
+          "url": "/prestations/wordpress/"
         },
         {
           "enable": true,
-          "name": "Marketing digital",
-          "url": "/services/service-03/"
+          "name": "DevOps : déploiement et hébergement",
+          "url": "/prestations/devops-deploiement/"
         },
         {
           "enable": true,
-          "name": "Solutions de cybersécurité",
-          "url": "/services/service-06/"
-        },
-        {
-          "enable": true,
-          "name": "Migration cloud et DevOps",
-          "url": "/services/service-07/"
+          "name": "IA & automatisation",
+          "url": "/prestations/ia-automatisation/"
         }
       ]
     },
     {
       "enable": true,
-      "name": "Blog",
-      "url": "/blog/"
+      "name": "Outils",
+      "url": "/outils/"
     },
     {
       "enable": true,
-      "name": "Équipe",
-      "url": "/team/"
+      "name": "GCF Pro",
+      "url": "https://gcfpro.fr/",
+      "rel": "noopener noreferrer"
+    },
+    {
+      "enable": true,
+      "name": "Contact",
+      "url": "/contact/"
     }
   ],
   "footer": [
     {
-      "label": "Liens rapides",
+      "label": "Prestations",
       "list": [
         {
           "enable": true,
-          "name": "Notre équipe",
-          "url": "/team/",
-          "active": true
+          "name": "CRM & ERP sur-mesure",
+          "url": "/prestations/crm-erp-pme/"
         },
         {
           "enable": true,
-          "name": "Blog",
-          "url": "/blog/"
+          "name": "WordPress",
+          "url": "/prestations/wordpress/"
         },
         {
           "enable": true,
-          "name": "À propos",
-          "url": "#"
+          "name": "DevOps",
+          "url": "/prestations/devops-deploiement/"
         },
         {
           "enable": true,
-          "name": "Carrières",
-          "url": "#"
+          "name": "IA & automatisation",
+          "url": "/prestations/ia-automatisation/"
+        }
+      ]
+    },
+    {
+      "label": "Liens utiles",
+      "list": [
+        {
+          "enable": true,
+          "name": "Diagnostic gratuit",
+          "url": "/diagnostic/"
+        },
+        {
+          "enable": true,
+          "name": "Outils",
+          "url": "/outils/"
+        },
+        {
+          "enable": true,
+          "name": "GCF Pro",
+          "url": "https://gcfpro.fr/"
         },
         {
           "enable": true,
           "name": "Contact",
-          "url": "#"
+          "url": "/contact/"
         }
       ]
     },
     {
-      "label": "Services",
+      "label": "Informations",
       "list": [
         {
           "enable": true,
-          "name": "Design UI/UX",
-          "url": "/services/service-05/"
-        },
-        {
-          "enable": true,
-          "name": "Développement d'applications",
-          "url": "/services/service-02/"
-        },
-        {
-          "enable": true,
-          "name": "Marketing digital",
-          "url": "/services/service-03/"
-        },
-        {
-          "enable": true,
-          "name": "Développement web",
-          "url": "/services/service-02/"
-        },
-        {
-          "enable": true,
-          "name": "Cybersécurité",
-          "url": "/services/service-06/"
-        }
-      ]
-    },
-    {
-      "label": "Entreprise",
-      "list": [
-        {
-          "enable": true,
-          "name": "Tous les services",
-          "url": "/services/"
-        },
-        {
-          "enable": true,
-          "name": "Derniers articles",
-          "url": "/blog/"
-        },
-        {
-          "enable": true,
-          "name": "Conditions générales",
-          "url": "/terms-conditions/"
+          "name": "Mentions légales",
+          "url": "/mentions-legales/"
         },
         {
           "enable": true,
           "name": "Politique de confidentialité",
-          "url": "/privacy-policy/"
+          "url": "/politique-confidentialite/"
         }
       ]
     }

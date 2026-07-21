@@ -70,7 +70,7 @@ h3,
 h4,
 h5,
 h6 {
-  @apply text-dark leading-snug font-bold tracking-wide wrap-break-word;
+  @apply text-dark leading-snug font-bold tracking-wide wrap-break-word font-display;
 
   br {
     @apply max-md:hidden;

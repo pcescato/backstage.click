@@ -1,39 +1,29 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/layout/Header.astro';
-import Footer from '@/components/layout/Footer.astro';
-import Badge from '@/components/ui/data-display/Badge/Badge.astro';
-import Button from '@/components/ui/form/Button/Button.astro';
-import { Hero } from '@/components/hero';
-import { footerNavItems, legalLinks } from '@/config/nav.config';
+import Base from "@/layouts/Base.astro";
 ---
 
-<BaseLayout
+<Base
   title="GCF Pro - Logiciel de gestion pour organismes de formation"
-  description="Solution on-premise à licence perpétuelle : Qualiopi, facturation électronique, portails stagiaires. Vos données restent chez vous."
+  metaTitle="GCF Pro - Logiciel de gestion pour organismes de formation"
+  metaDescription="Solution on-premise à licence perpétuelle : Qualiopi, facturation électronique, portails stagiaires. Vos données restent chez vous."
+  headerLayout="two"
+  headerPosition="fixed"
 >
-  <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
-
   <div class="min-h-screen pt-16">
-    <Hero
-      layout="centered"
-      size="lg"
-      showGrid
-      class="border-border border-b pt-12 pb-6 md:pt-20 md:pb-12"
-    >
-      <Badge slot="badge" variant="brand" pill class="px-3 py-1 text-sm">Logiciel de gestion</Badge>
-
-      <h1 slot="title" class="max-w-4xl !text-4xl !leading-[1.05] md:!text-5xl lg:!text-6xl">
-        Fini les abonnements SaaS.
-        <br />
-        GCF Pro installé chez vous, pour toujours.
-      </h1>
-
-      <p slot="description" class="max-w-3xl">
-        Solution on-premise à licence perpétuelle. Vos données restent sur votre serveur. Vous payez
-        une seule fois.
-      </p>
-    </Hero>
+    <section class="border-border border-b pt-12 pb-6 md:pt-20 md:pb-12">
+      <div class="mx-auto max-w-6xl px-6 text-center">
+        <span class="bg-brand-500/10 text-brand-500 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium">Logiciel de gestion</span>
+        <h1 class="font-display text-foreground max-w-4xl !text-4xl !leading-[1.05] mt-6 md:!text-5xl lg:!text-6xl">
+          Fini les abonnements SaaS.
+          <br />
+          GCF Pro installé chez vous, pour toujours.
+        </h1>
+        <p class="text-foreground-muted mx-auto mt-6 max-w-3xl">
+          Solution on-premise à licence perpétuelle. Vos données restent sur votre serveur. Vous payez
+          une seule fois.
+        </p>
+      </div>
+    </section>
 
     <section class="border-border bg-background border-b py-20">
       <div class="mx-auto max-w-6xl px-6">
@@ -64,10 +54,10 @@ import { footerNavItems, legalLinks } from '@/config/nav.config';
                 <h3 class="font-display text-foreground text-xl md:text-2xl font-bold">SaaS classique</h3>
                 <ul class="text-foreground-muted text-sm md:text-base space-y-2 leading-relaxed">
                   <li>• ~250 € / mois = 3 000 € / an</li>
-                  <li>• Données hébergées chez l’éditeur</li>
+                  <li>• Données hébergées chez l'éditeur</li>
                   <li>• Abonnement sans fin</li>
                   <li>• RGPD : sous-traitant obligatoire</li>
-                  <li>• Résiliation = perte d’accès immédiate</li>
+                  <li>• Résiliation = perte d'accès immédiate</li>
                 </ul>
               </div>
             </div>
@@ -237,12 +227,10 @@ import { footerNavItems, legalLinks } from '@/config/nav.config';
           (3h) est éligible OPCO/CPF.
         </p>
         <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-          <Button href="https://gcfpro.fr" target="_blank">Découvrir GCF Pro →</Button>
-          <Button variant="outline" href="https://gcfpro.fr/demo/" target="_blank">Demander une démo</Button>
+          <a href="https://gcfpro.fr" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Découvrir GCF Pro →</a>
+          <a href="https://gcfpro.fr/demo/" target="_blank" rel="noopener noreferrer" class="btn btn-outline">Demander une démo</a>
         </div>
       </div>
     </section>
   </div>
-
-  <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
-</BaseLayout>
+</Base>

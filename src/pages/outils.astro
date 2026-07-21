@@ -1,187 +1,202 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/layout/Header.astro';
-import Footer from '@/components/layout/Footer.astro';
-import Badge from '@/components/ui/data-display/Badge/Badge.astro';
-import Card from '@/components/ui/data-display/Card/Card.astro';
-import Button from '@/components/ui/form/Button/Button.astro';
-import { Hero } from '@/components/hero';
-import { footerNavItems, legalLinks } from '@/config/nav.config';
-
-interface ToolCard {
-  title: string;
-  tagline: string;
-  description: string;
-  includes: string[];
-  reference?: { label: string; url: string; text: string };
-  notice: string;
-  delay: string;
-  price: string;
-  iconPath: string;
-}
-
-const tools: ToolCard[] = [
-  {
-    title: 'Infrastructure professionnelle d\'emailing',
-    tagline: 'Clé en main, conforme, livrée en 24-48h',
-    description:
-      "Vous envoyez encore vos campagnes depuis Gmail ou Outlook ? Risque de spam, zéro tracking fiable, conformité RGPD/CNIL approximative. Je mets en place une infrastructure complète, pensée pour la délivrabilité et la conformité dès le départ.",
-    includes: [
-      'Domaine d\'envoi dédié avec DKIM/SPF/DMARC correctement configurés',
-      'Suivi de délivrabilité (envoyé / délivré / rejeté / retardé)',
-      'Suivi de délivrabilité mis en œuvre conformément à la recommandation CNIL du 12 mars 2026 sur les pixels de suivi *',
-      'Gestion automatisée des désinscriptions',
-      'Personnalisation de base (templates, segmentation simple)',
-    ],
-    reference: {
-      label: '*',
-      url: 'https://www.cnil.fr/fr/recommandation-pixel-suivi-courriels',
-      text: 'recommandation CNIL du 12 mars 2026 sur les pixels de suivi',
-    },
-    notice:
-      "C'est l'infrastructure que j'utilise moi-même pour mes propres campagnes de prospection – pas une théorie, un outil qui tourne en production.",
-    delay: '24-48h en cas standard, jusqu\'à 3-4 jours si personnalisation lourde',
-    price: '600€ HT',
-    cta: 'Demander cet outil →',
-    iconPath:
-      'M80-160v-560q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v560H80Zm400-280 320-200v-80L480-520 160-720v80l320 200Z',
-  },
-  {
-    title: 'Audit express MySQL / PostgreSQL',
-    tagline: 'Sécurité et configuration, sans accès admin requis',
-    description:
-      "Votre base tourne, mais personne n'a vérifié sa configuration depuis longtemps. L'audit express identifie les risques concrets – sécurité, intégrité, maintenance – sans exiger un accès administrateur sur votre serveur.",
-    includes: [
-      'Collecte de 10 métriques clés (sécurité, intégrité, stockage, performance, configuration), via un accès sécurisé temporaire sans privilèges admin (read-only)',
-      'Score global déterministe et reproductible – pas une impression, un calcul',
-      'Matrice de risques priorisée (probabilité × sévérité)',
-      'Rapport exécutif en langage clair : recommandations concrètes, impact business, rationale technique',
-      'Audit réalisé depuis mon infrastructure via connexion sécurisée temporaire (tunnel SSH) – aucune installation, aucun accès permanent laissé sur vos serveurs',
-    ],
-    notice:
-      "Audit express, pas une revue de schéma complète : c'est un diagnostic ciblé sur les risques les plus courants. Une analyse plus approfondie peut être proposée en complément si les résultats le justifient.",
-    delay: '24-48h après ouverture de l\'accès temporaire',
-    price: '790€ HT',
-    cta: 'Commander un audit →',
-    iconPath:
-      'M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120H160Zm0-80h640v-560H160v560Zm40-80h200v-80H200v80Zm382-80 198-198-57-57-141 142-57-57-56 57 113 113Zm-382-80h200v-80H200v80Zm0-160h200v-80H200v80Zm-40 400v-560 560Z',
-  },
-];
+import Base from "@/layouts/Base.astro";
 ---
 
-<BaseLayout
+<Base
   title="Outils"
-  description="Outils et infrastructures prêts à l'emploi, packagés à partir de besoins réels de production."
+  metaTitle="Outils – Backstage"
+  metaDescription="Outils et infrastructures prêts à l'emploi, packagés à partir de besoins réels de production."
+  headerLayout="two"
+  headerPosition="fixed"
 >
-  <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
-
   <div class="min-h-screen pt-16">
-    <Hero
-      layout="centered"
-      size="lg"
-      showGrid
-      class="border-border border-b pt-12 pb-6 md:pt-20 md:pb-12"
-    >
-      <Badge slot="badge" variant="brand" pill class="px-3 py-1 text-sm">
-        Outils prêts à l'emploi
-      </Badge>
-
-      <h1 slot="title" class="max-w-4xl !leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
-        Ce que j'utilise moi-même,
-        <br />
-        packagé pour vous.
-      </h1>
-
-      <p slot="description" class="max-w-3xl">
-        Pas de sur-mesure théorique. Des briques que j'ai déjà construites et fait tourner en
-        production, livrables rapidement.
-      </p>
-    </Hero>
+    <section class="border-border border-b pt-12 pb-6 md:pt-20 md:pb-12">
+      <div class="mx-auto max-w-6xl px-6 text-center">
+        <span class="bg-brand-500/10 text-brand-500 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium">
+          Outils prêts à l'emploi
+        </span>
+        <h1 class="font-display text-foreground max-w-4xl !leading-[1.05] mt-6 !text-4xl md:!text-5xl lg:!text-6xl">
+          Ce que j'utilise moi-même,
+          <br />
+          packagé pour vous.
+        </h1>
+        <p class="text-foreground-muted mx-auto mt-6 max-w-3xl">
+          Pas de sur-mesure théorique. Des briques que j'ai déjà construites et fait tourner en
+          production, livrables rapidement.
+        </p>
+      </div>
+    </section>
 
     <section class="border-border bg-background border-b py-20">
       <div class="mx-auto max-w-6xl px-6">
         <div class="grid gap-6">
-          {
-            tools.map((tool) => (
-              <Card variant="elevated" padding="lg" class="border-border border">
-                <div class="flex flex-col gap-6">
-                  <div class="flex items-start gap-5">
-                    <div class="bg-secondary text-foreground inline-flex w-fit shrink-0 rounded-full p-3">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 -960 960 960"
-                        fill="currentColor"
-                        class="h-12 w-12 shrink-0"
-                        aria-hidden="true"
-                      >
-                        <path d={tool.iconPath}></path>
-                      </svg>
-                    </div>
-                    <div class="space-y-2">
-                      <h2 class="font-display text-foreground text-2xl font-bold md:text-3xl">
-                        {tool.title}
-                      </h2>
-                      <p class="text-foreground-muted text-sm font-medium md:text-base">
-                        {tool.tagline}
-                      </p>
-                    </div>
-                  </div>
-
-                  <p class="text-foreground-muted text-sm leading-relaxed md:text-base">
-                    {tool.description}
-                  </p>
-
-                  <div class="space-y-3">
-                    <h3 class="text-foreground text-sm font-semibold uppercase tracking-wide">
-                      Ce qui est inclus
-                    </h3>
-                    <ul class="space-y-2">
-                      {tool.includes.map((item) => (
-                        <li class="text-foreground-muted flex items-start gap-2 text-sm leading-relaxed md:text-base">
-                          <span class="text-foreground mt-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"> <path d="M20 6L9 17l-5-5"></path> </svg></span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {tool.reference && (
-                    <p class="text-foreground-subtle text-xs leading-relaxed">
-                      {tool.reference.label} Texte de référence :{' '}
-                      <a
-                        href={tool.reference.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="text-foreground underline underline-offset-2 hover:no-underline"
-                      >
-                        {tool.reference.text}
-                      </a>
-                    </p>
-                  )}
-
-                  <p class="text-foreground-subtle border-border border-t pt-4 text-sm leading-relaxed italic">
-                    {tool.notice}
-                  </p>
-
-                  <div class="border-border flex flex-col gap-4 border-t pt-6 sm:flex-row sm:items-center sm:justify-between">
-                    <div class="space-y-1">
-                      <p class="text-foreground-subtle text-xs uppercase tracking-wide">
-                        Délai
-                      </p>
-                      <p class="text-foreground-muted text-sm">{tool.delay}</p>
-                    </div>
-                    <div class="space-y-1">
-                      <p class="text-foreground-subtle text-xs uppercase tracking-wide">
-                        Tarif (à partir de)
-                      </p>
-                      <p class="text-foreground text-2xl font-bold">{tool.price}</p>
-                    </div>
-                    <Button href="/contact">{tool.cta}</Button>
-                  </div>
+          <div class="border-border border bg-card rounded-xl p-8 shadow-sm">
+            <div class="flex flex-col gap-6">
+              <div class="flex items-start gap-5">
+                <div class="bg-secondary text-foreground inline-flex w-fit shrink-0 rounded-full p-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 -960 960 960"
+                    fill="currentColor"
+                    class="h-12 w-12 shrink-0"
+                    aria-hidden="true"
+                  >
+                    <path d="M80-160v-560q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v560H80Zm400-280 320-200v-80L480-520 160-720v80l320 200Z"></path>
+                  </svg>
                 </div>
-              </Card>
-            ))
-          }
+                <div class="space-y-2">
+                  <h2 class="font-display text-foreground text-2xl font-bold md:text-3xl">
+                    Infrastructure professionnelle d'emailing
+                  </h2>
+                  <p class="text-foreground-muted text-sm font-medium md:text-base">
+                    Clé en main, conforme, livrée en 24-48h
+                  </p>
+                </div>
+              </div>
+
+              <p class="text-foreground-muted text-sm leading-relaxed md:text-base">
+                Vous envoyez encore vos campagnes depuis Gmail ou Outlook ? Risque de spam, zéro tracking fiable, conformité RGPD/CNIL approximative. Je mets en place une infrastructure complète, pensée pour la délivrabilité et la conformité dès le départ.
+              </p>
+
+              <div class="space-y-3">
+                <h3 class="text-foreground text-sm font-semibold uppercase tracking-wide">
+                  Ce qui est inclus
+                </h3>
+                <ul class="space-y-2">
+                  <li class="text-foreground-muted flex items-start gap-2 text-sm leading-relaxed md:text-base">
+                    <span class="text-foreground mt-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"> <path d="M20 6L9 17l-5-5"></path> </svg></span>
+                    <span>Domaine d'envoi dédié avec DKIM/SPF/DMARC correctement configurés</span>
+                  </li>
+                  <li class="text-foreground-muted flex items-start gap-2 text-sm leading-relaxed md:text-base">
+                    <span class="text-foreground mt-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"> <path d="M20 6L9 17l-5-5"></path> </svg></span>
+                    <span>Suivi de délivrabilité (envoyé / délivré / rejeté / retardé)</span>
+                  </li>
+                  <li class="text-foreground-muted flex items-start gap-2 text-sm leading-relaxed md:text-base">
+                    <span class="text-foreground mt-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"> <path d="M20 6L9 17l-5-5"></path> </svg></span>
+                    <span>Suivi de délivrabilité mis en œuvre conformément à la recommandation CNIL du 12 mars 2026 sur les pixels de suivi *</span>
+                  </li>
+                  <li class="text-foreground-muted flex items-start gap-2 text-sm leading-relaxed md:text-base">
+                    <span class="text-foreground mt-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"> <path d="M20 6L9 17l-5-5"></path> </svg></span>
+                    <span>Gestion automatisée des désinscriptions</span>
+                  </li>
+                  <li class="text-foreground-muted flex items-start gap-2 text-sm leading-relaxed md:text-base">
+                    <span class="text-foreground mt-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"> <path d="M20 6L9 17l-5-5"></path> </svg></span>
+                    <span>Personnalisation de base (templates, segmentation simple)</span>
+                  </li>
+                </ul>
+              </div>
+
+              <p class="text-foreground-subtle text-xs leading-relaxed">
+                * Texte de référence :{' '}
+                <a
+                  href="https://www.cnil.fr/fr/recommandation-pixel-suivi-courriels"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-foreground underline underline-offset-2 hover:no-underline"
+                >
+                  recommandation CNIL du 12 mars 2026 sur les pixels de suivi
+                </a>
+              </p>
+
+              <p class="text-foreground-subtle border-border border-t pt-4 text-sm leading-relaxed italic">
+                C'est l'infrastructure que j'utilise moi-même pour mes propres campagnes de prospection – pas une théorie, un outil qui tourne en production.
+              </p>
+
+              <div class="border-border flex flex-col gap-4 border-t pt-6 sm:flex-row sm:items-center sm:justify-between">
+                <div class="space-y-1">
+                  <p class="text-foreground-subtle text-xs uppercase tracking-wide">
+                    Délai
+                  </p>
+                  <p class="text-foreground-muted text-sm">24-48h en cas standard, jusqu'à 3-4 jours si personnalisation lourde</p>
+                </div>
+                <div class="space-y-1">
+                  <p class="text-foreground-subtle text-xs uppercase tracking-wide">
+                    Tarif (à partir de)
+                  </p>
+                  <p class="text-foreground text-2xl font-bold">600€ HT</p>
+                </div>
+                <a href="/contact" class="btn btn-primary">Demander cet outil →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-border border bg-card rounded-xl p-8 shadow-sm">
+            <div class="flex flex-col gap-6">
+              <div class="flex items-start gap-5">
+                <div class="bg-secondary text-foreground inline-flex w-fit shrink-0 rounded-full p-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 -960 960 960"
+                    fill="currentColor"
+                    class="h-12 w-12 shrink-0"
+                    aria-hidden="true"
+                  >
+                    <path d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120H160Zm0-80h640v-560H160v560Zm40-80h200v-80H200v80Zm382-80 198-198-57-57-141 142-57-57-56 57 113 113Zm-382-80h200v-80H200v80Zm0-160h200v-80H200v80Zm-40 400v-560 560Z"></path>
+                  </svg>
+                </div>
+                <div class="space-y-2">
+                  <h2 class="font-display text-foreground text-2xl font-bold md:text-3xl">
+                    Audit express MySQL / PostgreSQL
+                  </h2>
+                  <p class="text-foreground-muted text-sm font-medium md:text-base">
+                    Sécurité et configuration, sans accès admin requis
+                  </p>
+                </div>
+              </div>
+
+              <p class="text-foreground-muted text-sm leading-relaxed md:text-base">
+                Votre base tourne, mais personne n'a vérifié sa configuration depuis longtemps. L'audit express identifie les risques concrets – sécurité, intégrité, maintenance – sans exiger un accès administrateur sur votre serveur.
+              </p>
+
+              <div class="space-y-3">
+                <h3 class="text-foreground text-sm font-semibold uppercase tracking-wide">
+                  Ce qui est inclus
+                </h3>
+                <ul class="space-y-2">
+                  <li class="text-foreground-muted flex items-start gap-2 text-sm leading-relaxed md:text-base">
+                    <span class="text-foreground mt-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"> <path d="M20 6L9 17l-5-5"></path> </svg></span>
+                    <span>Collecte de 10 métriques clés (sécurité, intégrité, stockage, performance, configuration), via un accès sécurisé temporaire sans privilèges admin (read-only)</span>
+                  </li>
+                  <li class="text-foreground-muted flex items-start gap-2 text-sm leading-relaxed md:text-base">
+                    <span class="text-foreground mt-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"> <path d="M20 6L9 17l-5-5"></path> </svg></span>
+                    <span>Score global déterministe et reproductible – pas une impression, un calcul</span>
+                  </li>
+                  <li class="text-foreground-muted flex items-start gap-2 text-sm leading-relaxed md:text-base">
+                    <span class="text-foreground mt-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"> <path d="M20 6L9 17l-5-5"></path> </svg></span>
+                    <span>Matrice de risques priorisée (probabilité × sévérité)</span>
+                  </li>
+                  <li class="text-foreground-muted flex items-start gap-2 text-sm leading-relaxed md:text-base">
+                    <span class="text-foreground mt-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"> <path d="M20 6L9 17l-5-5"></path> </svg></span>
+                    <span>Rapport exécutif en langage clair : recommandations concrètes, impact business, rationale technique</span>
+                  </li>
+                  <li class="text-foreground-muted flex items-start gap-2 text-sm leading-relaxed md:text-base">
+                    <span class="text-foreground mt-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"> <path d="M20 6L9 17l-5-5"></path> </svg></span>
+                    <span>Audit réalisé depuis mon infrastructure via connexion sécurisée temporaire (tunnel SSH) – aucune installation, aucun accès permanent laissé sur vos serveurs</span>
+                  </li>
+                </ul>
+              </div>
+
+              <p class="text-foreground-subtle border-border border-t pt-4 text-sm leading-relaxed italic">
+                Audit express, pas une revue de schéma complète : c'est un diagnostic ciblé sur les risques les plus courants. Une analyse plus approfondie peut être proposée en complément si les résultats le justifient.
+              </p>
+
+              <div class="border-border flex flex-col gap-4 border-t pt-6 sm:flex-row sm:items-center sm:justify-between">
+                <div class="space-y-1">
+                  <p class="text-foreground-subtle text-xs uppercase tracking-wide">
+                    Délai
+                  </p>
+                  <p class="text-foreground-muted text-sm">24-48h après ouverture de l'accès temporaire</p>
+                </div>
+                <div class="space-y-1">
+                  <p class="text-foreground-subtle text-xs uppercase tracking-wide">
+                    Tarif (à partir de)
+                  </p>
+                  <p class="text-foreground text-2xl font-bold">790€ HT</p>
+                </div>
+                <a href="/contact" class="btn btn-primary">Commander un audit →</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -195,11 +210,9 @@ const tools: ToolCard[] = [
           Mes outils viennent de projets réels. D'autres sont en préparation. Un besoin spécifique en attendant ? Contactez-moi.
         </p>
         <div class="mt-10 flex justify-center">
-          <Button href="/contact">Prendre rendez-vous →</Button>
+          <a href="/contact" class="btn btn-primary">Prendre rendez-vous →</a>
         </div>
       </div>
     </section>
   </div>
-
-  <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
-</BaseLayout>
+</Base>

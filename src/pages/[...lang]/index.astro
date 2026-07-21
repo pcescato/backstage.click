@@ -2,14 +2,8 @@
 import Base from "@/layouts/Base.astro";
 import { getEntryCTM } from "@/lib/contentParser.astro";
 import { generatePaths } from "@/lib/utils/i18nUtils.ts";
-import TeamSection from "@/components/sections/TeamSection.astro";
-import BlogSection from "@/components/sections/BlogSection.astro";
 import BannerThree from "@/components/sections/BannerThree.astro";
 import MultipurposeSection from "@/components/sections/Section.astro";
-import ServicesSection from "@/components/sections/ServicesSection.astro";
-import WorkingProcessSection from "@/components/sections/WorkingProcessSection.astro";
-import TestimonialQuoteSection from "@/components/sections/TestimonialQuoteSection.astro";
-import ContactSectionTwo from "@/components/sections/ContactSectionTwo.astro";
 
 export function getStaticPaths() {
   return generatePaths();
@@ -28,23 +22,10 @@ const skillSectionContent = await getEntryCTM(
 );
 ---
 
-<Base {...homepageContent?.data} headerLayout="three" headerPosition="fixed">
+<Base {...homepageContent?.data} headerLayout="two" headerPosition="fixed">
   <BannerThree />
-  <ServicesSection
-    hasLightBackground={false}
-    content={{
-      options: {
-        layout: "carousel",
-      },
-    }}
-  />
   <MultipurposeSection
     hasSectionBackground={true}
     content={skillSectionContent.data}
   />
-  <WorkingProcessSection />
-  <TestimonialQuoteSection />
-  <ContactSectionTwo hasSectionSpacing={false} />
-  <TeamSection hasDarkAppearance={true} hasSectionSpacing={false} />
-  <BlogSection />
 </Base>

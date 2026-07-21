@@ -1,56 +1,25 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/layout/Header.astro';
-import Footer from '@/components/layout/Footer.astro';
-import Badge from '@/components/ui/data-display/Badge/Badge.astro';
-import Card from '@/components/ui/data-display/Card/Card.astro';
-import Button from '@/components/ui/form/Button/Button.astro';
-import Accordion from '@/components/ui/overlay/Accordion/Accordion.astro';
-import { Hero } from '@/components/hero';
-import { footerNavItems, legalLinks } from '@/config/nav.config';
-
-const faqItems = [
-  {
-    title: 'Combien coûte un CRM ou ERP sur-mesure pour une PME ?',
-    content: "Ça dépend du périmètre. Pour un ERP métier complet comme GCF Pro, le repère est de 3 900 € HT en licence à vie ou 1 490 € HT/an, hors installation et formation. Pour un CRM plus ciblé comme sav-crm, encore en phase de finalisation, le tarif se définit selon les besoins spécifiques du client. Le premier échange sert à cadrer un ordre de grandeur précis pour votre cas.",
-    defaultOpen: true,
-  },
-  {
-    title: 'Pourquoi éviter un framework comme Symfony pour un outil métier interne ?',
-    content: "Un framework généraliste apporte de la structure pour de gros projets avec plusieurs développeurs, mais pour un outil métier ciblé, il ajoute surtout de la complexité : montées de version à suivre, conventions à respecter, temps de développement allongé. Du PHP natif bien architecturé (MVC, sans ORM) est plus rapide à développer, plus simple à auditer, et sans dette de framework à traîner.",
-  },
-  {
-    title: 'Un CRM sur-mesure peut-il remplacer un abonnement SaaS existant ?',
-    content: "Souvent oui, en particulier quand votre métier a des contraintes que le SaaS générique gère mal (calculs réglementaires spécifiques, contrats liés à des équipements plutôt qu'à des contacts, synchronisation terrain). L'avantage supplémentaire : vos données restent chez vous, sans dépendre de la politique tarifaire ou de la pérennité d'un éditeur tiers.",
-  },
-  {
-    title: 'Est-ce que je reste dépendant de vous après la livraison ?',
-    content: "Non. Le code est en PHP natif, documenté, sans dépendance à un framework propriétaire. N'importe quel développeur PHP peut reprendre la maintenance. Je propose un contrat de maintenance si vous le souhaitez, mais ce n'est jamais une obligation contractuelle cachée.",
-  },
-];
+import Base from "@/layouts/Base.astro";
 ---
 
-<BaseLayout
+<Base
   title="CRM & ERP sur-mesure pour PME"
-  description="Développement de CRM et ERP métier sur-mesure pour PME et TPE. Sans ORM, sans framework overhead, sans abonnement SaaS. 20 ans de production réelle."
+  metaTitle="CRM & ERP sur-mesure pour PME"
+  metaDescription="Développement de CRM et ERP métier sur-mesure pour PME et TPE. Sans ORM, sans framework overhead, sans abonnement SaaS. 20 ans de production réelle."
+  headerLayout="two"
+  headerPosition="fixed"
 >
-  <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
-
   <div class="min-h-screen pt-16">
-    <Hero
-      layout="centered"
-      size="lg"
-      showGrid
-      class="border-border pt-12 pb-6 md:pt-20 md:pb-12"
-    >
-      <Badge slot="badge" variant="brand" pill class="px-3 py-1 text-sm">
-        Applications métier
-      </Badge>
-
-      <h1 slot="title" class="!leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
-        CRM et ERP sur-mesure pour PME
-      </h1>
-    </Hero>
+    <section class="border-border pt-12 pb-6 md:pt-20 md:pb-12">
+      <div class="mx-auto max-w-6xl px-6 text-center">
+        <span class="bg-brand-500/10 text-brand-500 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium">
+          Applications métier
+        </span>
+        <h1 class="font-display text-foreground !leading-[1.05] mt-6 !text-4xl md:!text-5xl lg:!text-6xl">
+          CRM et ERP sur-mesure pour PME
+        </h1>
+      </div>
+    </section>
 
     <section class="py-8 md:py-12">
       <div class="mx-auto max-w-6xl px-6">
@@ -112,7 +81,7 @@ const faqItems = [
               Un ERP complet pour organismes de formation certifiés Qualiopi : gestion des stagiaires, des dossiers de financement, des sessions inter/intra, des capacités d'accueil avec contrainte assurantielle, tables de référence administrables. Développé en PHP/MVC natif, déployé en auto-hébergement. Disponible en licence à vie (3 900 € HT) ou en abonnement annuel (1 490 € HT/an), avec installation et formation incluses en option.
             </p>
             <div class="mt-4 pt-2">
-              <Button href="https://gcfpro.fr" target="_blank">Découvrir GCF Pro →</Button>
+              <a href="https://gcfpro.fr" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Découvrir GCF Pro →</a>
             </div>
           </div>
 
@@ -148,8 +117,31 @@ const faqItems = [
           <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
             FAQ
           </h2>
-          <div class="mt-6">
-            <Accordion items={faqItems} exclusive />
+          <div class="mt-6 space-y-6">
+            <details open class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">Combien coûte un CRM ou ERP sur-mesure pour une PME ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                Ça dépend du périmètre. Pour un ERP métier complet comme GCF Pro, le repère est de 3 900 € HT en licence à vie ou 1 490 € HT/an, hors installation et formation. Pour un CRM plus ciblé comme sav-crm, encore en phase de finalisation, le tarif se définit selon les besoins spécifiques du client. Le premier échange sert à cadrer un ordre de grandeur précis pour votre cas.
+              </p>
+            </details>
+            <details class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">Pourquoi éviter un framework comme Symfony pour un outil métier interne ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                Un framework généraliste apporte de la structure pour de gros projets avec plusieurs développeurs, mais pour un outil métier ciblé, il ajoute surtout de la complexité : montées de version à suivre, conventions à respecter, temps de développement allongé. Du PHP natif bien architecturé (MVC, sans ORM) est plus rapide à développer, plus simple à auditer, et sans dette de framework à traîner.
+              </p>
+            </details>
+            <details class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">Un CRM sur-mesure peut-il remplacer un abonnement SaaS existant ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                Souvent oui, en particulier quand votre métier a des contraintes que le SaaS générique gère mal (calculs réglementaires spécifiques, contrats liés à des équipements plutôt qu'à des contacts, synchronisation terrain). L'avantage supplémentaire : vos données restent chez vous, sans dépendre de la politique tarifaire ou de la pérennité d'un éditeur tiers.
+              </p>
+            </details>
+            <details class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">Est-ce que je reste dépendant de vous après la livraison ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                Non. Le code est en PHP natif, documenté, sans dépendance à un framework propriétaire. N'importe quel développeur PHP peut reprendre la maintenance. Je propose un contrat de maintenance si vous le souhaitez, mais ce n'est jamais une obligation contractuelle cachée.
+              </p>
+            </details>
           </div>
         </div>
       </div>
@@ -167,12 +159,10 @@ const faqItems = [
             </p>
           </div>
           <div class="shrink-0">
-            <Button href="/contact">Prendre rendez-vous →</Button>
+            <a href="/contact" class="btn btn-primary">Prendre rendez-vous →</a>
           </div>
         </div>
       </div>
     </section>
   </div>
-
-  <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
-</BaseLayout>
+</Base>

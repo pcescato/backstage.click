@@ -76,11 +76,11 @@
     "searchPlaceholder": "Rechercher..."
   },
   "footer": {
-    "description": "Nous accompagnons les organisations en croissance pour planifier, concevoir, sécuriser et maintenir des systèmes technologiques fiables au service de leurs activités quotidiennes.",
+    "description": "Développement web, maintenance WordPress et conseil technique pour PME et organismes de formation.",
     "quickLinksTitle": "Liens rapides",
     "servicesTitle": "Services",
     "informationTitle": "Informations",
-    "copyright": "Copyright © 2026 Your Company. Tous droits réservés.",
+    "copyright": "Copyright © 2026 Backstage. Tous droits réservés.",
     "_comment": "Footer text matches the default footer design. Update this value if the product copyright changes."
   }
 }

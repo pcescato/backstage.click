@@ -1,5 +1,5 @@
 ---
-enable: true
+enable: false
 title: "Notre méthode pour<br />développer votre entreprise"
 # Images should remain lightweight transparent illustrations for the process step layout.
 list:

@@ -47,13 +47,13 @@ const faqItems = [
         Applications métier
       </Badge>
 
-      <h1 slot="title" class="max-w-4xl !leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
+      <h1 slot="title" class="!leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
         CRM et ERP sur-mesure pour PME
       </h1>
     </Hero>
 
     <section class="py-8 md:py-12">
-      <div class="mx-auto max-w-3xl px-6">
+      <div class="mx-auto max-w-5xl px-6">
         <p class="text-foreground-muted text-base leading-relaxed md:text-lg md:leading-relaxed">
           Un CRM générique ne colle jamais tout à fait à votre métier. Vous adaptez vos process à l'outil, vous payez un abonnement par utilisateur qui grimpe avec la croissance, et le jour où vous voulez exporter vos données ou changer de solution, c'est un chantier. Je développe des CRM et ERP sur-mesure, pensés pour votre métier réel, hébergés chez vous ou chez un prestataire de votre choix, sans dépendance à un éditeur tiers.
         </p>
@@ -61,7 +61,7 @@ const faqItems = [
     </section>
 
     <section class="pb-8 md:pb-12">
-      <div class="mx-auto max-w-4xl space-y-6 px-6">
+      <div class="mx-auto max-w-6xl space-y-6 px-6">
         <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
           <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
             Le problème du logiciel générique
@@ -93,52 +93,35 @@ const faqItems = [
     </section>
 
     <section class="pb-8 md:pb-12">
-      <div class="mx-auto max-w-4xl px-6">
-        <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
-          <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
-            Deux réalisations concrètes
-          </h2>
+      <div class="mx-auto max-w-6xl px-6">
+        <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+          Deux réalisations concrètes
+        </h2>
 
-          <div class="mt-8 grid gap-6 md:grid-cols-2">
-            <div class="bg-secondary rounded-lg p-6">
-              <div class="space-y-3">
-                <h3 class="font-display text-foreground text-xl font-bold">GCF Pro</h3>
-                <p class="text-foreground-muted text-sm font-medium">ERP pour organismes de formation Qualiopi</p>
-              </div>
-              <p class="text-foreground-muted mt-4 text-sm leading-relaxed">
-                Un ERP complet pour organismes de formation certifiés Qualiopi : gestion des stagiaires, des dossiers de financement, des sessions inter/intra, des capacités d'accueil avec contrainte assurantielle, tables de référence administrables. Développé en PHP/MVC natif, déployé en auto-hébergement. Disponible en licence à vie (3 900 € HT) ou en abonnement annuel (1 490 € HT/an), avec installation et formation incluses en option.
-              </p>
-              <div class="mt-4 pt-2">
-                <Button href="https://gcfpro.fr" target="_blank">Découvrir GCF Pro →</Button>
-              </div>
+        <div class="mt-8 grid gap-6 md:grid-cols-2">
+          <div class="bg-secondary rounded-lg p-6">
+            <div class="space-y-3">
+              <h3 class="font-display text-foreground text-xl font-bold">GCF Pro</h3>
+              <p class="text-foreground-muted text-sm font-medium">ERP pour organismes de formation Qualiopi</p>
             </div>
-
-            <div class="bg-secondary rounded-lg p-6">
-              <div class="space-y-3">
-                <h3 class="font-display text-foreground text-xl font-bold">sav-crm</h3>
-                <p class="text-foreground-muted text-sm font-medium">CRM/SAV pour artisans chauffagistes et plombiers</p>
-              </div>
-              <p class="text-foreground-muted mt-4 text-sm leading-relaxed">
-                Né d'un projet client réel (transformation d'une installation WordPress/Bookly/WooCommerce), devenu un produit autonome. Gestion multi-sites, contrats de maintenance rattachés aux équipements et non aux occupants, calcul de TVA selon l'âge du bâtiment, relances de renouvellement automatiques avec prise en compte des jours fériés français, synchronisation hors-ligne pour les techniciens sur le terrain. Une revue de sécurité indépendante a permis d'identifier et corriger les points critiques avant mise en production.
-              </p>
-              <p class="text-foreground-subtle mt-4 text-sm italic">
-                Produit en cours de finalisation – tarif défini selon le périmètre de chaque projet.
-              </p>
+            <p class="text-foreground-muted mt-4 text-sm leading-relaxed">
+              Un ERP complet pour organismes de formation certifiés Qualiopi : gestion des stagiaires, des dossiers de financement, des sessions inter/intra, des capacités d'accueil avec contrainte assurantielle, tables de référence administrables. Développé en PHP/MVC natif, déployé en auto-hébergement. Disponible en licence à vie (3 900 € HT) ou en abonnement annuel (1 490 € HT/an), avec installation et formation incluses en option.
+            </p>
+            <div class="mt-4 pt-2">
+              <Button href="https://gcfpro.fr" target="_blank">Découvrir GCF Pro →</Button>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <section class="pb-8 md:pb-12">
-      <div class="mx-auto max-w-4xl px-6">
-        <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
-          <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
-            Comment ça se passe
-          </h2>
-          <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
-            <p>
-              Je travaille seul, sans intermédiaire commercial ni chef de projet entre vous et le code. Le cadrage initial (15 minutes suffisent pour un premier échange) permet de vérifier que votre besoin correspond bien à du sur-mesure – parfois un outil existant suffit, et je vous le dirai franchement. Ensuite : spécification fonctionnelle détaillée, développement, tests, mise en production, avec un point régulier à chaque étape clé.
+          <div class="bg-secondary rounded-lg p-6">
+            <div class="space-y-3">
+              <h3 class="font-display text-foreground text-xl font-bold">sav-crm</h3>
+              <p class="text-foreground-muted text-sm font-medium">CRM/SAV pour artisans chauffagistes et plombiers</p>
+            </div>
+            <p class="text-foreground-muted mt-4 text-sm leading-relaxed">
+              Né d'un projet client réel (transformation d'une installation WordPress/Bookly/WooCommerce), devenu un produit autonome. Gestion multi-sites, contrats de maintenance rattachés aux équipements et non aux occupants, calcul de TVA selon l'âge du bâtiment, relances de renouvellement automatiques avec prise en compte des jours fériés français, synchronisation hors-ligne pour les techniciens sur le terrain. Une revue de sécurité indépendante a permis d'identifier et corriger les points critiques avant mise en production.
+            </p>
+            <p class="text-foreground-subtle mt-4 text-sm italic">
+              Produit en cours de finalisation – tarif défini selon le périmètre de chaque projet.
             </p>
           </div>
         </div>
@@ -146,7 +129,20 @@ const faqItems = [
     </section>
 
     <section class="pb-8 md:pb-12">
-      <div class="mx-auto max-w-4xl px-6">
+      <div class="mx-auto max-w-6xl px-6">
+        <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+          Comment ça se passe
+        </h2>
+        <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
+          <p>
+            Je travaille seul, sans intermédiaire commercial ni chef de projet entre vous et le code. Le cadrage initial (15 minutes suffisent pour un premier échange) permet de vérifier que votre besoin correspond bien à du sur-mesure – parfois un outil existant suffit, et je vous le dirai franchement. Ensuite : spécification fonctionnelle détaillée, développement, tests, mise en production, avec un point régulier à chaque étape clé.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="pb-8 md:pb-12">
+      <div class="mx-auto max-w-6xl px-6">
         <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
           <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
             FAQ
@@ -159,7 +155,7 @@ const faqItems = [
     </section>
 
     <section class="invert-section bg-background border-t border-border py-16 md:py-20">
-      <div class="mx-auto max-w-4xl px-6">
+      <div class="mx-auto max-w-6xl px-6">
         <div class="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
           <div class="space-y-2">
             <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">

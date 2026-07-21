@@ -11,16 +11,16 @@ import { footerNavItems, legalLinks } from '@/config/nav.config';
 const faqItems = [
   {
     title: 'Combien coûte la maintenance WordPress d\'un site existant ?',
-    content: "Ça dépend du volume de contenu, du nombre de plugins et de l'état de sécurité initial. Un premier échange permet d'évaluer l'ampleur du travail et de proposer un forfait ou un abonnement de maintenance adapté.",
+    content: "Tout dépend du volume de contenu, du nombre de plugins et de l'état de sécurité initial. Un premier échange permet d'évaluer l'ampleur du travail et de proposer un forfait ou un abonnement de maintenance adapté.",
     defaultOpen: true,
   },
   {
     title: 'Faut-il migrer son WordPress vers un site statique ?',
-    content: "Pas systématiquement. Si votre site a besoin d'un back-office pour des utilisateurs non techniques, ou d'une boutique WooCommerce active, WordPress reste pertinent – auquel cas la maintenance et l'optimisation sont la bonne réponse. La migration a du sens quand le site est principalement du contenu éditorial (blog, vitrine) où la flexibilité d'un CMS n'apporte plus rien face au coût de maintenance.",
+    content: "Pas systématiquement. Si votre site a besoin d'un back-office pour des utilisateurs non techniques, ou d'une boutique WooCommerce active, WordPress reste pertinent – dans ce cas la maintenance et l'optimisation sont la bonne réponse. La migration a du sens quand le site est principalement du contenu éditorial (blog, vitrine) où la flexibilité d'un CMS n'apporte rien.",
   },
   {
     title: 'La migration vers Astro ou Hugo fait-elle perdre le référencement existant ?',
-    content: "Non, si elle est faite correctement. Le pipeline wp2md préserve les URLs, les métadonnées et la structure du contenu, avec un objectif de préservation SEO à 100%. C'est justement le risque principal d'une migration mal faite qu'il faut éviter.",
+    content: "Non, si elle est faite correctement. Le pipeline de migration préserve les URLs, les métadonnées et la structure du contenu, avec un objectif de préservation SEO à 100%. C'est justement le risque principal d'une migration mal faite qu'il faut éviter.",
   },
   {
     title: 'Quelle est la différence entre optimisation et migration ?',
@@ -31,7 +31,7 @@ const faqItems = [
 
 <BaseLayout
   title="Maintenance, optimisation et migration WordPress"
-  description="Maintenance, optimisation Core Web Vitals et migration WordPress vers Astro/Hugo. Pipeline propriétaire wp2md : préservation SEO, réduction du temps de migration."
+  description="Maintenance, optimisation Core Web Vitals et migration WordPress vers Astro/Hugo. Pipeline propriétaire de migration de WordPress vers Astro / Hugo : préservation SEO, réduction du temps de migration."
 >
   <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
 
@@ -92,7 +92,7 @@ const faqItems = [
               Quand WordPress devient plus un fardeau qu'un atout – lenteur du chargement sur smartphone, dépendance à des plugins payants, mises à jour permanentes, coûts de maintenance qui grimpent –, la migration vers un générateur de site statique (Astro, Hugo) est une option à considérer sérieusement. Un site statique n'a pas de base de données à sécuriser, pas de plugin à maintenir, et des temps de chargement nettement meilleurs.
             </p>
             <p>
-              J'ai développé wp2md, un pipeline propriétaire qui facilite cette migration : extraction du contenu WordPress, conversion en Markdown, préservation intégrale du référencement existant (URLs, métadonnées, structure), avec une réduction du temps de migration de 80% par rapport à une reprise manuelle. Cet outil est le résultat direct de mes propres migrations, dont celle de ce site.
+              J'ai développé un pipeline propriétaire qui facilite cette migration : extraction du contenu WordPress, conversion en Markdown, préservation intégrale du référencement existant (URLs, métadonnées, structure), avec une réduction du temps de migration de 80% par rapport à une reprise manuelle. Cet outil est le résultat direct de mes propres migrations, dont celle de ce site.
             </p>
           </div>
         </div>
@@ -106,7 +106,7 @@ const faqItems = [
         </h2>
         <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
           <p>
-            Premier échange pour évaluer si votre besoin est de la maintenance (site à conserver et faire durer) ou une migration (site à reconstruire sur une base plus légère). Pour une maintenance : audit initial, plan d'action priorisé, intervention. Pour une migration : audit du contenu existant, migration via wp2md, vérification du référencement post-migration, mise en production.
+            Premier échange pour évaluer si votre besoin est de la maintenance (site à conserver et faire durer) ou une migration (site à reconstruire sur une base plus légère). Pour une maintenance : audit initial, plan d'action priorisé, intervention. Pour une migration : audit du contenu existant, migration via un outil développé en interne, vérification du référencement post-migration, mise en production.
           </p>
         </div>
       </div>

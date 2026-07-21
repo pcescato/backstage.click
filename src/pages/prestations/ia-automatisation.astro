@@ -63,11 +63,11 @@ const faqItems = [
       <div class="mx-auto max-w-6xl space-y-6 px-6">
         <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
           <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
-            Intégration LLM
+            Intégration de l'IA
           </h2>
           <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
             <p>
-              Connexion à des modèles LLM (OpenAI, Ollama en local) selon le besoin : cloud quand la puissance ou la simplicité prime, local quand la confidentialité des données est un enjeu – un modèle Ollama auto-hébergé ne fait transiter aucune donnée client vers un tiers. Le choix du modèle n'est jamais automatique : il dépend du cas d'usage, du budget, et de la sensibilité des données traitées.
+              Connexion à des modèles de langage (<abbr title="Large Laguage Model">LLM</abbr>) selon le besoin : cloud quand la puissance ou la simplicité prime, local quand la confidentialité des données est un enjeu – un modèle Ollama auto-hébergé ne fait transiter aucune donnée client vers un tiers. Le choix du modèle n'est jamais automatique : il dépend du cas d'usage, du budget, et de la sensibilité des données traitées.
             </p>
           </div>
         </div>
@@ -78,7 +78,10 @@ const faqItems = [
           </h2>
           <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
             <p>
-              Automatisation de tâches répétitives avec n8n – équivalent open-source et auto-hébergeable de Zapier, qui permet d'orchestrer des workflows (déclencheurs, API, IA, bases de données) sans dépendre d'un abonnement SaaS par tâche. Contrairement à Zapier, n8n s'auto-héberge : pas de limite de workflow imposée par un palier tarifaire, contrôle complet sur les données qui transitent.
+              Automatisation de tâches répétitives avec n8n – équivalent open-source et auto-hébergeable de Zapier, qui permet d'orchestrer des workflows (déclencheurs, API, IA, bases de données) sans dépendre d'un abonnement SaaS par tâche.
+            </p>
+            <p>
+              Contrairement à Zapier, n8n s'auto-héberge : pas de limite de workflow imposée par un palier tarifaire, contrôle complet sur les données qui transitent.
             </p>
           </div>
         </div>
@@ -89,7 +92,10 @@ const faqItems = [
           </h2>
           <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
             <p>
-              L'IA générative peut vite devenir un poste de coût incontrôlé si chaque appel LLM part sur le modèle le plus cher par défaut. J'utilise OpenRouter pour router chaque requête vers le modèle le plus adapté au besoin réel – un modèle léger pour une tâche simple, un modèle plus puissant seulement quand c'est justifié – avec un suivi de coût précis plutôt qu'une facture cloud qui grimpe sans visibilité.
+              L'IA générative peut vite devenir un poste de coût incontrôlé si chaque appel part sur le modèle le plus cher par défaut. 
+            </p>
+            <p>
+              J'utilise OpenRouter pour router chaque requête vers le modèle le plus adapté au besoin réel – un modèle léger pour une tâche simple, un modèle plus puissant seulement quand c'est justifié – avec un suivi de coût précis plutôt qu'une facture cloud qui grimpe sans visibilité.
             </p>
           </div>
         </div>
@@ -100,10 +106,10 @@ const faqItems = [
           </h2>
           <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
             <p>
-              Dans dbgrade.tech, mon outil d'audit de bases de données, le LLM génère la narration explicative du rapport, mais il n'a jamais accès au calcul du score : le score est déterministe, calculé par des règles fixes, et le LLM ne peut ni le modifier ni l'influencer. C'est ce principe que j'applique à toute intégration IA : la génération assistée reste sous contrôle humain et sous contrôle de règles métier vérifiables, jamais une boîte noire qui décide seule.
+              Un exemple : dans <a href="https://dbgrade.tech/fr/" target="_blank">DB Grade</a>, mon outil d'audit de bases de données, le LLM génère la narration explicative du rapport, mais il n'a jamais accès au calcul du score : le score est déterministe, calculé par des règles fixes, et le LLM ne peut ni le modifier ni l'influencer. C'est ce principe que j'applique à toute intégration IA : la génération assistée reste sous contrôle humain et sous contrôle de règles métier vérifiables, jamais une boîte noire qui décide seule.
             </p>
             <p>
-              Le pipeline de curation de newsletter que j'ai développé applique la même logique : l'IA aide à trier et résumer le contenu, mais la validation finale reste humaine avant publication.
+              Tous mes développements appliquent la même logique : l'IA est une aide, un facilitateur, mais la validation finale reste humaine avant tout.
             </p>
           </div>
         </div>

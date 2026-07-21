@@ -1,0 +1,170 @@
+---
+import DynamicIcon from "@/helpers/DynamicIcon.astro";
+import ContactForm from "@/components/widgets/ContactForm.astro";
+import type { z } from "astro/zod";
+import type { Section } from "@/types";
+import { markdownify } from "@/lib/utils/textConverter";
+import { getEntryCTM } from "@/lib/contentParser.astro";
+import overrideObjects from "@/lib/utils/overrideObjects.ts";
+import type {
+  contactSectionSchema,
+  contactSectionTwoSchema,
+} from "@/sections.schema";
+import { useTranslations } from "@/lib/utils/i18nUtils.ts";
+
+type ContactSectionTwoContent = Section &
+  NonNullable<z.infer<typeof contactSectionTwoSchema>>;
+type ContactSectionContent = Section &
+  NonNullable<z.infer<typeof contactSectionSchema>>;
+
+type Props = {
+  content?: ContactSectionTwoContent;
+  hasSectionSpacing?: boolean;
+};
+
+const defaultContent = (
+  await getEntryCTM("sections", "contact-section-two", Astro.currentLocale)
+)?.data as ContactSectionTwoContent;
+const hasContentSource = Boolean(defaultContent || Astro.props.content);
+const sharedContactContent = (
+  await getEntryCTM("sections", "contact-section", Astro.currentLocale)
+)?.data as ContactSectionContent;
+
+const actualContent = overrideObjects(
+  { ...defaultContent },
+  Astro.props.content || {},
+) as ContactSectionTwoContent;
+
+const {
+  enable = true,
+  title,
+  description,
+  info = [],
+  officeHours,
+  form: formOverride,
+} = actualContent;
+
+const t = await useTranslations(Astro.currentLocale as string);
+const sharedForm = sharedContactContent?.form;
+const formTitle = formOverride?.title || sharedContactContent?.formTitle;
+const formDescription =
+  formOverride?.description || sharedContactContent?.formDescription;
+
+const formContentOverrides = formOverride ? { ...formOverride } : undefined;
+
+if (formContentOverrides) {
+  delete formContentOverrides.title;
+  delete formContentOverrides.description;
+  delete formContentOverrides.submitLabel;
+}
+
+// The form content is shared from contact-section.md so every contact form
+// uses one source for fields, submit text, and submission messages.
+const formContent = sharedForm
+  ? overrideObjects({ ...sharedForm }, formContentOverrides || {})
+  : formContentOverrides;
+
+if (formContent && formOverride?.submitLabel) {
+  formContent.submitButton = {
+    ...(formContent.submitButton || {}),
+    enable: true,
+    label: formOverride.submitLabel || t("form.sendMessage"),
+  };
+}
+
+const { hasSectionSpacing = true } = Astro.props;
+const infoList = Array.isArray(info)
+  ? info.filter((item) => item?.title || item?.description || item?.icon)
+  : [];
+const hasLeftContent = Boolean(
+  title || description || infoList.length || officeHours,
+);
+const hasFormPanelContent = Boolean(
+  formTitle || formDescription || formContent,
+);
+
+if (!hasContentSource || !enable || (!hasLeftContent && !hasFormPanelContent)) {
+  return null;
+}
+---
+
+<section id="contact" class:list={[!hasSectionSpacing && "pt-0"]}>
+  <div class:list={["section-spacing-lg-vertical bg-theme-light"]}>
+    <div
+      class:list={[
+        "container grid gap-14 lg:items-start",
+        hasLeftContent && hasFormPanelContent
+          ? "lg:grid-cols-2"
+          : "lg:grid-cols-1",
+      ]}>
+      {
+        hasLeftContent && (
+          <div
+            class="lg:sticky lg:top-32 lg:self-start"
+            data-scroll-reveal="blur-up">
+            {title && <h2 class="max-w-2xl" set:html={markdownify(title)} />}
+            {description && (
+              <p class="mt-6 max-w-2xl" set:html={markdownify(description)} />
+            )}
+
+            {infoList.length > 0 && (
+              <div class="mt-12 grid gap-8 sm:grid-cols-2">
+                {infoList.map((item, index) => (
+                  <div
+                    data-scroll-reveal="fade-up"
+                    data-scroll-reveal-delay={index * 120}>
+                    {item.icon && (
+                      <span class="bg-dark flex size-12 items-center justify-center rounded-md text-white">
+                        <DynamicIcon name={item.icon} class="size-6" />
+                      </span>
+                    )}
+                    {item.title && (
+                      <h3
+                        class="text-h6 mt-5"
+                        set:html={markdownify(item.title)}
+                      />
+                    )}
+                    {item.description && (
+                      <p
+                        class="mt-2 [&_br]:block"
+                        set:html={markdownify(item.description)}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {officeHours && (
+              <div class="border-border-light mt-8 border-t pt-4">
+                <p set:html={markdownify(officeHours)} />
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      {
+        hasFormPanelContent && (
+          <div
+            class="rounded-2xl bg-white p-8 md:p-12 lg:p-16"
+            data-scroll-reveal="blur-up"
+            data-scroll-reveal-delay="120">
+            <div>
+              {formTitle && (
+                <h3 class="text-h4" set:html={markdownify(formTitle)} />
+              )}
+              {formDescription && (
+                <p class="mt-2" set:html={markdownify(formDescription)} />
+              )}
+            </div>
+
+            {formContent && (
+              <ContactForm form={formContent} class="mt-9" hideLabels />
+            )}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>

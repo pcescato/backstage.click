@@ -1,0 +1,47 @@
+---
+import { getCollectionCTM } from "@/lib/contentParser.astro";
+import BlogCard from "../cards/BlogCard.astro";
+import { sortByDate } from "@/lib/utils/sortFunctions";
+import { useTranslations } from "@/lib/utils/i18nUtils.ts";
+
+interface Props {
+  class?: string;
+  [key: string]: any;
+}
+
+import config from ".astro/config.generated.json";
+let posts = await getCollectionCTM(
+  config.settings.blogFolder as "blog",
+  Astro.currentLocale,
+);
+
+const t = await useTranslations(Astro.currentLocale as string);
+
+// Posts sorted by date
+posts = sortByDate(posts);
+
+posts = posts.filter(
+  (post) => post.filePath !== Astro.props.currentPost?.filePath,
+);
+
+// Limit the number of items to be displayed
+posts = posts.slice(0, 3);
+---
+
+{
+  posts && posts.length > 0 && (
+    <div class="bg-theme-light rounded-2xl p-6 md:p-8">
+      <h2 class="text-h5-sm md:text-h5 mb-6">
+        {t("widgets.recentPostsTitle")}
+      </h2>
+      <div class="space-y-6">
+        {posts.map((post) => (
+          <BlogCard
+            content={post}
+            options={{ layout: "horizontal", limit: 4 }}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}

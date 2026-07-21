@@ -1,0 +1,316 @@
+---
+import dateFormat from "@/lib/utils/dateFormat";
+import {
+  humanize,
+  plainify,
+  slugifyyy,
+  toSentenceCase,
+} from "@/lib/utils/textConverter";
+import OptimizedImage from "@/components/utilities/OptimizedImage.astro";
+import { getLocaleUrlCTM, useTranslations } from "@/lib/utils/i18nUtils.ts";
+import Button from "@/components/Button.astro";
+import type { CollectionEntry } from "astro:content";
+import extractSlug from "@/lib/utils/extractSlug";
+import DynamicIcon from "@/helpers/DynamicIcon.astro";
+
+interface Props {
+  class?: string;
+  content: CollectionEntry<"blog">;
+  options: CollectionEntry<"blog">["data"]["options"];
+}
+
+const t = await useTranslations(Astro.currentLocale as string);
+
+let {
+  content,
+  options: { layout = "grid" } = {},
+  class: className,
+  ...rest
+} = Astro.props;
+
+let {
+  collection,
+  body,
+  data: { title, image, date, categories, description } = {},
+} = content;
+
+// Format categories
+const categoriesArray = categories?.map((category: string) => ({
+  name: category,
+  slug: slugifyyy(category),
+}));
+
+let slug = getLocaleUrlCTM(
+  extractSlug(content),
+  Astro.currentLocale,
+  collection,
+);
+
+const rawExcerpt = description || (body ? plainify(body).trim() : "");
+const excerpt =
+  rawExcerpt.length > 180
+    ? `${rawExcerpt.slice(0, 180).trim()}...`
+    : rawExcerpt;
+const cursorLabel = t("common.readBlog");
+---
+
+{
+  layout === "horizontal" ? (
+    <article
+      data-cursor-label={cursorLabel}
+      data-cursor-type="blog"
+      class:list={["group relative flex items-center gap-4", className]}
+      {...rest}>
+      <div class="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl">
+        {image && (
+          <OptimizedImage
+            src={image}
+            alt={toSentenceCase("About " + title)}
+            class="size-full object-cover transition duration-500 group-hover:scale-105"
+            width={160}
+            height={160}
+          />
+        )}
+        <a
+          data-post-link
+          href={slug}
+          class="absolute inset-0 z-30"
+          title={toSentenceCase(t("common.learnMoreAbout") + " " + title)}
+        />
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="text-text-default text-sm" data-post-date>
+          {date && dateFormat(date)}
+        </span>
+        {title && (
+          <h3 class="text-base">
+            <a
+              data-post-link
+              title={toSentenceCase(t("common.learnMoreAbout") + " " + title)}
+              class="stretched-link text-inherit"
+              href={slug}
+              set:html={plainify(title)}
+            />
+          </h3>
+        )}
+      </div>
+    </article>
+  ) : layout === "grid" ? (
+    <article
+      data-cursor-label={cursorLabel}
+      data-cursor-type="blog"
+      class:list={[
+        className,
+        "group border-border-light text-text-default overflow-hidden rounded-2xl border bg-white transition duration-300",
+      ]}
+      {...rest}>
+      <div class="aspect-blog-card-image relative overflow-hidden">
+        {image && (
+          <OptimizedImage
+            src={image}
+            alt={toSentenceCase("Image related to " + title)}
+            class="size-full object-cover transition duration-500 group-hover:scale-102"
+            width={600}
+            height={600}
+          />
+        )}
+        <a
+          data-post-link
+          class="absolute inset-0 z-30"
+          href={slug}
+          title={toSentenceCase(t("common.learnMoreAbout") + " " + title)}
+        />
+      </div>
+      <div class="p-7">
+        <div class="font-primary text-text-default flex flex-wrap items-center gap-x-2.5 gap-y-px text-base leading-7 transition duration-300">
+          {categoriesArray &&
+            categoriesArray.map((category: any, index: number) => (
+              <>
+                <a
+                  href={getLocaleUrlCTM(
+                    `/category/${category.slug}`,
+                    Astro.currentLocale,
+                    collection,
+                  )}
+                  class="hover:text-primary relative z-20 transition"
+                  set:html={humanize(category.name)}
+                />
+                {(index !== categoriesArray.length - 1 || date) && (
+                  <span class="inline-block size-1 rounded-full bg-current" />
+                )}
+              </>
+            ))}
+          <span data-post-date>{date && dateFormat(date)}</span>
+        </div>
+        {title && (
+          <h2 class="text-h5-sm md:text-h5 mt-1.5 mb-5 w-full">
+            <a
+              href={slug}
+              data-post-link
+              class="has-underline-anim stretched-link relative z-20 inline"
+              set:html={plainify(title)}
+              title={toSentenceCase(t("common.learnMoreAbout") + " " + title)}
+            />
+          </h2>
+        )}
+        <a
+          data-post-link
+          href={slug}
+          title={toSentenceCase(t("common.learnMoreAbout") + " " + title)}
+          class="has-icon-moving-animation text-primary relative z-20 inline-flex items-center gap-1 text-base leading-6 font-semibold">
+          <span set:html={t("common.learnMore")} />
+          <span class="sr-only" set:html={" " + plainify(title || "")} />
+          <span class="icons-wrapper inline-flex size-5 text-xl">
+            <span class="icon icon-before">
+              <DynamicIcon name="ArrowUpRight" class="size-full" />
+            </span>
+            <span class="icon icon-after" aria-hidden="true">
+              <DynamicIcon name="ArrowUpRight" class="size-full" />
+            </span>
+          </span>
+        </a>
+      </div>
+    </article>
+  ) : layout === "creative" ? (
+    <article
+      data-cursor-label={cursorLabel}
+      data-cursor-type="blog"
+      class:list={[
+        className,
+        "group border-border-light text-text-default overflow-hidden rounded-xl border bg-white transition duration-300",
+      ]}
+      {...rest}>
+      <div class="relative h-80 overflow-hidden md:h-112.5">
+        {image && (
+          <OptimizedImage
+            src={image}
+            alt={toSentenceCase("Image related to " + title)}
+            class="size-full object-cover transition duration-500 group-hover:scale-105"
+            width={900}
+            height={560}
+          />
+        )}
+        <a
+          data-post-link
+          class="absolute inset-0 z-30"
+          href={slug}
+          title={toSentenceCase(t("common.learnMoreAbout") + " " + title)}
+        />
+      </div>
+      <div class="p-6 md:p-8">
+        <div class="font-primary text-text-default flex flex-wrap items-center gap-x-2.5 gap-y-px text-base transition duration-300">
+          {categoriesArray &&
+            categoriesArray.map((category: any, index: number) => (
+              <>
+                <a
+                  href={getLocaleUrlCTM(
+                    `/category/${category.slug}`,
+                    Astro.currentLocale,
+                    collection,
+                  )}
+                  class="hover:text-primary relative z-20 transition"
+                  set:html={humanize(category.name)}
+                />
+                {(index !== categoriesArray.length - 1 || date) && (
+                  <span class="inline-block size-1 rounded-full bg-current" />
+                )}
+              </>
+            ))}
+          <span data-post-date>{date && dateFormat(date)}</span>
+        </div>
+        {title && (
+          <h2 class="h3 mt-2 mb-4">
+            <a
+              href={slug}
+              data-post-link
+              class="has-underline-anim stretched-link relative z-20 inline"
+              set:html={plainify(title)}
+              title={toSentenceCase(t("common.learnMoreAbout") + " " + title)}
+            />
+          </h2>
+        )}
+        {excerpt && <p class="mb-6 text-base" set:html={plainify(excerpt)} />}
+        <a
+          data-post-link
+          href={slug}
+          title={toSentenceCase(t("common.learnMoreAbout") + " " + title)}
+          class="has-icon-moving-animation text-primary relative z-20 inline-flex items-center gap-1 text-base font-semibold">
+          <span set:html={t("common.learnMore")} />
+          <span class="sr-only" set:html={" " + plainify(title || "")} />
+          <span class="icons-wrapper inline-flex size-5 text-xl">
+            <span class="icon icon-before">
+              <DynamicIcon name="ArrowUpRight" class="size-full" />
+            </span>
+            <span class="icon icon-after" aria-hidden="true">
+              <DynamicIcon name="ArrowUpRight" class="size-full" />
+            </span>
+          </span>
+        </a>
+      </div>
+    </article>
+  ) : layout === "overlay" ? (
+    <article
+      data-cursor-label={cursorLabel}
+      data-cursor-type="blog"
+      class:list={[className, "group text-light relative bg-white"]}
+      {...rest}>
+      <div class="after:from-primary after:via-primary/40 relative flex items-center justify-center overflow-hidden after:absolute after:size-full after:bg-linear-to-t after:transition-opacity after:duration-500">
+        {image && (
+          <OptimizedImage
+            src={image}
+            alt={toSentenceCase("Image related to " + title)}
+            class="aspect-video w-full object-cover transition duration-500 group-hover:scale-105"
+            width={600}
+            height={600}
+          />
+        )}
+        <a
+          data-post-link
+          href={slug}
+          title={toSentenceCase(t("common.learnMoreAbout") + " " + title)}
+          class="absolute inset-0 z-0"
+        />
+      </div>
+      <div class="absolute inset-s-0 inset-e-0 bottom-0 z-10 space-y-2 px-6 py-8">
+        <div class="font-primary flex flex-wrap items-center gap-x-2.5 gap-y-px">
+          <span class="text-light/80" data-post-date>
+            {date && dateFormat(date)}
+          </span>
+          <span class="bg-theme-light inline-block size-1 rounded-full" />
+
+          {categoriesArray &&
+            categoriesArray.map((category: any, index: number) => (
+              <>
+                <span
+                  class="text-light/80"
+                  set:html={humanize(category.name)}
+                />
+                {index !== categoriesArray.length - 1 && (
+                  <span class="bg-theme-light inline-block size-1 rounded-full" />
+                )}
+              </>
+            ))}
+        </div>
+        {title && (
+          <h2 class="md:text-h5 text-h5-sm mb-6 text-inherit">
+            <a
+              data-post-link
+              href={slug}
+              set:html={plainify(title)}
+              title={toSentenceCase(t("common.learnMoreAbout") + " " + title)}
+            />
+          </h2>
+        )}
+        <Button
+          data-post-link
+          variant="text"
+          label={t("common.learnMore")}
+          title={title}
+          aria-label={toSentenceCase(t("common.learnMoreAbout") + " " + title)}
+          url={slug}
+          class="text-base-sm border-border-light text-inherit uppercase md:text-base"
+        />
+      </div>
+    </article>
+  ) : null
+}

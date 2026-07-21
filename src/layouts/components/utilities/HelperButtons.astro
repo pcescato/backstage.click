@@ -1,0 +1,89 @@
+---
+import path from "path";
+import Button from "../Button.astro";
+
+// Get project root (Astro always starts server in project root)
+const projectRoot = process.cwd();
+
+// Get project folder name
+const themeName = path.basename(projectRoot);
+
+// Remove `-lite` word from themeName since buy link should be for pro version
+const proThemeName = themeName.replace("-lite", "");
+const buyLink = `https://getastrothemes.com/astro-themes/${proThemeName}/?initiate-checkout=true`;
+---
+
+<div
+  id="action-buttons"
+  class="pointer-events-none fixed right-0 bottom-5 z-100 flex flex-col space-y-2 rounded-lg bg-white p-2 text-center opacity-0 transition-all duration-300 [&.scroll-down]:pointer-events-auto [&.scroll-down]:right-5 [&.scroll-down]:opacity-100">
+  <Button
+    url={buyLink}
+    target="_blank"
+    hoverEffect="text-flip"
+    label="Buy Pro Version"
+    data-cursor-label="Buy Pro Version"
+    data-cursor-type="button"
+  />
+  <Button
+    variant="outline"
+    url={`https://getastrothemes.com/astro-themes/${themeName}/`}
+    target="_blank"
+    hoverEffect="text-flip"
+    label="Download Now"
+    data-cursor-label="Download Now"
+    data-cursor-type="button"
+  />
+</div>
+
+<script>
+  // Hide buttons in iframe
+  function isInIframe() {
+    try {
+      return window.self !== window.top;
+    } catch (e) {
+      return true; // Access denied => definitely inside iframe
+    }
+  }
+
+  if (!isInIframe()) {
+    const btns = document.getElementById("action-buttons");
+    if (btns) {
+      btns.classList.remove("hidden"); // Show buttons only if not in iframe
+
+      // Scroll-based show/hide
+      window.addEventListener("scroll", () => {
+        const currentScrollPos = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const distanceFromBottom =
+          documentHeight - (currentScrollPos + windowHeight);
+
+        if (currentScrollPos >= 500) {
+          btns.classList.add("scroll-down");
+        }
+
+        if (currentScrollPos <= 500 || distanceFromBottom <= 100) {
+          btns.classList.remove("scroll-down");
+        }
+      });
+
+      // Add UTM ref tracking only when visible
+      (() => {
+        const LS_KEY = "checkout-ref";
+        let ref = localStorage.getItem(LS_KEY);
+
+        if (!ref) {
+          ref = document.referrer || "direct";
+          if (ref) localStorage.setItem(LS_KEY, ref);
+        }
+
+        if (!ref) return;
+
+        btns.querySelectorAll("a").forEach((link) => {
+          const separator = link.href.includes("?") ? "&" : "?";
+          link.href += `${separator}utm_source=${encodeURIComponent(ref)}`;
+        });
+      })();
+    }
+  }
+</script>

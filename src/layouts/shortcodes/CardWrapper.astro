@@ -1,0 +1,36 @@
+---
+/**
+ * CardWrapper Component
+ *
+ * A layout utility for rendering Card components in a responsive grid.
+ * Use this wrapper to display multiple Card components in a two-column layout on larger screens.
+ *
+ * Example usage:
+      <CardWrapper>
+        <Card
+          title="Custom Solution"
+          description="We care success relationships fuel success we love building"
+          icon="/images/icons/services/web.svg"
+          buttonLabel="Contact Us"
+          buttonUrl="/#contact"
+        />
+        <Card
+          title="Custom Solution"
+          description="We care success relationships fuel success we love building"
+          icon="/images/icons/services/web.svg"
+          buttonLabel="Contact Us"
+          buttonUrl="/#contact"
+        />
+      </CardWrapper>
+ */
+
+let { class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    "not-prose my-12 grid grid-cols-1 gap-6 md:grid-cols-2",
+    className,
+  ]}>
+  <slot />
+</div>

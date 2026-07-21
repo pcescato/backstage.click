@@ -1,0 +1,71 @@
+---
+import { getCollectionCTM } from "@/lib/contentParser.astro";
+import { getTaxonomy } from "@/lib/taxonomyParser.astro";
+import { getLocaleUrlCTM, useTranslations } from "@/lib/utils/i18nUtils.ts";
+
+interface Category {
+  name: string;
+  slug: string;
+  count: number;
+}
+
+interface Props {
+  class?: string;
+}
+
+import config from ".astro/config.generated.json";
+const posts = await getCollectionCTM(
+  config.settings.blogFolder as "blog",
+  Astro.currentLocale,
+);
+
+let categories = (await getTaxonomy(
+  config.settings.blogFolder as "blog",
+  "categories",
+  Astro.currentLocale as string,
+)) as Category[];
+
+categories = categories.map((category) => {
+  const count = posts.filter((post) =>
+    post.data.categories?.includes(category.name),
+  ).length;
+
+  const slug = getLocaleUrlCTM(
+    category.slug,
+    Astro.currentLocale,
+    `/${config.settings.blogFolder}/category`,
+  );
+
+  return {
+    ...category,
+    count,
+    slug,
+  };
+});
+
+const t = await useTranslations(Astro.currentLocale as string);
+
+// Sort categories by count
+categories = categories.sort((a, b) => b.count - a.count);
+---
+
+{
+  categories && categories.length > 0 && (
+    <div class="bg-theme-light rounded-2xl p-6 md:p-8">
+      <h2 class="text-h5-sm md:text-h5 mb-6">{t("widgets.categoriesTitle")}</h2>
+      <div class="space-y-3">
+        {categories.map((category) => (
+          <div class="hover:text-primary relative flex items-center gap-4 text-base transition duration-300">
+            <span class="truncate" set:html={category.name} />
+            <a
+              href={category.slug}
+              class="absolute inset-0"
+              title={`Filter posts by ${category.name}`}
+            />
+            <div class="ms-auto text-sm" set:html={`(${category.count})`} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}

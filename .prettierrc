@@ -1,15 +1,27 @@
 {
-  "semi": true,
-  "singleQuote": true,
-  "tabWidth": 2,
-  "trailingComma": "es5",
-  "printWidth": 100,
-  "plugins": ["prettier-plugin-astro", "prettier-plugin-tailwindcss"],
+  "plugins": [
+    "prettier-plugin-astro",
+    "prettier-plugin-toml",
+    "prettier-plugin-tailwindcss"
+  ],
   "overrides": [
     {
-      "files": "*.astro",
+      "files": ["*.astro"],
       "options": {
-        "parser": "astro"
+        "parser": "astro",
+        "bracketSameLine": true,
+        "htmlWhitespaceSensitivity": "ignore",
+        "trailingComma": "all"
+      }
+    },
+    {
+      "files": ["*.toml"],
+      "options": {
+        "alignEntries": true,
+        "alignComments": false,
+        "indentTables": true,
+        "allowedBlankLines": 4,
+        "indentEntries": true
       }
     }
   ]

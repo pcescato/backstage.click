@@ -1,0 +1,59 @@
+---
+import Base from "@/layouts/Base.astro";
+import { getCollectionCTM } from "@/lib/contentParser.astro";
+import { getEntryCTM } from "@/lib/contentParser.astro";
+import { supportedLanguages } from "@/lib/utils/i18nUtils.ts";
+import ServicesSingle from "@/components/ServicesSingle.astro";
+import extractSlug from "@/lib/utils/extractSlug";
+import config from ".astro/config.generated.json";
+import PageHeader from "@/components/widgets/PageHeader.astro";
+
+export async function getStaticPaths() {
+  const paths = await Promise.all(
+    supportedLanguages.map(async (lang) => {
+      const { servicesFolder } = config.settings;
+      const { defaultLanguage, showDefaultLangInUrl } =
+        config.settings.multilingual;
+
+      const serviceIndex = await getEntryCTM(
+        servicesFolder as "services",
+        "-index",
+        lang.languageCode,
+      );
+
+      let services = await getCollectionCTM(
+        servicesFolder as "services",
+        lang.languageCode,
+      );
+
+      // If draft true in index.md file frontmatter don't include any page related to this page collection in production
+      if (serviceIndex?.data.draft && import.meta.env.PROD) {
+        return [];
+      }
+
+      return services.map((service) => ({
+        params: {
+          lang:
+            lang.languageCode === defaultLanguage && !showDefaultLangInUrl
+              ? undefined
+              : lang.languageCode,
+          single: extractSlug(service).split("/").pop(),
+        },
+        props: {
+          service,
+          serviceIndex,
+        },
+      }));
+    }),
+  );
+
+  return paths.flat();
+}
+
+const { service } = Astro.props;
+---
+
+<Base {...service.data} fitToScreen={false}>
+  <PageHeader content={service?.data} />
+  <ServicesSingle content={service} />
+</Base>

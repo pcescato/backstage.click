@@ -1,0 +1,145 @@
+---
+import type { NavigationLink } from "@/types";
+import { getLocaleUrlCTM } from "@/lib/utils/i18nUtils";
+
+const { pathname } = Astro.url;
+const { recursive } = Astro.props;
+const menu = Astro.props.menu as NavigationLink;
+
+const normalizeUrl = (url?: string) => {
+  if (!url) return "/";
+  return url.endsWith("/") ? url : `${url}/`;
+};
+
+const isMenuActive = (item: NavigationLink): boolean =>
+  Boolean(
+    item.url &&
+    (pathname === item.url ||
+      normalizeUrl(pathname) === normalizeUrl(item.url)),
+  ) ||
+  Boolean(
+    item.children?.some((child) => isMenuActive(child as NavigationLink)),
+  );
+---
+
+<li
+  class:list={[
+    "hs-dropdown nav-dropdown group [--auto-close:inside] [--offset:0px] [--strategy:fixed]",
+    recursive
+      ? "nav-dropdown-item [--offset:22px] [--placement:right-start]"
+      : "nav-item",
+    menu.hasChildren ? "relative" : "",
+  ]}
+  role="menuitem">
+  <span
+    class:list={[
+      "nav-dropdown-toggle hs-dropdown-toggle flex items-center",
+      {
+        active: isMenuActive(menu),
+      },
+      recursive
+        ? "nav-dropdown-link justify-between"
+        : "nav-link max-lg:flex! max-lg:justify-between",
+    ]}>
+    {menu.name}
+    {
+      recursive ? (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          data-icon="arrow-right"
+          class="nav-dropdown-chevron">
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      ) : (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          data-icon="arrow-down"
+          class="nav-dropdown-chevron">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      )
+    }
+  </span>
+  {
+    menu.hasChildren && (
+      <ul
+        class="nav-dropdown-list hs-dropdown-menu hs-dropdown-open:mt-2! hs-dropdown-open:pointer-events-auto hs-dropdown-open:opacity-100 pointer-events-none top-0 mt-4 hidden opacity-0 transition-[opacity,margin] max-lg:m-0! max-lg:transform-none! lg:absolute"
+        {...(recursive ? { "aria-orientation": "vertical" } : {})}>
+        {menu.children?.map((child) => {
+          const childUrl = child.url || "/";
+
+          return child.hasChildren ? (
+            child.hasChildren && <Astro.self recursive menu={child} />
+          ) : (
+            <li class="nav-dropdown-item" role="menuitem">
+              <a
+                href={getLocaleUrlCTM(childUrl, Astro.currentLocale)}
+                {...{
+                  // Set `rel` attribute for external links or use provided value
+                  rel: child.url?.startsWith("http")
+                    ? child.rel || "noopener noreferrer"
+                    : child.rel || undefined,
+
+                  // Set `target` to "_blank" for external links unless otherwise specified
+                  target: child.url?.startsWith("http")
+                    ? child.target || "_blank"
+                    : child.target || undefined,
+                }}
+                class:list={[
+                  "nav-dropdown-link",
+                  {
+                    active:
+                      pathname === childUrl ||
+                      normalizeUrl(pathname) === normalizeUrl(childUrl),
+                  },
+                ]}>
+                {child.badge && child.badge.enable ? (
+                  child.badge.type === "dot" ? (
+                    <span class="relative inline-block">
+                      {child.name}
+                      <sup
+                        class:list={[
+                          "badge badge-dot",
+                          child.badge.color && `badge-${child.badge.color}`,
+                        ]}
+                      />
+                    </span>
+                  ) : (
+                    <>
+                      {child.name}
+                      <span
+                        class:list={[
+                          "badge",
+                          child.badge.color && `badge-${child.badge.color}`,
+                        ]}>
+                        {child.badge.label}
+                      </span>
+                    </>
+                  )
+                ) : (
+                  child.name
+                )}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    )
+  }
+</li>

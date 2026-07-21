@@ -1,0 +1,68 @@
+---
+import Search from "./Search.astro";
+import Categories from "./Categories.astro";
+import RecentPosts from "./RecentPosts.astro";
+import Tags from "./Tags.astro";
+
+interface Props {
+  content: {
+    sticky?: boolean;
+    position?: "left" | "right";
+    search?: any;
+    categories?: any;
+    tags?: any;
+    recentPosts?: any;
+    widgets?: any;
+    currentPost?: any;
+  };
+}
+
+const { content, ...rest } = Astro.props;
+const { sticky, position, search, recentPosts } = content;
+
+const {
+  widgets: widgetList = ["Search", "Categories", "RecentPosts", "Tags"],
+} = content;
+const widgets = [
+  { name: "Search", Component: Search, props: search },
+  {
+    name: "Categories",
+    Component: Categories,
+    props: {},
+  },
+  {
+    name: "RecentPosts",
+    Component: RecentPosts,
+    props: { recentPosts, currentPost: content.currentPost },
+  },
+  {
+    name: "Tags",
+    Component: Tags,
+    props: {},
+  },
+];
+---
+
+<div
+  {...rest}
+  class:list={[
+    "lg:col-span-4 lg:ms-auto lg:w-full lg:max-w-95",
+    sticky ? "sticky-sidebar lg:sticky" : "space-y-6",
+    position === "right" ? "order-2" : "order-2 lg:order-1",
+  ]}>
+  {
+    sticky ? (
+      <div class:list={["space-y-6"]}>
+        {widgets
+          .filter(({ name }) => widgetList.includes(name))
+          .map(({ Component, props }) => (
+            <Component {...props} />
+          ))}
+      </div>
+    ) : (
+      widgets
+        .filter(({ name }) => widgetList.includes(name))
+        .map(({ Component, props }) => <Component {...props} />)
+    )
+  }
+</div>

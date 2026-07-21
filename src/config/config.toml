@@ -1,0 +1,135 @@
+# Site Configuration
+[site]
+  title            = "Backstage"
+  description      = "Audit, optimisation et migration de sites WordPress. Conseil technique indépendant pour PME et organismes de formation. Basé en Nouvelle-Aquitaine, full remote."
+  tagline          = "Développement web & conseil pour TPE et organismes de formation"
+  taglineSeparator = " - "
+  baseUrl          = "https://backstage.click/"
+  logo             = "/backstage-logo.webp"
+  logoAlternate    = "/backstage-logo.webp"
+  logoText         = "Backstage"
+  logoWidth        = "24px"
+  logoHeight       = "36px"
+
+  trailingSlash = true
+
+  [site.favicon]
+    path  = "/images/favicons"
+    image = "/backstage-favicon.webp"
+
+# SEO Metadata
+[seo]
+  author = "Backstage"
+  keywords = [
+    "développement web",
+    "maintenance WordPress",
+    "migration Astro",
+    "DevOps",
+    "CRM sur-mesure",
+    "ERP PME",
+    "IA automatisation",
+    "Nouvelle-Aquitaine",
+  ]
+  robots = "index, follow"
+
+  [seo.robotsTxt]
+    enable   = true
+    disallow = []
+
+  [seo.sitemap]
+    enable  = true
+    exclude = []
+
+# Theme settings
+[settings]
+  blogFolder     = "blog"
+  servicesFolder = "services"
+
+  blogPagination = 6
+  pagination     = 8
+  stickyHeader   = true
+
+  contactFormAction = ""
+  contactFormProvider = "formsubmit.co"
+
+  footerDescription = ""
+
+  [settings.smoothScroll]
+    enable                = true
+    respectReducedMotion  = true
+    duration              = 1.1
+    easing                = "expo"
+    smoothWheel           = true
+    syncTouch             = false
+    wheelMultiplier       = 1
+    touchMultiplier       = 1
+    anchors               = true
+    autoRaf               = true
+    stopInertiaOnNavigate = true
+
+  [settings.animation]
+    enable               = true
+    respectReducedMotion = true
+    easing               = "cubic-bezier(0.22, 1, 0.36, 1)"
+    duration             = ""
+    distance             = "2rem"
+    blur                 = "10px"
+    rootMargin           = "0px 0px -8% 0px"
+    threshold            = 0.14
+
+  [settings.copyright]
+    enable = true
+    text   = ""
+
+  [settings.subscription]
+    enable            = false
+    title             = ""
+    note              = ""
+    formAction        = ""
+    mailchimpTagValue = ""
+
+  [settings.multilingual]
+    enable               = false
+    defaultLanguage      = "fr"
+    disableLanguages     = []
+    showDefaultLangInUrl = false
+
+  [settings.contactInfo]
+    phone       = ""
+    email       = "[contact@backstage.click](mailto:contact@backstage.click)"
+    address     = ""
+    officeHours = ""
+
+  [settings.headerOffcanvas]
+    enable      = false
+    logo        = ""
+    description = ""
+
+    [settings.headerOffcanvas.button]
+      enable = false
+      label  = ""
+      url    = "/contact/"
+
+[settings.navigationButton]
+  enable = true
+  label  = "Contact"
+  url    = "/contact/"
+
+[settings.markup.tableOfContents]
+  enable     = false
+  expanded   = false
+  endLevel   = 5
+  ordered    = false
+  startLevel = 1
+
+[opengraph]
+  image       = "/og-default.svg"
+  ogLocale    = "fr_FR"
+  ogType      = "website"
+  twitter     = ""
+  twitterCard = "summary_large_image"
+
+[head]
+  content = """
+  <script></script>
+  """

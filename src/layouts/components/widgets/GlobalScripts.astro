@@ -1,0 +1,822 @@
+---
+import config from ".astro/config.generated.json";
+
+const {
+  smoothScroll: smoothScrollConfig = {},
+  animation: animationConfig = {},
+} = config.settings ?? {};
+const clientThemeConfig = JSON.stringify({
+  smoothScroll: smoothScrollConfig,
+  animation: animationConfig,
+}).replace(/</g, "\\u003c");
+---
+
+<script
+  is:inline
+  set:html={`window.__techloThemeConfig=${clientThemeConfig};`}
+/>
+
+<script>
+  // @ts-nocheck
+  const techloThemeConfig = window.__techloThemeConfig || {};
+  const appSmoothScrollConfig = techloThemeConfig.smoothScroll || {};
+  const appAnimationConfig = techloThemeConfig.animation || {};
+
+  const runIdle = (cb) => {
+    if ("requestIdleCallback" in window) {
+      return window.requestIdleCallback(cb, { timeout: 2000 });
+    }
+    return window.setTimeout(cb, 200);
+  };
+
+  const initOnFirstInteraction = (events, cb) => {
+    let initialized = false;
+    const listenerOptions = { passive: true, once: true };
+
+    const run = () => {
+      if (initialized) return;
+      initialized = true;
+      events.forEach((eventName) =>
+        window.removeEventListener(eventName, run, listenerOptions),
+      );
+      cb();
+    };
+
+    events.forEach((eventName) =>
+      window.addEventListener(eventName, run, listenerOptions),
+    );
+  };
+
+  const loadDynamicModule = async (key, importer) => {
+    try {
+      return await importer();
+    } catch (error) {
+      const isDevHost =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1";
+      const failedImport =
+        error instanceof TypeError &&
+        String(error.message).includes(
+          "Failed to fetch dynamically imported module",
+        );
+
+      if (isDevHost && failedImport) {
+        console.warn(
+          `Skipped optional module "${key}" after a dev import miss.`,
+        );
+        return null;
+      }
+
+      throw error;
+    }
+  };
+
+  const isEnabled = (value, fallback = true) =>
+    typeof value === "boolean" ? value : fallback;
+
+  const toNumber = (value, fallback) => {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  };
+
+  const toCssValue = (value, fallback, unit = "") => {
+    if (typeof value === "number") return `${value}${unit}`;
+    if (typeof value === "string" && value.trim()) return value.trim();
+    return fallback;
+  };
+
+  const setCssVar = (name, value, fallback, unit = "") => {
+    document.documentElement.style.setProperty(
+      name,
+      toCssValue(value, fallback, unit),
+    );
+  };
+
+  const applyAnimationConfig = () => {
+    const animation = appAnimationConfig;
+    const scrollReveal = animation.scrollReveal || animation;
+    const root = document.documentElement;
+    const animationsEnabled = isEnabled(animation.enable, true);
+
+    root.classList.toggle("animations-disabled", !animationsEnabled);
+
+    setCssVar(
+      "--scroll-reveal-duration-default",
+      scrollReveal.duration,
+      "900ms",
+      "ms",
+    );
+    setCssVar(
+      "--scroll-reveal-distance-default",
+      scrollReveal.distance,
+      "2rem",
+    );
+    setCssVar("--scroll-reveal-blur-default", scrollReveal.blur, "10px");
+    setCssVar(
+      "--scroll-reveal-easing",
+      scrollReveal.easing,
+      "cubic-bezier(0.22, 1, 0.36, 1)",
+    );
+    setCssVar(
+      "--banner-two-easing",
+      animation.easing,
+      "cubic-bezier(0.22, 1, 0.36, 1)",
+    );
+    setCssVar(
+      "--banner-two-content-duration",
+      animation.duration,
+      "900ms",
+      "ms",
+    );
+    setCssVar("--banner-two-map-duration", animation.duration, "1200ms", "ms");
+    setCssVar(
+      "--banner-two-frame-duration",
+      animation.duration,
+      "1200ms",
+      "ms",
+    );
+    setCssVar("--banner-two-hero-duration", animation.duration, "1100ms", "ms");
+  };
+
+  const initScrollReveal = () => {
+    const animation = appAnimationConfig;
+    const scrollReveal = animation.scrollReveal || animation;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const revealItems = () =>
+      document
+        .querySelectorAll("[data-scroll-reveal]")
+        .forEach((item) => item.classList.add("is-visible"));
+
+    if (!document.querySelector("[data-scroll-reveal]")) {
+      return;
+    }
+
+    if (
+      !isEnabled(animation.enable, true) ||
+      !isEnabled(scrollReveal.enable, true) ||
+      (prefersReducedMotion &&
+        isEnabled(animation.respectReducedMotion, true)) ||
+      !("IntersectionObserver" in window)
+    ) {
+      revealItems();
+      return;
+    }
+
+    document.documentElement.classList.add("scroll-reveal-enabled");
+
+    const observer =
+      window.__techloScrollRevealObserver ||
+      new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          });
+        },
+        {
+          rootMargin: scrollReveal.rootMargin || "0px 0px -8% 0px",
+          threshold: toNumber(scrollReveal.threshold, 0.14),
+        },
+      );
+
+    window.__techloScrollRevealObserver = observer;
+
+    const setTimingProperty = (element, attribute, property, unit = "ms") => {
+      const value = element.getAttribute(attribute);
+
+      if (!value) return;
+
+      element.style.setProperty(
+        property,
+        Number.isNaN(Number(value)) ? value : `${value}${unit}`,
+      );
+    };
+
+    const revealIfInView = (element) => {
+      const rect = element.getBoundingClientRect();
+      const viewportHeight =
+        window.innerHeight || document.documentElement.clientHeight;
+
+      if (rect.top < viewportHeight * 0.92 && rect.bottom > 0) {
+        window.requestAnimationFrame(() => {
+          element.classList.add("is-visible");
+        });
+        return true;
+      }
+
+      return false;
+    };
+
+    const observeRevealItems = () => {
+      document.querySelectorAll("[data-scroll-reveal]").forEach((element) => {
+        if (element.dataset.scrollRevealReady) return;
+
+        element.dataset.scrollRevealReady = "true";
+        setTimingProperty(
+          element,
+          "data-scroll-reveal-delay",
+          "--scroll-reveal-delay",
+        );
+        setTimingProperty(
+          element,
+          "data-scroll-reveal-duration",
+          "--scroll-reveal-duration",
+        );
+        if (revealIfInView(element)) return;
+
+        observer.observe(element);
+      });
+    };
+
+    window.__techloScrollReveal = {
+      refresh: observeRevealItems,
+      revealAll: revealItems,
+    };
+
+    observeRevealItems();
+  };
+
+  const boot = () => {
+    applyAnimationConfig();
+    initScrollReveal();
+    initCursorFollower();
+
+    // Smooth scroll is only perceivable once the user interacts, so keep the
+    // Lenis module and its rAF loop off the critical load path entirely.
+    initOnFirstInteraction(["wheel", "touchstart", "keydown", "pointerdown"], () => {
+      initLenisSmoothScroll();
+    });
+
+    runIdle(async () => {
+      await initLucide();
+      await loadPrelineComponents();
+      await initImageLightbox();
+      initMarqueeAutoPause();
+
+      const canHover = window.matchMedia("(hover: hover)").matches;
+      initHorizontalScroll();
+
+      if (canHover) {
+        initOnFirstInteraction(["pointerover"], () => {
+          initCreativeHoverAnimation();
+          initMagneticHoverAnimation();
+        });
+      }
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot, { once: true });
+  } else {
+    boot();
+  }
+  document.addEventListener("astro:page-load", () => {
+    applyAnimationConfig();
+    initScrollReveal();
+  });
+
+  async function initLucide() {
+    const iconElems = document.querySelectorAll("[data-lucide]");
+    if (!iconElems.length) return;
+
+    const lucideModule = await loadDynamicModule(
+      "lucide",
+      () => import("lucide"),
+    );
+    if (!lucideModule) return;
+
+    const warnedIcons = new Set();
+
+    iconElems.forEach((iconElem) => {
+      const iconName = iconElem.getAttribute("data-lucide");
+      if (!iconName) return;
+
+      const normalizedIconName = normalizeLucideIconName(iconName);
+      const IconDef =
+        lucideModule[iconName] || lucideModule[normalizedIconName];
+
+      if (!IconDef) {
+        if (!warnedIcons.has(iconName)) {
+          warnedIcons.add(iconName);
+          console.warn(`Lucide icon "${iconName}" not found.`);
+        }
+
+        iconElem.setAttribute("data-lucide-missing", "true");
+        return;
+      }
+
+      const attrs = Object.fromEntries(
+        [...iconElem.attributes]
+          .filter((attr) => attr.name !== "data-lucide-title")
+          .map((attr) => [attr.name, attr.value]),
+      );
+      const svg = lucideModule.createElement(IconDef, attrs);
+      const titleText = iconElem.getAttribute("data-lucide-title");
+
+      if (titleText) {
+        const title = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "title",
+        );
+        title.textContent = titleText;
+        svg.prepend(title);
+      }
+
+      iconElem.replaceWith(svg);
+    });
+  }
+
+  function normalizeLucideIconName(iconName) {
+    const normalized = iconName
+      .trim()
+      .split(/[-_\s]+/)
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join("");
+
+    return normalized || iconName;
+  }
+
+  function initMarqueeAutoPause() {
+    const marquees = document.querySelectorAll(".marquee-content");
+    if (!marquees.length || !("IntersectionObserver" in window)) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle("is-offscreen", !entry.isIntersecting);
+      });
+    });
+
+    marquees.forEach((element) => observer.observe(element));
+  }
+
+  async function initLenisSmoothScroll() {
+    if (window.__techloLenis) return;
+    if (!isEnabled(appSmoothScrollConfig.enable, true)) return;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const supportsSmoothRuntime =
+      "requestAnimationFrame" in window &&
+      "ResizeObserver" in window &&
+      typeof Element !== "undefined";
+
+    if (
+      (prefersReducedMotion &&
+        isEnabled(appSmoothScrollConfig.respectReducedMotion, true)) ||
+      !supportsSmoothRuntime
+    ) {
+      return;
+    }
+
+    const lenisModule = await loadDynamicModule("lenis", () => import("lenis"));
+    if (!lenisModule) return;
+
+    const Lenis = lenisModule.default;
+    const alwaysPreventSelectors = [
+      "[data-lenis-prevent]",
+      "[data-lenis-prevent-wheel]",
+      "[data-lenis-prevent-touch]",
+      "[data-lenis-prevent-vertical]",
+      "[data-lenis-prevent-horizontal]",
+      "[data-lenis-scroll-native]",
+      ".hs-overlay",
+    ].join(",");
+    const nativeScrollSelectors = [
+      ".contact-form-select-dropdown",
+      ".contact-form-select-search",
+      ".has-customized-scrollbar",
+      ".hs-dropdown-menu",
+      "textarea",
+      "select",
+      "[contenteditable='true']",
+    ].join(",");
+    const hasNativeScroll = (element) =>
+      element.scrollHeight > element.clientHeight ||
+      element.scrollWidth > element.clientWidth;
+    const lenisEasings = {
+      expo: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      linear: (t) => t,
+      easeOutQuad: (t) => 1 - Math.pow(1 - t, 2),
+      easeOutCubic: (t) => 1 - Math.pow(1 - t, 3),
+    };
+    const lenisEasing =
+      lenisEasings[appSmoothScrollConfig.easing] || lenisEasings.expo;
+
+    const lenis = new Lenis({
+      duration: toNumber(appSmoothScrollConfig.duration, 1.1),
+      easing: lenisEasing,
+      smoothWheel: isEnabled(appSmoothScrollConfig.smoothWheel, true),
+      syncTouch: isEnabled(appSmoothScrollConfig.syncTouch, false),
+      wheelMultiplier: toNumber(appSmoothScrollConfig.wheelMultiplier, 1),
+      touchMultiplier: toNumber(appSmoothScrollConfig.touchMultiplier, 1),
+      anchors: isEnabled(appSmoothScrollConfig.anchors, true),
+      autoRaf: isEnabled(appSmoothScrollConfig.autoRaf, true),
+      stopInertiaOnNavigate: isEnabled(
+        appSmoothScrollConfig.stopInertiaOnNavigate,
+        true,
+      ),
+      prevent: (node) => {
+        if (!(node instanceof Element)) return false;
+
+        if (node.closest(alwaysPreventSelectors)) return true;
+
+        const nativeScrollTarget = node.closest(nativeScrollSelectors);
+        return Boolean(
+          nativeScrollTarget && hasNativeScroll(nativeScrollTarget),
+        );
+      },
+    });
+
+    window.__techloLenis = lenis;
+    document.documentElement.classList.add("lenis-ready");
+  }
+
+  async function initImageLightbox() {
+    document
+      .querySelectorAll(".prose-styles img:not([data-image-lightbox])")
+      .forEach((image) => {
+        if (image.closest("a, button, [data-hs-overlay]")) return;
+
+        image.setAttribute("data-image-lightbox", "");
+      });
+
+    const images = document.querySelectorAll("[data-image-lightbox]");
+    if (!images.length) return;
+
+    const mediumZoomModule = await loadDynamicModule(
+      "medium-zoom",
+      () => import("medium-zoom"),
+    );
+    if (!mediumZoomModule) return;
+
+    const zoom = mediumZoomModule.default("[data-image-lightbox]", {
+      background: "rgba(5, 12, 35, 0.92)",
+      margin: 24,
+      scrollOffset: 40,
+    });
+
+    zoom.on("open", ({ target }) => {
+      target.setAttribute("data-lenis-prevent", "");
+    });
+
+    zoom.on("closed", ({ target }) => {
+      target.removeAttribute("data-lenis-prevent");
+    });
+  }
+
+  async function loadPrelineComponents() {
+    const hasComponent = (selectors: string[]) =>
+      selectors.some((selector) => document.querySelector(selector));
+
+    const tasks: Promise<void>[] = [];
+
+    if (hasComponent([".hs-overlay", "[data-hs-overlay]"])) {
+      tasks.push(
+        loadDynamicModule(
+          "@preline/overlay/non-auto",
+          () => import("@preline/overlay/non-auto"),
+        ).then((module) => {
+          if (!module) return;
+          const { default: HSOverlay } = module;
+          HSOverlay.autoInit();
+        }),
+      );
+    }
+
+    if (hasComponent([".hs-dropdown", "[data-hs-dropdown]"])) {
+      tasks.push(
+        loadDynamicModule(
+          "@preline/dropdown/non-auto",
+          () => import("@preline/dropdown/non-auto"),
+        ).then((module) => {
+          if (!module) return;
+          const { default: HSDropdown } = module;
+          HSDropdown.autoInit();
+        }),
+      );
+    }
+
+    if (hasComponent([".hs-select", "[data-hs-select]"])) {
+      tasks.push(
+        loadDynamicModule(
+          "@preline/select/non-auto",
+          () => import("@preline/select/non-auto"),
+        ).then((module) => {
+          if (!module) return;
+          const { default: HSSelect } = module;
+          HSSelect.autoInit();
+        }),
+      );
+    }
+
+    if (
+      hasComponent([
+        "[data-hs-tab]",
+        ".hs-tab",
+        '[role="tablist"] [data-hs-tab]',
+      ])
+    ) {
+      tasks.push(
+        loadDynamicModule(
+          "@preline/tabs",
+          () => import("@preline/tabs/non-auto"),
+        ).then((module) => {
+          if (!module) return;
+          const { default: HSTabs } = module;
+          HSTabs.autoInit();
+        }),
+      );
+    }
+
+    if (hasComponent([".hs-accordion"])) {
+      tasks.push(
+        loadDynamicModule(
+          "@preline/accordion/non-auto",
+          () => import("@preline/accordion/non-auto"),
+        ).then((module) => {
+          if (!module) return;
+          const { default: HSAccordion } = module;
+          HSAccordion.autoInit();
+        }),
+      );
+    }
+
+    if (hasComponent([".hs-collapse", "[data-hs-collapse]"])) {
+      tasks.push(
+        loadDynamicModule(
+          "@preline/collapse/non-auto",
+          () => import("@preline/collapse/non-auto"),
+        ).then((module) => {
+          if (!module) return;
+          const { default: HSCollapse } = module;
+          HSCollapse.autoInit();
+        }),
+      );
+    }
+
+    if (hasComponent([".hs-tooltip", "[data-hs-tooltip]"])) {
+      tasks.push(
+        loadDynamicModule(
+          "@preline/tooltip/non-auto",
+          () => import("@preline/tooltip/non-auto"),
+        ).then((module) => {
+          if (!module) return;
+          const { default: HSTooltip } = module;
+          HSTooltip.autoInit();
+        }),
+      );
+    }
+
+    if (tasks.length) {
+      await Promise.all(tasks);
+    }
+  }
+
+  function initHorizontalScroll() {
+    document.addEventListener(
+      "wheel",
+      (event) => {
+        if (!event.shiftKey) return;
+        if (!(event.target instanceof HTMLElement)) return;
+
+        let current = event.target;
+
+        while (current && current !== document.body) {
+          const style = window.getComputedStyle(current);
+          const canScrollX =
+            /(auto|scroll|overlay)/.test(style.overflowX) &&
+            current.scrollWidth > current.clientWidth;
+
+          if (canScrollX) {
+            event.preventDefault();
+            current.scrollBy({
+              left: event.deltaY * 3,
+              behavior: "smooth",
+            });
+            return;
+          }
+
+          current = current.parentElement;
+        }
+      },
+      { passive: false },
+    );
+  }
+
+  function initCursorFollower() {
+    if (window.__techloCursorFollowerReady) return;
+
+    const cursor = document.querySelector<HTMLElement>(
+      "[data-cursor-follower]",
+    );
+    const label = cursor?.querySelector<HTMLElement>(
+      "[data-cursor-follower-label]",
+    );
+    const canUseCursor = window.matchMedia(
+      "(hover: hover) and (pointer: fine)",
+    ).matches;
+
+    if (!cursor || !label || !canUseCursor) return;
+
+    window.__techloCursorFollowerReady = true;
+
+    let targetX = -96;
+    let targetY = -96;
+    let currentX = targetX;
+    let currentY = targetY;
+    let frame = 0;
+    let dotResetTimer = 0;
+    let activeCursorElement: HTMLElement | null = null;
+
+    const interactiveSelector =
+      "[data-cursor-label], a, button, [role='button']";
+
+    const setCursorPosition = () => {
+      const distanceX = targetX - currentX;
+      const distanceY = targetY - currentY;
+
+      if (Math.abs(distanceX) + Math.abs(distanceY) < 0.1) {
+        currentX = targetX;
+        currentY = targetY;
+        cursor.style.setProperty("--cursor-x", `${currentX}px`);
+        cursor.style.setProperty("--cursor-y", `${currentY}px`);
+        frame = 0;
+        return;
+      }
+
+      currentX += distanceX * 0.2;
+      currentY += distanceY * 0.2;
+      cursor.style.setProperty("--cursor-x", `${currentX}px`);
+      cursor.style.setProperty("--cursor-y", `${currentY}px`);
+      frame = window.requestAnimationFrame(setCursorPosition);
+    };
+
+    const setInteractiveState = (target: EventTarget | null) => {
+      const labeledElement =
+        target instanceof Element
+          ? target.closest<HTMLElement>("[data-cursor-label]")
+          : null;
+      const fallbackElement =
+        target instanceof Element
+          ? target.closest<HTMLElement>(interactiveSelector)
+          : null;
+      const element = labeledElement || fallbackElement;
+
+      if (!element || element.closest("[data-cursor-ignore]")) {
+        if (!activeCursorElement) return;
+
+        activeCursorElement = null;
+        cursor.classList.remove("is-interactive", "has-label");
+        cursor.removeAttribute("data-cursor-type");
+        label.textContent = "";
+        return;
+      }
+
+      if (element === activeCursorElement) return;
+
+      activeCursorElement = element;
+
+      const rawCursorLabel = element.getAttribute("data-cursor-label") || "";
+      const cursorLabel = rawCursorLabel === "Not Found" ? "" : rawCursorLabel;
+      const cursorType =
+        element.getAttribute("data-cursor-type") ||
+        (element.tagName === "BUTTON" ||
+        element.getAttribute("role") === "button"
+          ? "button"
+          : "link");
+
+      cursor.classList.add("is-interactive");
+      cursor.classList.toggle("has-label", Boolean(cursorLabel));
+      cursor.setAttribute("data-cursor-type", cursorType);
+      label.textContent = cursorLabel;
+    };
+
+    document.addEventListener(
+      "pointermove",
+      (event) => {
+        if (event.pointerType && event.pointerType !== "mouse") return;
+
+        const deltaX = event.movementX || event.clientX - targetX;
+        const deltaY = event.movementY || event.clientY - targetY;
+
+        if (Math.abs(deltaX) + Math.abs(deltaY) > 0.2) {
+          cursor.style.setProperty(
+            "--cursor-angle",
+            `${Math.atan2(deltaY, deltaX)}rad`,
+          );
+          cursor.style.setProperty(
+            "--cursor-dot-distance",
+            "var(--cursor-ring-radius)",
+          );
+          window.clearTimeout(dotResetTimer);
+          dotResetTimer = window.setTimeout(() => {
+            cursor.style.setProperty("--cursor-dot-distance", "0rem");
+          }, 140);
+        }
+
+        targetX = event.clientX;
+        targetY = event.clientY;
+        cursor.classList.add("is-visible");
+        setInteractiveState(event.target);
+
+        if (!frame) {
+          frame = window.requestAnimationFrame(setCursorPosition);
+        }
+      },
+      { passive: true },
+    );
+
+    document.addEventListener("pointerdown", () => {
+      cursor.classList.add("is-pressed");
+    });
+
+    document.addEventListener("pointerup", () => {
+      cursor.classList.remove("is-pressed");
+    });
+
+    document.addEventListener("mouseleave", () => {
+      cursor.classList.remove("is-visible", "is-interactive", "has-label");
+      cursor.removeAttribute("data-cursor-type");
+      label.textContent = "";
+    });
+  }
+
+  function initCreativeHoverAnimation() {
+    document.addEventListener("mouseover", function (e) {
+      const target = e.target.closest(".creative-hover-anim");
+      if (target) {
+        const hoverBg = target.querySelector(".hover-bg");
+        if (hoverBg) {
+          const parentOffset = target.getBoundingClientRect();
+          const relX = e.clientX - parentOffset.left;
+          const relY = e.clientY - parentOffset.top;
+          hoverBg.style.setProperty("--creative-hover-top", `${relY}px`);
+          hoverBg.style.setProperty("--creative-hover-left", `${relX}px`);
+        }
+      }
+    });
+  }
+
+  function initMagneticHoverAnimation() {
+    const speed = 0.3;
+    const maxDistance = 30;
+    let rafId: number;
+
+    function clamp(val: number, max: number): number {
+      return Math.max(-max, Math.min(val, max));
+    }
+
+    function handleMagneticHover(magneticElem: HTMLElement) {
+      let isInside = false;
+
+      function updateTransform(e: MouseEvent) {
+        if (!isInside) return;
+
+        const rect = magneticElem.getBoundingClientRect();
+        const x = (e.clientX - rect.left - rect.width / 2) * speed;
+        const y = (e.clientY - rect.top - rect.height / 2) * speed;
+
+        cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          magneticElem.style.transform = `translate(${clamp(x, maxDistance)}px, ${clamp(y, maxDistance)}px)`;
+        });
+      }
+
+      function resetTransform() {
+        isInside = false;
+        cancelAnimationFrame(rafId);
+        magneticElem.style.transition = "transform 0.2s ease-out";
+        magneticElem.style.transform = "translate(0, 0)";
+      }
+
+      magneticElem.style.willChange = "transform";
+      magneticElem.addEventListener("mouseenter", () => {
+        isInside = true;
+        magneticElem.style.transition = "transform 0.2s ease-out";
+      });
+      magneticElem.addEventListener("mousemove", updateTransform);
+      magneticElem.addEventListener("mouseleave", resetTransform);
+    }
+
+    document
+      .querySelectorAll<HTMLElement>(".magnetic-hover-anim")
+      .forEach(handleMagneticHover);
+
+    window.addEventListener("mouseout", (e) => {
+      if (!e.relatedTarget && !e.toElement) {
+        document
+          .querySelectorAll<HTMLElement>(".magnetic-hover-anim")
+          .forEach((elem) => {
+            elem.style.transition = "transform 0.2s ease-out";
+            elem.style.transform = "translate(0, 0)";
+          });
+      }
+    });
+  }
+</script>

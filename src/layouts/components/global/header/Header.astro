@@ -1,0 +1,234 @@
+---
+import Button from "@/components/Button.astro";
+import Logo from "@/components/global/Logo.astro";
+import HeaderOffcanvasContent from "@/components/widgets/HeaderOffcanvasContent.astro";
+import Offcanvas from "../../widgets/Offcanvas.astro";
+import LanguageSwitcher from "@/layouts/components/global/header/LanguageSwitcher.astro";
+import NavbarToggler from "@/layouts/components/global/header/NavbarToggler.astro";
+import Navbar from "./Navbar.astro";
+import Topbar from "./Topbar.astro";
+import { useTranslations } from "@/lib/utils/i18nUtils.ts";
+import config from ".astro/config.generated.json";
+import type { HeaderLayout } from "@/types";
+
+const t = await useTranslations(Astro.currentLocale as string);
+
+type TopbarContent = "location" | "office-hours";
+type HeaderLayoutConfig = {
+  topbarLayout: "light" | "navy";
+  topbarLeftContent: TopbarContent[];
+  topbarSize?: "default" | "compact";
+  hasDarkAppearance: boolean;
+  isTransparent?: boolean;
+  isMenuRight: boolean;
+  navbarClass?: string;
+};
+
+const isCategoryFilteredPage = ["/category/", "/tag/"].some((path) =>
+  Astro.url.pathname.includes(`/${config.settings.blogFolder}${path}`),
+);
+
+const {
+  site: { logoAlternate },
+  settings: { stickyHeader, navigationButton: navBtnConfig, headerOffcanvas },
+} = config;
+
+const {
+  layout = "two",
+  headerLayout,
+  hideOffcanvas,
+  position,
+  navigationButton: customNavigationButton = navBtnConfig,
+  class: ClassName,
+} = Astro.props as {
+  layout?: HeaderLayout | string;
+  headerLayout?: HeaderLayout | string;
+  position?: "fixed" | "static" | "sticky";
+  hideOffcanvas?: boolean;
+  navigationButton?: typeof navBtnConfig;
+  class?: string;
+};
+
+const layoutConfig: Record<HeaderLayout, HeaderLayoutConfig> = {
+  two: {
+    topbarLayout: "light",
+    topbarLeftContent: ["location"],
+    hasDarkAppearance: false,
+    isMenuRight: false,
+    navbarClass: "navbar-right lg:ps-5",
+  },
+  three: {
+    topbarLayout: "navy",
+    topbarLeftContent: ["office-hours"],
+    topbarSize: "compact",
+    hasDarkAppearance: true,
+    isTransparent: true,
+    isMenuRight: true,
+    navbarClass: "lg:pe-5",
+  },
+};
+
+const isAvailableLayout = (
+  value: HeaderLayout | string | undefined,
+): value is keyof typeof layoutConfig =>
+  typeof value === "string" && value in layoutConfig;
+
+const resolvedLayout = isAvailableLayout(headerLayout)
+  ? headerLayout
+  : isAvailableLayout(layout)
+    ? layout
+    : "two";
+const currentLayout = layoutConfig[resolvedLayout];
+const hasLanguageSwitcher =
+  config.settings.multilingual.enable && !isCategoryFilteredPage;
+
+const navigationButton = { ...navBtnConfig, ...customNavigationButton };
+
+const hasDesktopActions = hasLanguageSwitcher || navigationButton.enable;
+const logoSrc = currentLayout.hasDarkAppearance ? logoAlternate : undefined;
+const accentAppearance = currentLayout.hasDarkAppearance ? "light" : "dark";
+---
+
+<div
+  class:list={[
+    "site-header-wrap",
+    { "has-sticky-behavior": stickyHeader },
+    { fixed: position === "fixed" },
+  ]}>
+  <Topbar
+    class="topbar"
+    layout={currentLayout.topbarLayout}
+    leftContent={currentLayout.topbarLeftContent}
+    size={currentLayout.topbarSize}
+  />
+
+  <header
+    class:list={[
+      "header group/header",
+      `header-${resolvedLayout}`,
+      { "has-dark-background": currentLayout.hasDarkAppearance },
+      { "header-transparent": currentLayout.isTransparent },
+      ClassName,
+    ]}>
+    <nav class="relative container">
+      <div class="hs-dropdown relative flex items-center py-6">
+        {currentLayout.hasDarkAppearance ? <Logo src={logoSrc} /> : <Logo />}
+
+        <Navbar
+          navigationButton={navigationButton}
+          class:list={[
+            currentLayout.isMenuRight && "navbar-right",
+            currentLayout.navbarClass,
+          ]}
+        />
+
+        {
+          hasLanguageSwitcher && (
+            <div class="ms-auto flex lg:hidden">
+              <LanguageSwitcher appearance={accentAppearance} />
+            </div>
+          )
+        }
+
+        {
+          hasDesktopActions && (
+            <div class="hidden gap-3.5 max-lg:ms-auto max-lg:me-4 lg:flex lg:items-center">
+              {hasLanguageSwitcher && (
+                <LanguageSwitcher appearance={accentAppearance} />
+              )}
+
+              {navigationButton.enable && (
+                <Button
+                  variant="fill"
+                  hoverEffect="creative-fill"
+                  {...navigationButton}
+                  label={t("navigation.buttonLabel")}
+                />
+              )}
+            </div>
+          )
+        }
+
+        {
+          headerOffcanvas?.enable && (
+            <NavbarToggler
+              title={t("aria.openSidebarContent")}
+              appearance={accentAppearance}
+              isOffcanvasToggler={true}
+              class:list={["rounded-md", "lg:hidden"]}
+              aria-haspopup="dialog"
+              aria-expanded="false"
+              aria-controls="offcanvas-main"
+              data-hs-overlay="#offcanvas-main"
+              data-hs-overlay-options='{"emulateScrollbarSpace": true}'
+            />
+          )
+        }
+      </div>
+    </nav>
+  </header>
+</div>
+
+{
+  headerOffcanvas?.enable && (
+    <Offcanvas
+      class={hideOffcanvas ? "lg:hidden" : ""}
+      id="offcanvas-main"
+      direction="right"
+      size="md"
+      showDefault={false}>
+      <HeaderOffcanvasContent
+        offcanvas={"offcanvas-main"}
+        navigationButton={navigationButton}
+      />
+    </Offcanvas>
+  )
+}
+<script>
+  function stickyHeader(): void {
+    const header = document.querySelector(
+      ".site-header-wrap.has-sticky-behavior",
+    ) as HTMLElement | null;
+    if (!header) return;
+
+    let prevScrollPos = window.scrollY;
+    const startStickyAt = 0;
+    const hideTopbarAt = 100;
+    const minScrollDiff = 50;
+
+    const handleScroll = (initial = false) => {
+      const currentScrollPos = window.scrollY;
+      const scrollDiff = Math.abs(currentScrollPos - prevScrollPos);
+      header.classList.toggle(
+        "is-topbar-hidden",
+        currentScrollPos > hideTopbarAt,
+      );
+
+      if (currentScrollPos === 0) {
+        header.classList.remove("scroll-up", "scroll-down", "is-topbar-hidden");
+        prevScrollPos = currentScrollPos;
+        return;
+      }
+
+      if (currentScrollPos > startStickyAt) {
+        if (initial || scrollDiff >= minScrollDiff) {
+          if (currentScrollPos > prevScrollPos) {
+            header.classList.remove("scroll-up");
+            header.classList.add("scroll-down");
+          } else {
+            header.classList.remove("scroll-down");
+            header.classList.add("scroll-up");
+          }
+
+          prevScrollPos = currentScrollPos;
+        }
+      }
+    };
+
+    window.addEventListener("scroll", () => handleScroll());
+    handleScroll(true);
+  }
+
+  // Uncomment if you want upwards sticky feature
+  stickyHeader();
+</script>

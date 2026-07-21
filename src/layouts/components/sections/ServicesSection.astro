@@ -1,0 +1,157 @@
+---
+import type { z } from "astro/zod";
+import config from ".astro/config.generated.json";
+import Card from "../cards/Card.astro";
+import Marquee from "@/components/widgets/Marquee.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import overrideObjects from "@/lib/utils/overrideObjects.ts";
+import type { servicesSectionSchema } from "@/sections.schema";
+import { getCollectionCTM, getEntryCTM } from "@/lib/contentParser.astro";
+import Button from "@/components/Button.astro";
+
+// Type for this section data
+type ServicesSectionType = NonNullable<z.infer<typeof servicesSectionSchema>>;
+type Props = {
+  content?: ServicesSectionType;
+  hasSectionSpacing?: boolean;
+  hasLightBackground?: boolean;
+  ignoreLimit?: boolean;
+};
+
+// Fetching the default content for the features section
+let defaultContent = (
+  await getEntryCTM("sections", "services-section", Astro.currentLocale)
+)?.data as ServicesSectionType | undefined;
+const hasContentSource = Boolean(defaultContent || Astro.props.content);
+
+// Merges custom content overrides (e.g., just a title) with defaultContent fallbacks. Enables easy section reuse across pages with partial data changes.
+let actualContent = overrideObjects(
+  { ...(defaultContent || {}) },
+  Astro.props.content || {},
+) as ServicesSectionType;
+
+// Extracting required values
+let {
+  enable = true,
+  title,
+  button,
+  options: { layout = "carousel", limit = false, marquee = {} } = {},
+} = actualContent;
+
+let services = await getCollectionCTM(
+  config.settings.servicesFolder as "services",
+  Astro.currentLocale,
+);
+
+// limit the number of services to be displayed
+services =
+  !Astro.props.ignoreLimit && limit
+    ? services.slice(0, limit as number)
+    : services;
+
+const { hasLightBackground = true, hasSectionSpacing = true } = Astro.props;
+const buttonProps = button && {
+  ...button,
+  hoverEffect: button.hoverEffect || "magnetic-text-flip",
+  variant: button.variant || "fill",
+};
+const hasActionButton = Boolean(
+  buttonProps?.enable && limit && !Astro.props.ignoreLimit,
+);
+const defaultMarquee = {
+  elementWidth: "22rem",
+  elementWidthResponsive: "18rem",
+  elementWidthAuto: false,
+  pauseOnHover: true,
+  reverse: "",
+  duration: "6s",
+  fullWidth: true,
+};
+const marqueeConfig = { ...defaultMarquee, ...marquee };
+const marqueeServices =
+  services.length > 3
+    ? [...services, ...services]
+    : Array.from({ length: 3 }, () => services).flat();
+
+if (!hasContentSource || !enable || !services?.length) {
+  return null;
+}
+---
+
+<section class:list={["overflow-hidden", !hasSectionSpacing && "pt-0"]}>
+  <div
+    class:list={[
+      hasLightBackground && "section-spacing-vertical bg-theme-light",
+    ]}>
+    <div class:list={["space-y-16", layout !== "carousel" && "container"]}>
+      {
+        title && (
+          <h2
+            class="mx-auto text-center"
+            data-scroll-reveal="blur-up"
+            set:html={markdownify(title)}
+          />
+        )
+      }
+
+      {/* LAYOUT: GRID (Standard Vertical Cards) */}
+      {
+        layout === "grid" && (
+          <div class="mx-auto grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {services.map((item, index) => (
+              <div
+                data-scroll-reveal="fade-up"
+                data-scroll-reveal-delay={index * 90}>
+                <Card options={actualContent.options} content={item} />
+              </div>
+            ))}
+          </div>
+        )
+      }
+
+      {
+        layout === "carousel" && (
+          <div class="overflow-hidden" data-scroll-reveal="blur-up">
+            <Marquee
+              elements={marqueeServices.length}
+              animationElements={services.length}
+              elementWidth={marqueeConfig.elementWidth ?? "22rem"}
+              elementWidthResponsive={
+                marqueeConfig.elementWidthResponsive ?? "18rem"
+              }
+              elementWidthAuto={marqueeConfig.elementWidthAuto ?? false}
+              pauseOnHover={marqueeConfig.pauseOnHover ?? true}
+              reverse={marqueeConfig.reverse ?? ""}
+              duration={marqueeConfig.duration ?? "6s"}
+              fullWidth={marqueeConfig.fullWidth ?? true}
+              class="items-stretch">
+              {marqueeServices.map((item) => (
+                <div class="min-w-(--marquee-element-width-responsive) px-3 md:min-w-(--marquee-element-width)">
+                  <Card
+                    class="min-h-full"
+                    content={item}
+                    options={actualContent.options}
+                  />
+                </div>
+              ))}
+            </Marquee>
+          </div>
+        )
+      }
+
+      {
+        buttonProps && hasActionButton && (
+          <div
+            data-scroll-reveal="fade-up"
+            data-scroll-reveal-delay="180"
+            class:list={[
+              "flex justify-center",
+              layout === "carousel" && "container",
+            ]}>
+            <Button {...buttonProps} />
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>

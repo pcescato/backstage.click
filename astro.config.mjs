@@ -1,50 +1,81 @@
-import { defineConfig, envField } from 'astro/config';
-import mdx from '@astrojs/mdx';
-import sitemap from '@astrojs/sitemap';
-import react from '@astrojs/react';
-import tailwindcss from '@tailwindcss/vite';
+import mdx from "@astrojs/mdx";
+import remarkToc from "remark-toc";
+import { unified } from "@astrojs/markdown-remark";
+import sitemap from "@astrojs/sitemap";
+import { defineConfig } from "astro/config";
+import tailwindcss from "@tailwindcss/vite";
+import rehypeExternalLinks from "rehype-external-links";
+import { enabledLanguages } from "./src/lib/utils/i18nUtils.ts";
+import remarkParseContent from "./src/lib/utils/remarkParseContent.ts";
+import config from "./.astro/config.generated.json";
+import fontsJson from "./src/config/fonts.json";
+import { generateAstroFontsConfig } from "./src/lib/utils/AstroFont.ts";
 
+const fonts = generateAstroFontsConfig(fontsJson);
+
+let {
+  seo: { sitemap: sitemapConfig },
+  settings: {
+    multilingual: { showDefaultLangInUrl, defaultLanguage },
+  },
+} = config;
+
+// https://astro.build/config
 export default defineConfig({
-  site: 'https://backstage.click',
-
-  env: {
-    schema: {
-      SITE_URL: envField.string({ context: 'server', access: 'public', optional: true }),
-      PUBLIC_GA_MEASUREMENT_ID: envField.string({ context: 'client', access: 'public', optional: true }),
-      PUBLIC_GTM_ID: envField.string({ context: 'client', access: 'public', optional: true }),
-      CONTACT_FORM_ENDPOINT: envField.string({ context: 'server', access: 'secret', optional: true }),
-      NEWSLETTER_API_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
-      GOOGLE_SITE_VERIFICATION: envField.string({ context: 'server', access: 'public', optional: true }),
-      BING_SITE_VERIFICATION: envField.string({ context: 'server', access: 'public', optional: true }),
-      PUBLIC_GOOGLE_MAPS_API_KEY: envField.string({ context: 'client', access: 'public', optional: true, default: '' }),
-      PUBLIC_CONSENT_ENABLED: envField.boolean({ context: 'client', access: 'public', optional: true, default: false }),
-      PUBLIC_PRIVACY_POLICY_URL: envField.string({ context: 'client', access: 'public', optional: true, default: '' }),
+  site: config.site.baseUrl ? config.site.baseUrl : "http://examplesite.com",
+  trailingSlash: config.site.trailingSlash ? "always" : "never",
+  devToolbar: {
+    enabled: true,
+  },
+  image: {
+    layout: "constrained",
+  },
+  fonts,
+  i18n: {
+    locales: enabledLanguages,
+    defaultLocale: defaultLanguage,
+    routing: {
+      prefixDefaultLocale: showDefaultLangInUrl,
     },
   },
-
-  image: {
-    layout: 'constrained',
-  },
-
   integrations: [
-    react(),
+    sitemapConfig.enable ? sitemap() : null,
+    // Shortcodes are provided to MDX via the `components` prop on `<Content />`
+    // (see `src/lib/shortcodes.ts`), so no auto-import integration is needed.
     mdx(),
-    sitemap(),
   ],
+  markdown: {
+    // Since @astrojs/mdx v6, remark/rehype plugins are configured on the
+    // `unified()` processor instead of top-level `markdown.*` options.
+    processor: unified({
+      remarkPlugins: [
+        remarkParseContent, // Parse markdown content and add classes in heading and loading="lazy" to images
+        remarkToc,
+      ],
+      rehypePlugins: [
+        [
+          rehypeExternalLinks,
+          {
+            rel: "noopener noreferrer nofollow",
+            target: "_blank",
+          },
+        ],
+      ],
+    }),
 
+    // Code Highlighter https://github.com/shikijs/shiki
+    shikiConfig: {
+      // WCAG-AA themed code: every syntax token (incl. comments) clears 4.5:1
+      // against the block background, which standard themes don't guarantee.
+      theme: "github-light-high-contrast", // https://shiki.style/themes
+      wrap: false,
+    },
+  },
   vite: {
+    logLevel: "error",
+    build: {
+      minify: true,
+    },
     plugins: [tailwindcss()],
   },
-
-  security: {
-    checkOrigin: true,
-  },
-
-  markdown: {
-    shikiConfig: {
-      theme: 'github-dark',
-      wrap: true,
-    },
-  },
-
 });

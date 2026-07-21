@@ -1,0 +1,155 @@
+---
+import type { IconName as SupportedIconName } from "../../lib/iconNames.ts";
+import type { IconNode as LucideIconNode } from "lucide";
+import {
+  ArrowRight,
+  ArrowUp,
+  ArrowUpRight,
+  Briefcase,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  ChevronsRight,
+  Clock,
+  Diamond,
+  DollarSign,
+  Headphones,
+  Headset,
+  Languages,
+  Link,
+  Mail,
+  MailOpen,
+  MapPin,
+  MessageCircle,
+  Minus,
+  MoveLeft,
+  MoveRight,
+  Phone,
+  Play,
+  Plus,
+  Quote,
+  Search,
+  Send,
+  Settings,
+  Star,
+  ThumbsUp,
+  TriangleRight,
+  Trophy,
+  Users,
+  UsersRound,
+  X,
+} from "lucide";
+
+interface Props {
+  icon: SupportedIconName;
+  [key: string]: any;
+}
+
+const {
+  icon,
+  title,
+  fill = "none",
+  strokeWidth,
+  "stroke-width": strokeWidthAttribute,
+  ...restProps
+} = Astro.props;
+const iconKey = (icon || "").toString().toLowerCase();
+const resolvedStrokeWidth = strokeWidthAttribute ?? strokeWidth ?? 2;
+
+const iconMap: Record<string, LucideIconNode> = {
+  arrowright: ArrowRight,
+  arrowup: ArrowUp,
+  arrowupright: ArrowUpRight,
+  briefcase: Briefcase,
+  check: Check,
+  chevrondown: ChevronDown,
+  chevronleft: ChevronLeft,
+  chevronright: ChevronRight,
+  chevronup: ChevronUp,
+  chevronsright: ChevronsRight,
+  clock: Clock,
+  diamond: Diamond,
+  dollarsign: DollarSign,
+  headphones: Headphones,
+  headset: Headset,
+  languages: Languages,
+  link: Link,
+  mail: Mail,
+  mailopen: MailOpen,
+  mappin: MapPin,
+  messagecircle: MessageCircle,
+  minus: Minus,
+  moveleft: MoveLeft,
+  moveright: MoveRight,
+  phone: Phone,
+  play: Play,
+  plus: Plus,
+  quote: Quote,
+  search: Search,
+  send: Send,
+  settings: Settings,
+  star: Star,
+  thumbsup: ThumbsUp,
+  triangleright: TriangleRight,
+  trophy: Trophy,
+  users: Users,
+  usersround: UsersRound,
+  x: X,
+};
+
+const inlineIcon = iconMap[iconKey];
+---
+
+{
+  inlineIcon ? (
+    <svg
+      viewBox="0 0 24 24"
+      width="24"
+      height="24"
+      fill={fill}
+      stroke="currentColor"
+      stroke-width={resolvedStrokeWidth}
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden={title ? "false" : "true"}
+      role={title ? "img" : "presentation"}
+      {...restProps}>
+      {title && <title>{title}</title>}
+      {inlineIcon.map(([tag, attrs]) =>
+        tag === "path" ? (
+          <path {...attrs} />
+        ) : tag === "polyline" ? (
+          <polyline {...attrs} />
+        ) : tag === "polygon" ? (
+          <polygon {...attrs} />
+        ) : tag === "line" ? (
+          <line {...attrs} />
+        ) : tag === "circle" ? (
+          <circle {...attrs} />
+        ) : (
+          <rect {...attrs} />
+        ),
+      )}
+    </svg>
+  ) : (
+    <svg
+      viewBox="0 0 24 24"
+      width="24"
+      height="24"
+      data-icon
+      data-lucide={icon}
+      data-lucide-runtime="true"
+      data-lucide-title={title}
+      fill={fill}
+      stroke="currentColor"
+      stroke-width={resolvedStrokeWidth}
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden={title ? "false" : "true"}
+      role={title ? "img" : "presentation"}
+      {...restProps}
+    />
+  )
+}

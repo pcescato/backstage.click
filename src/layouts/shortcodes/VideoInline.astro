@@ -1,0 +1,51 @@
+---
+// src/layouts/shortcodes/VideoInline.astro
+import bgOptimizedImage from "@/lib/utils/bgOptimizedImage";
+import type { VideoConfig } from "@/types";
+
+let {
+  src,
+  provider = "youtube",
+  poster,
+  autoplay = true,
+  type,
+  title = "Embedded video",
+} = Astro.props as VideoConfig & { title?: string };
+
+const isLocalHostedVideo = src?.includes("/videos/") && provider === "html5";
+poster = poster && (await bgOptimizedImage(poster));
+
+const embedSrc =
+  provider === "youtube"
+    ? `https://www.youtube-nocookie.com/embed/${src}?rel=0&playsinline=1&autoplay=${autoplay ? 1 : 0}`
+    : provider === "vimeo"
+      ? `https://player.vimeo.com/video/${src}?autoplay=${autoplay ? 1 : 0}`
+      : undefined;
+---
+
+{
+  src && (
+    <div class="not-prose video-inline overflow-hidden rounded-xl bg-black">
+      {isLocalHostedVideo ? (
+        <video
+          controls
+          playsinline
+          preload="metadata"
+          poster={poster || undefined}
+          class="aspect-video w-full"
+          {...(autoplay ? { autoplay: true, muted: true } : {})}>
+          <source src={src} type={type} />
+        </video>
+      ) : (
+        <iframe
+          class="aspect-video w-full"
+          src={embedSrc}
+          title={title}
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        />
+      )}
+    </div>
+  )
+}

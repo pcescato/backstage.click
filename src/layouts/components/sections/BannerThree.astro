@@ -1,0 +1,87 @@
+---
+import { z } from "astro/zod";
+import type { Section } from "@/types";
+import Button from "@/components/Button.astro";
+import { getEntryCTM } from "@/lib/contentParser.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import overrideObjects from "@/lib/utils/overrideObjects.ts";
+import OptimizedImage from "../utilities/OptimizedImage.astro";
+import type { bannerAgencySectionSchema } from "@/sections.schema";
+
+type BannerThreeType = Section & z.infer<typeof bannerAgencySectionSchema>;
+type Props = { content?: BannerThreeType };
+
+const defaultContent = (
+  await getEntryCTM("sections", "banner-three", Astro.currentLocale)
+)?.data as BannerThreeType;
+
+const actualContent = overrideObjects(
+  { ...defaultContent },
+  Astro.props.content,
+) as BannerThreeType;
+
+const { title, description, gradientBackgroundImage, mapImage, buttons } =
+  actualContent;
+const backgroundImage = mapImage || "/images/banner/map.svg";
+---
+
+<section class="banner-three-section bg-theme-dark relative overflow-hidden">
+  <div class="container py-44">
+    {
+      backgroundImage && (
+        <OptimizedImage
+          src={backgroundImage}
+          alt="map"
+          aria-hidden="true"
+          loading="eager"
+          fetchpriority="high"
+          class="banner-three-map has-no-interaction lg:translate-centered absolute z-10 w-255 opacity-7 max-lg:bottom-0 max-lg:left-0"
+        />
+      )
+    }
+    {
+      gradientBackgroundImage && (
+        <div class="banner-three-gradient has-no-interaction translate-centered absolute z-10 flex h-245 w-400">
+          <OptimizedImage
+            src={gradientBackgroundImage}
+            alt="map"
+            aria-hidden="true"
+            loading="eager"
+            fetchpriority="high"
+            class="w-400 flex-1 max-lg:bottom-0 max-lg:left-0"
+          />
+        </div>
+      )
+    }
+    <div
+      class="banner-three-content relative z-10 mx-auto max-w-4xl text-center">
+      {
+        title && (
+          <h1
+            class="banner-three-title text-display-5 md:text-display-4 lg:text-display-3 xl:text-display-2 leading-tight text-white"
+            set:html={markdownify(title)}
+          />
+        )
+      }
+
+      {
+        description && (
+          <p
+            class="banner-three-description text-light mx-auto mt-5 max-w-4xl md:text-lg"
+            set:html={markdownify(description)}
+          />
+        )
+      }
+
+      {
+        buttons?.length && (
+          <div class="banner-three-actions mt-10 flex flex-wrap items-center justify-center gap-4">
+            {buttons.map((button) => (
+              <Button {...button} />
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>

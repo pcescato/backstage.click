@@ -1,0 +1,120 @@
+---
+/**
+ * Card Component
+ *
+ * A flexible UI component for showcasing an icon, title, and description.
+ * Optimized for direct usage in `.mdx` files.
+ *
+ * ✅ MDX usage:
+ * <Card
+ *   icon="/images/icon.png"
+ *   title="Title"
+ *   description="Some description here."
+ *   buttonLabel="Contact Us"
+ *   buttonUrl="/contact"
+ * />
+ *
+ * Props:
+ * - icon (string): Icon image path.
+ * - title (string): Title text.
+ * - description (string): Description text.
+ * - class (string): Additional Tailwind/CSS classes.
+ * - options (object): Optional layout/display options (e.g., icon placement).
+ * - buttonLabel (string): Label for CTA button.
+ * - buttonUrl (string): Slug for CTA button.
+ */
+import OptimizedImage from "@/components/utilities/OptimizedImage.astro";
+import { getLocaleUrlCTM, useTranslations } from "@/lib/utils/i18nUtils.ts";
+import Button from "@/components/Button.astro";
+
+interface Props {
+  icon?: string;
+  title?: string;
+  description?: string;
+  class?: string;
+  options?: {
+    iconPlacement?: "top" | "right";
+  };
+  buttonLabel?: string;
+  buttonUrl?: string;
+}
+
+let {
+  icon,
+  title,
+  description,
+  options,
+  class: className,
+  buttonUrl,
+  buttonLabel,
+} = Astro.props;
+
+const t = await useTranslations(Astro.currentLocale as string);
+
+const iconClass = "text-dark h-10 w-10 transition duration-300";
+
+const iconPlacement = options?.iconPlacement ?? "top";
+const isRightSideIcon = iconPlacement === "right";
+
+const slug = buttonUrl ? getLocaleUrlCTM(buttonUrl, Astro.currentLocale) : null;
+---
+
+<div class:list={["bg-theme-light rounded-xl", className]}>
+  <div class="flex min-h-full flex-col space-y-16 p-6 md:px-8 md:py-10">
+    {
+      icon && !isRightSideIcon && (
+        <OptimizedImage
+          alt={title ? `${title} icon` : "Card icon"}
+          src={icon}
+          inlineSvg
+          width={40}
+          height={40}
+          class={iconClass}
+        />
+      )
+    }
+
+    <div class="flex min-h-full flex-1 flex-col items-start space-y-4">
+      {
+        isRightSideIcon ? (
+          <div class="flex w-full flex-wrap-reverse justify-between gap-5 md:flex-row">
+            {title && <h3 class="md:text-h4 text-h4-sm" set:html={title} />}
+            {icon && (
+              <OptimizedImage
+                alt={title ? `${title} icon` : "Card icon"}
+                src={icon}
+                inlineSvg
+                width={40}
+                height={40}
+                class={iconClass}
+              />
+            )}
+          </div>
+        ) : (
+          title && <h3 class="md:text-h4 text-h4-sm" set:html={title} />
+        )
+      }
+
+      {
+        description && (
+          <p
+            class:list={[isRightSideIcon && "md:pe-20"]}
+            set:html={description}
+          />
+        )
+      }
+      {
+        slug && (
+          <div class="mt-8">
+            <Button
+              url={slug}
+              variant="text"
+              label={buttonLabel || t("common.viewDetails")}
+              class="mt-auto text-sm uppercase"
+            />
+          </div>
+        )
+      }
+    </div>
+  </div>
+</div>

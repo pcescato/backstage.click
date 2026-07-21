@@ -1,0 +1,115 @@
+---
+import Social from "./Social.astro";
+import Logo from "../global/Logo.astro";
+import config from ".astro/config.generated.json";
+import Icons from "@/helpers/Icons.astro";
+import social from "@/config/social.json";
+import Navbar from "../global/header/Navbar.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import { useTranslations } from "@/lib/utils/i18nUtils.ts";
+
+const {
+  settings: {
+    headerOffcanvas: { enable, logo, description },
+    contactInfo: { address, phone, email },
+  },
+} = config;
+
+const t = await useTranslations(Astro.currentLocale as string);
+
+const { offcanvas, navigationButton } = Astro.props;
+
+if (!enable) {
+  return null;
+}
+---
+
+<div
+  data-lenis-scroll-native
+  class="flex h-screen flex-col justify-between space-y-6 overflow-auto bg-white px-8 pt-16 pb-5 md:px-16 md:pb-10">
+  <button
+    type="button"
+    data-hs-overlay={`#${offcanvas}`}
+    title={t("aria.closeOffcanvas")}
+    class="absolute end-7 top-5 z-20 inline-flex h-12 w-12 items-center justify-center gap-x-2 rounded-full bg-slate-100 text-xl ring-transparent transition-all duration-500 ease-out hover:rotate-90"
+    aria-expanded="true">
+    <Icons icon="X" />
+  </button>
+
+  <Logo class="text-dark justify-start" src={logo} />
+  {
+    (description || t("headerOffcanvas.description")) && (
+      <p
+        set:html={markdownify(description || t("headerOffcanvas.description"))}
+      />
+    )
+  }
+
+  <Social
+    linkType="follow"
+    list={social.main.filter((social) => social.enable)}
+  />
+  <div class="mb-10 pt-10 lg:hidden">
+    <Navbar isMobile={true} navigationButton={navigationButton} />
+  </div>
+
+  <div class="mt-auto space-y-10">
+    <div>
+      <div
+        class="bg-theme-dark flex h-12 w-12 items-center justify-center rounded-lg">
+        <svg
+          width="20"
+          height="24"
+          viewBox="0 0 20 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M16.6443 16.6443L9.75 23.5386L2.85571 16.6443C-0.951903 12.8366 -0.951903 6.66332 2.85571 2.85571C6.66332 -0.951903 12.8366 -0.951903 16.6443 2.85571C20.4519 6.66332 20.4519 12.8366 16.6443 16.6443ZM9.75 11.9167C10.9466 11.9167 11.9167 10.9467 11.9167 9.75C11.9167 8.55338 10.9466 7.58333 9.75 7.58333C8.55335 7.58333 7.58333 8.55338 7.58333 9.75C7.58333 10.9467 8.55335 11.9167 9.75 11.9167Z"
+            fill="white">
+          </path>
+        </svg>
+      </div>
+      {
+        t("headerOffcanvas.addressLabel") && (
+          <div
+            class="text-dark mt-5 mb-2 text-lg font-medium"
+            set:html={markdownify(t("headerOffcanvas.addressLabel"))}
+          />
+        )
+      }
+      {
+        address && (
+          <address class="not-italic" set:html={markdownify(address)} />
+        )
+      }
+    </div>
+    <div>
+      <div
+        class="bg-theme-dark flex h-12 w-12 items-center justify-center rounded-lg">
+        <svg
+          width="22"
+          height="20"
+          viewBox="0 0 22 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M1.08333 0H20.5833C21.1817 0 21.6667 0.48503 21.6667 1.08333V18.4167C21.6667 19.015 21.1817 19.5 20.5833 19.5H1.08333C0.48503 19.5 0 19.015 0 18.4167V1.08333C0 0.48503 0.48503 0 1.08333 0ZM10.899 9.40648L3.95115 3.50751L2.54884 5.15916L10.9125 12.2602L19.1256 5.15251L17.7077 3.51416L10.899 9.40648Z"
+            fill="white">
+          </path>
+        </svg>
+      </div>
+      {
+        t("headerOffcanvas.contactLabel") && (
+          <div
+            class="text-dark mt-5 mb-2 text-lg font-medium"
+            set:html={markdownify(t("headerOffcanvas.contactLabel"))}
+          />
+        )
+      }
+      <div class="prose-a:underline">
+        {phone && <p set:html={markdownify(phone)} />}
+        {email && <p set:html={markdownify(email)} />}
+      </div>
+    </div>
+  </div>
+</div>

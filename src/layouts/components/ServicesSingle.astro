@@ -1,0 +1,108 @@
+---
+import Icons from "@/helpers/Icons.astro";
+import { shortcodes } from "@/lib/shortcodes";
+import { getCollectionCTM } from "@/lib/contentParser.astro";
+import extractSlug from "@/lib/utils/extractSlug";
+import { getLocaleUrlCTM, useTranslations } from "@/lib/utils/i18nUtils.ts";
+import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
+import OptimizedImage from "./utilities/OptimizedImage.astro";
+import CallToActionWidget from "./widgets/CallToActionWidget.astro";
+
+interface Props {
+  content: CollectionEntry<"services">;
+}
+
+const { content } = Astro.props;
+const {
+  data: { title, image },
+} = content;
+
+const services = await getCollectionCTM("services", Astro.currentLocale);
+const { Content } = await render(content);
+const t = await useTranslations(Astro.currentLocale as string);
+---
+
+<section class="section-spacing-vertical">
+  <div class="container">
+    <div class="grid gap-10 lg:grid-cols-12 xl:gap-12">
+      <article class="lg:col-span-8">
+        {
+          image && (
+            <OptimizedImage
+              src={image}
+              width={856}
+              height={570}
+              alt={title}
+              data-image-lightbox
+              class="h-80 w-full rounded-2xl object-cover md:h-112.5 xl:h-142.5"
+            />
+          )
+        }
+
+        {
+          Content && (
+            <div class="service-single-content prose-styles content has-video-modal mt-10 md:mt-12">
+              <Content components={shortcodes} />
+            </div>
+          )
+        }
+      </article>
+
+      <aside class="lg:col-span-4">
+        <div class="sticky-sidebar space-y-9 lg:sticky">
+          <nav aria-label={t("aria.services")}>
+            <ul class="space-y-2.5">
+              {
+                services.map((service) => {
+                  const isActive =
+                    service.filePath === content.filePath ||
+                    service.id === content.id;
+
+                  return (
+                    <li>
+                      <a
+                        href={getLocaleUrlCTM(
+                          extractSlug(service),
+                          Astro.currentLocale,
+                          "services",
+                        )}
+                        aria-current={isActive ? "page" : undefined}
+                        class:list={[
+                          "flex items-center justify-between gap-4 rounded-md px-6 py-4.5 text-sm leading-6 font-semibold transition duration-300 md:text-base",
+                          isActive
+                            ? "bg-primary text-white"
+                            : "bg-light/70 text-dark hover:bg-primary hover:text-white",
+                        ]}>
+                        <span>{service.data.title}</span>
+                        <Icons
+                          icon="ArrowUpRight"
+                          class="size-5 shrink-0"
+                          stroke-width="2"
+                        />
+                      </a>
+                    </li>
+                  );
+                })
+              }
+            </ul>
+          </nav>
+
+          <CallToActionWidget />
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    import { stickySidebar } from "@/plugins/sticky-sidebar.js";
+
+    const sidebar = document.querySelector(".sticky-sidebar");
+    if (sidebar) {
+      new stickySidebar(sidebar, {
+        offsetTop: 132,
+        offsetBottom: 20,
+      });
+    }
+  </script>
+</section>

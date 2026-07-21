@@ -1,0 +1,51 @@
+---
+// src/components/cards/FeatureListCard.astro
+import Icons from "@/helpers/Icons.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+
+const {
+  item,
+  hasSectionBackground,
+  variant = "grid",
+  headingTag = "h4",
+} = Astro.props;
+// Heading level adapts to the surrounding section so the document outline never
+// skips a level (e.g. h4 under a section subtitle, h3 when there is none).
+const HeadingTag = headingTag;
+---
+
+{
+  variant === "grid" ? (
+    <div class="flex items-center gap-4">
+      {item.icon && (
+        <div class="bg-primary grid size-15 flex-none place-items-center rounded-xl text-white">
+          <Icons icon={item.icon} class="size-8" stroke-width="1.8" />
+        </div>
+      )}
+
+      <p
+        class="text-dark text-base leading-6 font-semibold tracking-normal"
+        set:html={markdownify(item.title)}
+      />
+    </div>
+  ) : (
+    <div class="group flex gap-5 max-sm:flex-col max-sm:items-start">
+      <div
+        class:list={[
+          hasSectionBackground
+            ? "bg-primary group-hover:bg-primary/10 group-hover:text-primary h-fit flex-none rounded-xl p-4 text-white transition-colors"
+            : "group-hover:bg-primary text-primary h-fit flex-none rounded-xl bg-white p-4 transition-colors group-hover:text-white",
+        ]}>
+        <Icons icon={item.icon} class="size-6" />
+      </div>
+
+      <div class="space-y-3">
+        <HeadingTag class="text-xl" set:html={markdownify(item.title)} />
+
+        {item.description && (
+          <p class="text-sm" set:html={markdownify(item.description)} />
+        )}
+      </div>
+    </div>
+  )
+}

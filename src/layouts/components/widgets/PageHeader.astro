@@ -1,0 +1,109 @@
+---
+import Icons from "@/helpers/Icons.astro";
+import { getLocaleUrlCTM, useTranslations } from "@/lib/utils/i18nUtils.ts";
+import { humanize } from "@/lib/utils/textConverter";
+
+type Props = {
+  content: {
+    title?: string;
+    image?: string;
+    breadcrumb?: boolean;
+    hiddenPaths?: string[];
+  };
+};
+
+const { title, hiddenPaths, breadcrumb = true } = Astro.props.content || {};
+const t = await useTranslations(Astro.currentLocale as string);
+
+const createBreadcrumbParts = (pathname: string) => {
+  let segments = pathname.split("/").filter((segment) => segment);
+
+  if (segments[0] === Astro.currentLocale) {
+    segments = segments.slice(1);
+  }
+
+  const breadcrumbParts: {
+    label: string;
+    href: string;
+    isCurrent: boolean;
+  }[] = [
+    {
+      label: t("common.home"),
+      href: getLocaleUrlCTM("/", Astro.currentLocale),
+      isCurrent: pathname === "/",
+    },
+  ];
+
+  segments.forEach((segment, index) => {
+    if (segment === "page") return;
+
+    const label =
+      humanize(segment.replace(".html", "").replace(/[-_]/g, " ")) || "";
+    const href = getLocaleUrlCTM(
+      `/${segments.slice(0, index + 1).join("/")}`,
+      Astro.currentLocale,
+    );
+
+    breadcrumbParts.push({
+      label,
+      href: hiddenPaths?.includes(label) ? "" : href,
+      isCurrent: index === segments.length - 1,
+    });
+  });
+
+  return breadcrumbParts;
+};
+
+const breadcrumbParts = breadcrumb
+  ? createBreadcrumbParts(Astro.url.pathname)
+  : [];
+---
+
+<section
+  class:list={[
+    "page-header-gradient section-spacing-lg-vertical relative flex items-center overflow-hidden",
+  ]}>
+  <div
+    class="relative z-10 container flex flex-col items-center justify-center text-center"
+    data-scroll-reveal="blur-up">
+    {
+      title && (
+        <h1 class="text-display-6 sm:text-display-5 md:text-display-3 text-white">
+          {humanize(title)}
+        </h1>
+      )
+    }
+    {
+      breadcrumb && breadcrumbParts.length > 0 && (
+        <nav class="mt-3" aria-label={t("aria.breadcrumb")}>
+          <ol
+            class="flex flex-wrap items-center justify-center gap-2"
+            role="list">
+            {breadcrumbParts.map((part, index) => (
+              <li class="flex items-center gap-2" role="listitem">
+                {index !== 0 && (
+                  <Icons
+                    icon="ChevronRight"
+                    class="size-5 text-white"
+                    stroke-width="1.8"
+                  />
+                )}
+                {part.href && !part.isCurrent ? (
+                  <a class="text-light hover:text-white" href={part.href}>
+                    {part.label}
+                  </a>
+                ) : (
+                  <span
+                    class:list={[part.isCurrent ? "text-white" : "text-light"]}
+                    aria-current={part.isCurrent ? "page" : undefined}>
+                    {part.label}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+  </div>
+</section>

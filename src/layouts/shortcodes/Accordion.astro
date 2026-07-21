@@ -1,0 +1,99 @@
+---
+/**
+ * Accordion Shortcode
+ * Pass group in order to close other accordions when one is opened
+ * @see https://preline.co/plugins/html/accordion.html
+ */
+
+/**
+  * Example Usage
+
+  <Accordion label="Example Accordion Label 01" group="accordion-01" expanded="false">
+
+  We offer a wide range of services including web development, branding, and digital marketing to help businesses grow and succeed.
+
+  * **Essentials**: Focused workshop to identify core values and USP.
+  * **Growth**: In-depth workshop to establish a clear and differentiated brand identity.
+  * **Enterprise**: Comprehensive brand positioning strategy encompassing all aspects of your brand.
+
+  </Accordion>
+
+  */
+
+import { toLowerCase } from "@/lib/utils/textConverter";
+import uniqueIdGenerator from "@/lib/utils/uniqueIdGenerator";
+import Icons from "@/helpers/Icons.astro";
+
+const { label, group, expanded } = Astro.props;
+const uniqueId = uniqueIdGenerator(toLowerCase(label));
+const isExpanded = expanded === "true";
+---
+
+<div
+  data-group={group}
+  class:list={[
+    "hs-accordion relative pe-10 text-start transition-all lg:pe-20",
+    isExpanded && "active",
+  ]}
+  id={"hs-accordion-" + uniqueId}>
+  <button
+    aria-expanded={"false"}
+    class="hs-accordion-toggle text-dark md:text-h6 w-full py-6 text-start font-medium"
+    aria-controls={"accordion-content-" + uniqueId}
+    set:html={label}
+  />
+
+  <div
+    class="hs-accordion-active:rotate-180 pointer-events-none absolute end-0 top-5 flex transition duration-300">
+    <Icons icon="ArrowUpRight" class="text-dark text-xl" />
+  </div>
+  <div
+    role="region"
+    id={"hs-accordion-content-" + uniqueId}
+    aria-labelledby={"hs-accordion-" + uniqueId}
+    class:list={[
+      "hs-accordion-content hs-accordion-active:opacity-100 w-full overflow-hidden opacity-0 transition-all duration-300 ease-linear",
+      !isExpanded && "hidden",
+    ]}>
+    <div class="prose-styles prose-p:first:mt-0 prose-p:last:mb-0 pb-4">
+      <slot />
+    </div>
+  </div>
+  <script>
+    // Keep scroll reveal measurements fresh after accordion content changes.
+    // @ts-nocheck
+    import { HSAccordion } from "preline";
+
+    window.addEventListener("load", () => {
+      const accordions = document.querySelectorAll(".hs-accordion");
+
+      // Close other accordions when one is opened of the same group
+      accordions.forEach((currentAccordion) => {
+        const { element } = HSAccordion.getInstance(currentAccordion, true);
+
+        element.on("open", () => {
+          window.__techloScrollReveal?.refresh();
+
+          const group = currentAccordion.getAttribute("data-group");
+
+          if (group) {
+            const accordions = document.querySelectorAll(
+              `.hs-accordion[data-group="${group}"]`,
+            );
+
+            accordions.forEach((accordion) => {
+              if (accordion !== element.el) {
+                const { element: elem } = HSAccordion.getInstance(
+                  `#${accordion.getAttribute("id")}`,
+                  true,
+                );
+
+                elem.hide();
+              }
+            });
+          }
+        });
+      });
+    });
+  </script>
+</div>

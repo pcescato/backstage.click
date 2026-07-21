@@ -12,10 +12,11 @@ const faqItems = [
   {
     title: 'Quelle différence entre n8n et Zapier ?',
     content: "n8n est open-source et peut s'auto-héberger, ce qui supprime la limite de workflows imposée par les paliers tarifaires de Zapier et garde les données sous votre contrôle. Zapier reste plus simple à prendre en main sans hébergement à gérer, mais coûte plus cher à l'usage et impose ses propres contraintes SaaS.",
+    defaultOpen: true,
   },
   {
     title: 'Pourquoi utiliser un LLM local (Ollama) plutôt que le cloud ?',
-    content: "Principalement pour la confidentialité : un modèle auto-hébergé ne transmet aucune donnée à un tiers. C'est pertinent pour des données sensibles (RH, santé, juridique) ou par choix de souveraineté. En contrepartie, un modèle cloud reste souvent plus puissant pour des tâches complexes — le choix se fait selon le cas d'usage, pas par défaut.",
+    content: "Principalement pour la confidentialité : un modèle auto-hébergé ne transmet aucune donnée à un tiers. C'est pertinent pour des données sensibles (RH, santé, juridique) ou par choix de souveraineté. En contrepartie, un modèle cloud reste souvent plus puissant pour des tâches complexes – le choix se fait selon le cas d'usage, pas par défaut.",
   },
   {
     title: 'Comment éviter que les coûts d\'API LLM explosent ?',
@@ -23,7 +24,7 @@ const faqItems = [
   },
   {
     title: 'L\'IA peut-elle prendre des décisions automatiques sans supervision ?',
-    content: "Ce n'est pas mon approche. L'IA générative est utile pour assister — rédiger, résumer, classer, expliquer — mais les décisions qui comptent (un score, une validation, une action métier critique) restent pilotées par des règles vérifiables ou une validation humaine. C'est ce qui évite les effets de boîte noire difficiles à auditer.",
+    content: "Ce n'est pas mon approche. L'IA générative est utile pour assister – rédiger, résumer, classer, expliquer – mais les décisions qui comptent (un score, une validation, une action métier critique) restent pilotées par des règles vérifiables ou une validation humaine. C'est ce qui évite les effets de boîte noire difficiles à auditer.",
   },
 ];
 ---
@@ -48,86 +49,94 @@ const faqItems = [
       <h1 slot="title" class="max-w-4xl !leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
         IA & automatisation
       </h1>
-
-      <p slot="description" class="max-w-3xl">
-        L'IA générative est partout, mais son intégration réelle dans un process métier demande plus qu'un appel API à ChatGPT. Je conçois des automatisations et des intégrations LLM pragmatiques : le bon modèle au bon endroit, des coûts maîtrisés, et un principe non négociable — l'IA assiste, elle ne décide jamais seule sur ce qui compte vraiment.
-      </p>
     </Hero>
 
-    <section class="border-border bg-background border-b py-20">
-      <div class="mx-auto max-w-4xl px-6">
-        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
-          Intégration LLM
-        </h2>
-        <div class="text-foreground-muted mt-8 space-y-4 text-base leading-relaxed">
-          <p>
-            Connexion à des modèles LLM (OpenAI, Ollama en local) selon le besoin : cloud quand la puissance ou la simplicité prime, local quand la confidentialité des données est un enjeu — un modèle Ollama auto-hébergé ne fait transiter aucune donnée client vers un tiers. Le choix du modèle n'est jamais automatique : il dépend du cas d'usage, du budget, et de la sensibilité des données traitées.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="border-border bg-background-secondary border-b py-20">
-      <div class="mx-auto max-w-4xl px-6">
-        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
-          Automatisation de process métier
-        </h2>
-        <div class="text-foreground-muted mt-8 space-y-4 text-base leading-relaxed">
-          <p>
-            Automatisation de tâches répétitives avec n8n — équivalent open-source et auto-hébergeable de Zapier, qui permet d'orchestrer des workflows (déclencheurs, API, IA, bases de données) sans dépendre d'un abonnement SaaS par tâche. Contrairement à Zapier, n8n s'auto-héberge : pas de limite de workflow imposée par un palier tarifaire, contrôle complet sur les données qui transitent.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="border-border bg-background border-b py-20">
-      <div class="mx-auto max-w-4xl px-6">
-        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
-          Maîtrise des coûts
-        </h2>
-        <div class="text-foreground-muted mt-8 space-y-4 text-base leading-relaxed">
-          <p>
-            L'IA générative peut vite devenir un poste de coût incontrôlé si chaque appel LLM part sur le modèle le plus cher par défaut. J'utilise OpenRouter pour router chaque requête vers le modèle le plus adapté au besoin réel — un modèle léger pour une tâche simple, un modèle plus puissant seulement quand c'est justifié — avec un suivi de coût précis plutôt qu'une facture cloud qui grimpe sans visibilité.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="border-border bg-background-secondary border-b py-20">
-      <div class="mx-auto max-w-4xl px-6">
-        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
-          Le principe : l'IA assiste, elle ne décide pas
-        </h2>
-        <div class="text-foreground-muted mt-8 space-y-4 text-base leading-relaxed">
-          <p>
-            Dans dbgrade.tech, mon outil d'audit de bases de données, le LLM génère la narration explicative du rapport, mais il n'a jamais accès au calcul du score : le score est déterministe, calculé par des règles fixes, et le LLM ne peut ni le modifier ni l'influencer. C'est ce principe que j'applique à toute intégration IA : la génération assistée reste sous contrôle humain et sous contrôle de règles métier vérifiables, jamais une boîte noire qui décide seule.
-          </p>
-          <p>
-            Le pipeline de curation de newsletter que j'ai développé applique la même logique : l'IA aide à trier et résumer le contenu, mais la validation finale reste humaine avant publication.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="border-border bg-background border-b py-20">
-      <div class="mx-auto max-w-4xl px-6">
-        <h2 class="font-display text-foreground mb-8 text-3xl font-bold tracking-tight md:text-4xl">
-          FAQ
-        </h2>
-        <Accordion items={faqItems} exclusive />
-      </div>
-    </section>
-
-    <section class="invert-section bg-background border-t border-border py-20">
-      <div class="mx-auto max-w-2xl px-6 text-center">
-        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
-          Un process à automatiser ou une intégration LLM à cadrer ?
-        </h2>
-        <p class="text-foreground-muted mt-6 text-lg leading-relaxed">
-          15 minutes suffisent pour évaluer ce qui a du sens pour votre cas.
+    <section class="py-8 md:py-12">
+      <div class="mx-auto max-w-3xl px-6">
+        <p class="text-foreground-muted text-base leading-relaxed md:text-lg md:leading-relaxed">
+          L'IA générative est partout, mais son intégration réelle dans un process métier demande plus qu'un appel API à ChatGPT. Je conçois des automatisations et des intégrations LLM pragmatiques : le bon modèle au bon endroit, des coûts maîtrisés, et un principe non négociable – l'IA assiste, elle ne décide jamais seule sur ce qui compte vraiment.
         </p>
-        <div class="mt-10 flex justify-center">
-          <Button href="/contact">Prendre rendez-vous →</Button>
+      </div>
+    </section>
+
+    <section class="pb-8 md:pb-12">
+      <div class="mx-auto max-w-4xl space-y-6 px-6">
+        <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
+          <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+            Intégration LLM
+          </h2>
+          <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
+            <p>
+              Connexion à des modèles LLM (OpenAI, Ollama en local) selon le besoin : cloud quand la puissance ou la simplicité prime, local quand la confidentialité des données est un enjeu – un modèle Ollama auto-hébergé ne fait transiter aucune donnée client vers un tiers. Le choix du modèle n'est jamais automatique : il dépend du cas d'usage, du budget, et de la sensibilité des données traitées.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
+          <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+            Automatisation de process métier
+          </h2>
+          <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
+            <p>
+              Automatisation de tâches répétitives avec n8n – équivalent open-source et auto-hébergeable de Zapier, qui permet d'orchestrer des workflows (déclencheurs, API, IA, bases de données) sans dépendre d'un abonnement SaaS par tâche. Contrairement à Zapier, n8n s'auto-héberge : pas de limite de workflow imposée par un palier tarifaire, contrôle complet sur les données qui transitent.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
+          <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+            Maîtrise des coûts
+          </h2>
+          <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
+            <p>
+              L'IA générative peut vite devenir un poste de coût incontrôlé si chaque appel LLM part sur le modèle le plus cher par défaut. J'utilise OpenRouter pour router chaque requête vers le modèle le plus adapté au besoin réel – un modèle léger pour une tâche simple, un modèle plus puissant seulement quand c'est justifié – avec un suivi de coût précis plutôt qu'une facture cloud qui grimpe sans visibilité.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
+          <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+            Le principe : l'IA assiste, elle ne décide pas
+          </h2>
+          <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
+            <p>
+              Dans dbgrade.tech, mon outil d'audit de bases de données, le LLM génère la narration explicative du rapport, mais il n'a jamais accès au calcul du score : le score est déterministe, calculé par des règles fixes, et le LLM ne peut ni le modifier ni l'influencer. C'est ce principe que j'applique à toute intégration IA : la génération assistée reste sous contrôle humain et sous contrôle de règles métier vérifiables, jamais une boîte noire qui décide seule.
+            </p>
+            <p>
+              Le pipeline de curation de newsletter que j'ai développé applique la même logique : l'IA aide à trier et résumer le contenu, mais la validation finale reste humaine avant publication.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pb-8 md:pb-12">
+      <div class="mx-auto max-w-4xl px-6">
+        <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
+          <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+            FAQ
+          </h2>
+          <div class="mt-6">
+            <Accordion items={faqItems} exclusive />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="invert-section bg-background border-t border-border py-16 md:py-20">
+      <div class="mx-auto max-w-4xl px-6">
+        <div class="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
+          <div class="space-y-2">
+            <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+              Un process à automatiser ou une intégration LLM à cadrer ?
+            </h2>
+            <p class="text-foreground-muted text-base leading-relaxed md:text-lg">
+              15 minutes suffisent pour évaluer ce qui a du sens pour votre cas.
+            </p>
+          </div>
+          <div class="shrink-0">
+            <Button href="/contact">Prendre rendez-vous →</Button>
+          </div>
         </div>
       </div>
     </section>

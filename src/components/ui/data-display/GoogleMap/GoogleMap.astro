@@ -1,6 +1,6 @@
 ---
 /**
- * GoogleMap — consent-aware Google Maps embed
+ * GoogleMap – consent-aware Google Maps embed
  *
  * 3 states:
  * 1. No API key → setup prompt with instructions
@@ -47,7 +47,7 @@ const {
 
 const hasApiKey = !!PUBLIC_GOOGLE_MAPS_API_KEY;
 
-// Build query — prefer lat/lng, fall back to address, then siteConfig.address
+// Build query – prefer lat/lng, fall back to address, then siteConfig.address
 let query = '';
 if (lat !== undefined && lng !== undefined) {
   query = `${lat},${lng}`;
@@ -92,7 +92,7 @@ const id = `google-map-${Math.random().toString(36).slice(2, 9)}`;
   {...rest}
 >
   {!hasApiKey ? (
-    /* No API key — setup prompt */
+    /* No API key – setup prompt */
     <div class="google-map-setup">
       <div class="google-map-setup__inner">
         {/* Lucide map-pin-off */}
@@ -111,7 +111,7 @@ const id = `google-map-${Math.random().toString(36).slice(2, 9)}`;
     </div>
   ) : (
     <>
-      {/* Consent placeholder — shown when consent is required but not granted */}
+      {/* Consent placeholder – shown when consent is required but not granted */}
       <div class="google-map-placeholder" data-map-placeholder={id}>
         <div class="google-map-placeholder__icon">
           {/* Lucide map-pin */}
@@ -146,7 +146,7 @@ const id = `google-map-${Math.random().toString(36).slice(2, 9)}`;
         </a>
       </div>
 
-      {/* Iframe — hidden until consent granted */}
+      {/* Iframe – hidden until consent granted */}
       <iframe
         data-map-iframe={id}
         data-src={iframeSrc}
@@ -210,7 +210,7 @@ const id = `google-map-${Math.random().toString(36).slice(2, 9)}`;
         return;
       }
 
-      // Consent required — show placeholder
+      // Consent required – show placeholder
       if (config.consentEnabled) {
         if (placeholder) placeholder.hidden = false;
 
@@ -228,7 +228,7 @@ const id = `google-map-${Math.random().toString(36).slice(2, 9)}`;
           }
         });
       } else {
-        // No consent system — load immediately
+        // No consent system – load immediately
         loadMap();
       }
     });

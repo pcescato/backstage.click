@@ -12,10 +12,11 @@ const faqItems = [
   {
     title: 'Quelle est la différence entre Nginx, Caddy et LiteSpeed ?',
     content: "Nginx est le serveur web le plus répandu, robuste et très documenté. Caddy simplifie la configuration et gère le HTTPS automatiquement, ce qui réduit le temps de mise en place. LiteSpeed est particulièrement performant sur les stacks PHP (WordPress, WooCommerce) grâce à son cache intégré. Le choix dépend du projet, pas d'une préférence par défaut.",
+    defaultOpen: true,
   },
   {
     title: 'Faut-il un VPS ou un hébergement mutualisé ?',
-    content: "Un hébergement mutualisé convient pour un site simple à faible trafic, mais impose des limitations (accès serveur restreint, ressources partagées, montée en charge difficile). Un VPS donne le contrôle complet de l'infrastructure — nécessaire dès que le projet a des besoins spécifiques (déploiement automatisé, plusieurs services, performance garantie).",
+    content: "Un hébergement mutualisé convient pour un site simple à faible trafic, mais impose des limitations (accès serveur restreint, ressources partagées, montée en charge difficile). Un VPS donne le contrôle complet de l'infrastructure – nécessaire dès que le projet a des besoins spécifiques (déploiement automatisé, plusieurs services, performance garantie).",
   },
   {
     title: 'Qu\'est-ce qu\'un déploiement automatisé change concrètement ?',
@@ -23,11 +24,11 @@ const faqItems = [
   },
   {
     title: 'Cloudflare, Vercel, GitHub Pages : est-ce que ça remplace un VPS ?',
-    content: "Ça dépend du projet. Pour un site statique ou une application légère, Cloudflare Pages, Vercel ou GitHub Pages peuvent suffire comme hébergeur à part entière. Dès qu'il faut une vraie logique serveur (base de données, traitements longs, API métier), un VPS reste plus adapté — avec Cloudflare utilisé en périphérie (CDN, sécurité, DNS) plutôt qu'en hébergeur principal.",
+    content: "Ça dépend du projet. Pour un site statique ou une application légère, Cloudflare Pages, Vercel ou GitHub Pages peuvent suffire comme hébergeur à part entière. Dès qu'il faut une vraie logique serveur (base de données, traitements longs, API métier), un VPS reste plus adapté – avec Cloudflare utilisé en périphérie (CDN, sécurité, DNS) plutôt qu'en hébergeur principal.",
   },
   {
     title: 'Quel est le coût d\'une infrastructure DevOps sur-mesure par rapport à un PaaS ?',
-    content: "Le coût initial de mise en place est généralement supérieur à un simple abonnement PaaS, mais le coût récurrent est souvent inférieur dès que le trafic ou les besoins en ressources augmentent — sans les paliers tarifaires abrupts propres aux PaaS. Le premier échange permet d'estimer l'un et l'autre pour votre cas précis.",
+    content: "Le coût initial de mise en place est généralement supérieur à un simple abonnement PaaS, mais le coût récurrent est souvent inférieur dès que le trafic ou les besoins en ressources augmentent – sans les paliers tarifaires abrupts propres aux PaaS. Le premier échange permet d'estimer l'un et l'autre pour votre cas précis.",
   },
 ];
 ---
@@ -52,89 +53,97 @@ const faqItems = [
       <h1 slot="title" class="max-w-4xl !leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
         DevOps : déploiement et hébergement d'applications web
       </h1>
-
-      <p slot="description" class="max-w-3xl">
-        Choisir un hébergeur et une infrastructure de déploiement, ce n'est pas juste cocher "hébergement mutualisé" ou "cloud managé" sans réfléchir aux conséquences. Je conçois et déploie des infrastructures DevOps sur-mesure — Linux, conteneurs, serveurs web modernes (Nginx, Caddy, LiteSpeed) — pensées pour la performance, la reproductibilité et l'indépendance vis-à-vis d'un hébergeur ou d'un PaaS propriétaire.
-      </p>
     </Hero>
 
-    <section class="border-border bg-background border-b py-20">
-      <div class="mx-auto max-w-4xl px-6">
-        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
-          Déploiement automatisé
-        </h2>
-        <div class="text-foreground-muted mt-8 space-y-4 text-base leading-relaxed">
-          <p>
-            Pipelines de déploiement via GitHub Actions : chaque mise en production suit un processus reproductible, testé, sans intervention manuelle sur le serveur. Fini les déploiements "à la main" en SSH qui finissent par diverger d'un environnement à l'autre. Ce site (backstage.click) est lui-même déployé via ce type de pipeline.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="border-border bg-background-secondary border-b py-20">
-      <div class="mx-auto max-w-4xl px-6">
-        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
-          Choix et configuration de l'hébergeur
-        </h2>
-        <div class="text-foreground-muted mt-8 space-y-4 text-base leading-relaxed">
-          <p>
-            Le choix de l'hébergeur dépend du projet : VPS Linux pour la maîtrise complète de l'infrastructure, conteneurisation Docker quand la portabilité prime, serveurs web modernes selon le besoin — Nginx pour la robustesse éprouvée, Caddy pour la simplicité de configuration et le HTTPS automatique, LiteSpeed pour la performance sur des stacks PHP intensives (WordPress, WooCommerce). Le choix se fait projet par projet, pas par habitude ou par défaut commercial d'un hébergeur.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="border-border bg-background border-b py-20">
-      <div class="mx-auto max-w-4xl px-6">
-        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
-          Sauvegardes et monitoring
-        </h2>
-        <div class="text-foreground-muted mt-8 space-y-4 text-base leading-relaxed">
-          <p>
-            Sauvegardes automatisées multi-destinations (SFTP, rsync, S3) pour éviter la dépendance à un seul point de défaillance. Monitoring de l'infrastructure pour détecter les incidents avant qu'ils n'impactent les utilisateurs. Une infrastructure DevOps solide n'est pas seulement rapide à déployer : elle doit aussi être fiable à restaurer en cas de problème.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="border-border bg-background-secondary border-b py-20">
-      <div class="mx-auto max-w-4xl px-6">
-        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
-          Pourquoi ne pas passer par un PaaS classique
-        </h2>
-        <div class="text-foreground-muted mt-8 space-y-4 text-base leading-relaxed">
-          <p>
-            Les plateformes type Vercel, GitHub Pages, Cloudflare Pages ou Heroku simplifient le déploiement initial — pratiques pour un site statique, une application JAMstack ou un prototype — mais elles ajoutent une dépendance forte : coûts qui grimpent avec l'usage, portabilité limitée, moins de contrôle sur la configuration serveur dès que la logique métier se complexifie (jobs applicatifs longs, base de données relationnelle, traitement serveur spécifique).
-          </p>
-          <p>
-            Une infrastructure DevOps maîtrisée (VPS + conteneurs + pipeline CI/CD) demande un peu plus de mise en place initiale, mais reste sous votre contrôle sur le long terme, sans facture qui explose avec la croissance du trafic.
-          </p>
-          <p>
-            Cloudflare occupe une place à part dans cette équation, avec deux usages distincts : en tant qu'hébergeur via Cloudflare Pages/Workers pour du statique et du serverless léger, ou en tant que couche CDN/edge (cache, protection DDoS, DNS, règles de sécurité) en façade d'un VPS classique. C'est cette seconde combinaison — VPS + Cloudflare en périphérie — que je privilégie pour des applications avec une vraie logique serveur : contrôle total côté backend, performance et sécurité en périphérie.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="border-border bg-background border-b py-20">
-      <div class="mx-auto max-w-4xl px-6">
-        <h2 class="font-display text-foreground mb-8 text-3xl font-bold tracking-tight md:text-4xl">
-          FAQ
-        </h2>
-        <Accordion items={faqItems} exclusive />
-      </div>
-    </section>
-
-    <section class="invert-section bg-background border-t border-border py-20">
-      <div class="mx-auto max-w-2xl px-6 text-center">
-        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
-          Un projet d'infrastructure ou de déploiement à mettre en place ?
-        </h2>
-        <p class="text-foreground-muted mt-6 text-lg leading-relaxed">
-          15 minutes suffisent pour évaluer la meilleure architecture pour votre cas.
+    <section class="py-8 md:py-12">
+      <div class="mx-auto max-w-3xl px-6">
+        <p class="text-foreground-muted text-base leading-relaxed md:text-lg md:leading-relaxed">
+          Choisir un hébergeur et une infrastructure de déploiement, ce n'est pas juste cocher "hébergement mutualisé" ou "cloud managé" sans réfléchir aux conséquences. Je conçois et déploie des infrastructures DevOps sur-mesure – Linux, conteneurs, serveurs web modernes (Nginx, Caddy, LiteSpeed) – pensées pour la performance, la reproductibilité et l'indépendance vis-à-vis d'un hébergeur ou d'un PaaS propriétaire.
         </p>
-        <div class="mt-10 flex justify-center">
-          <Button href="/contact">Prendre rendez-vous →</Button>
+      </div>
+    </section>
+
+    <section class="pb-8 md:pb-12">
+      <div class="mx-auto max-w-4xl space-y-6 px-6">
+        <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
+          <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+            Déploiement automatisé
+          </h2>
+          <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
+            <p>
+              Pipelines de déploiement via GitHub Actions : chaque mise en production suit un processus reproductible, testé, sans intervention manuelle sur le serveur. Fini les déploiements "à la main" en SSH qui finissent par diverger d'un environnement à l'autre. Ce site (backstage.click) est lui-même déployé via ce type de pipeline.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
+          <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+            Choix et configuration de l'hébergeur
+          </h2>
+          <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
+            <p>
+              Le choix de l'hébergeur dépend du projet : VPS Linux pour la maîtrise complète de l'infrastructure, conteneurisation Docker quand la portabilité prime, serveurs web modernes selon le besoin – Nginx pour la robustesse éprouvée, Caddy pour la simplicité de configuration et le HTTPS automatique, LiteSpeed pour la performance sur des stacks PHP intensives (WordPress, WooCommerce). Le choix se fait projet par projet, pas par habitude ou par défaut commercial d'un hébergeur.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
+          <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+            Sauvegardes et monitoring
+          </h2>
+          <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
+            <p>
+              Sauvegardes automatisées multi-destinations (SFTP, rsync, S3) pour éviter la dépendance à un seul point de défaillance. Monitoring de l'infrastructure pour détecter les incidents avant qu'ils n'impactent les utilisateurs. Une infrastructure DevOps solide n'est pas seulement rapide à déployer : elle doit aussi être fiable à restaurer en cas de problème.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
+          <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+            Pourquoi ne pas passer par un PaaS classique
+          </h2>
+          <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
+            <p>
+              Les plateformes type Vercel, GitHub Pages, Cloudflare Pages ou Heroku simplifient le déploiement initial – pratiques pour un site statique, une application JAMstack ou un prototype – mais elles ajoutent une dépendance forte : coûts qui grimpent avec l'usage, portabilité limitée, moins de contrôle sur la configuration serveur dès que la logique métier se complexifie (jobs applicatifs longs, base de données relationnelle, traitement serveur spécifique).
+            </p>
+            <p>
+              Une infrastructure DevOps maîtrisée (VPS + conteneurs + pipeline CI/CD) demande un peu plus de mise en place initiale, mais reste sous votre contrôle sur le long terme, sans facture qui explose avec la croissance du trafic.
+            </p>
+            <p>
+              Cloudflare occupe une place à part dans cette équation, avec deux usages distincts : en tant qu'hébergeur via Cloudflare Pages/Workers pour du statique et du serverless léger, ou en tant que couche CDN/edge (cache, protection DDoS, DNS, règles de sécurité) en façade d'un VPS classique. C'est cette seconde combinaison – VPS + Cloudflare en périphérie – que je privilégie pour des applications avec une vraie logique serveur : contrôle total côté backend, performance et sécurité en périphérie.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pb-8 md:pb-12">
+      <div class="mx-auto max-w-4xl px-6">
+        <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
+          <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+            FAQ
+          </h2>
+          <div class="mt-6">
+            <Accordion items={faqItems} exclusive />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="invert-section bg-background border-t border-border py-16 md:py-20">
+      <div class="mx-auto max-w-4xl px-6">
+        <div class="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
+          <div class="space-y-2">
+            <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+              Un projet d'infrastructure ou de déploiement à mettre en place ?
+            </h2>
+            <p class="text-foreground-muted text-base leading-relaxed md:text-lg">
+              15 minutes suffisent pour évaluer la meilleure architecture pour votre cas.
+            </p>
+          </div>
+          <div class="shrink-0">
+            <Button href="/contact">Prendre rendez-vous →</Button>
+          </div>
         </div>
       </div>
     </section>

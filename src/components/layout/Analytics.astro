@@ -31,7 +31,7 @@
  *     https://*.googletagmanager.com
  *
  * IMPORTANT: GA4 sends data to regional endpoints like
- * https://region1.google-analytics.com/g/s/collect — whitelisting only
+ * https://region1.google-analytics.com/g/s/collect – whitelisting only
  * www.google-analytics.com will silently drop all tracking requests with
  * no console errors. The wildcard *.google-analytics.com is required.
  */
@@ -74,7 +74,7 @@ for (const [key, cat] of Object.entries(consentConfig.categories)) {
   }
 }
 
-// Rendering flags — keeps template conditions simple and highlighter-friendly
+// Rendering flags – keeps template conditions simple and highlighter-friendly
 const hasGtm = !!gtmId;
 const hasGa = !!gaId && !gtmId;
 const hasAnalytics = !!(gaId || gtmId);
@@ -95,7 +95,7 @@ const analyticsDataJson = JSON.stringify({
 });
 ---
 
-{/* Analytics data element — read by all inline scripts below */}
+{/* Analytics data element – read by all inline scripts below */}
 {hasAnalytics && (
   <script is:inline type="application/json" id="analytics-data" set:html={analyticsDataJson} />
 )}

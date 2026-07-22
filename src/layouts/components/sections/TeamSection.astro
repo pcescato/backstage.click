@@ -1,0 +1,174 @@
+---
+import type { z } from "astro/zod";
+import { markdownify } from "@/lib/utils/textConverter";
+import type { teamSectionSchema } from "@/sections.schema";
+import overrideObjects from "@/lib/utils/overrideObjects.ts";
+import TeamCard from "@/layouts/components/cards/TeamCard.astro";
+import { getCollectionCTM, getEntryCTM } from "@/lib/contentParser.astro";
+import Marquee from "@/components/widgets/Marquee.astro";
+import Button from "@/components/Button.astro";
+
+// Type for this section data
+type TeamInterface = NonNullable<z.infer<typeof teamSectionSchema>>;
+type Props = {
+  content?: Partial<TeamInterface>;
+  hasSectionSpacing?: boolean;
+  hasDarkAppearance?: boolean;
+};
+
+// Fetching the default content for the this section
+let defaultContent = (
+  await getEntryCTM("sections", "team-section", Astro.currentLocale)
+)?.data as TeamInterface | undefined;
+const hasContentSource = Boolean(defaultContent || Astro.props.content);
+
+// Merges custom content overrides (e.g., just a title) with defaultContent fallbacks. Enables easy section reuse across pages with partial data changes.
+let actualContent = overrideObjects(
+  { ...(defaultContent || {}) },
+  Astro.props.content || {},
+) as TeamInterface;
+
+// Extracting required values from 'content' object
+const {
+  enable = true,
+  title,
+  button,
+  limit,
+  options: { layout = "grid", limit: optionsLimit = limit, marquee = {} } = {},
+} = actualContent;
+
+const members = await getCollectionCTM("team", Astro.currentLocale);
+
+// Limit the number of team members to be displayed
+const slicedMembers =
+  optionsLimit && members ? members.slice(0, optionsLimit as number) : members;
+
+const { hasSectionSpacing = true, hasDarkAppearance = false } = Astro.props;
+const carouselLayout = layout === "carousel";
+const buttonProps = button && {
+  ...button,
+  hoverEffect: button.hoverEffect || "magnetic-text-flip",
+  variant: button.variant || (hasDarkAppearance ? "fill-white" : "fill"),
+};
+const hasActionButton = Boolean(buttonProps?.enable && optionsLimit);
+const defaultMarquee = {
+  elementWidth: "20rem",
+  elementWidthResponsive: "18rem",
+  elementWidthAuto: false,
+  pauseOnHover: true,
+  reverse: "",
+  duration: "40s",
+  fullWidth: true,
+};
+const marqueeConfig = { ...defaultMarquee, ...marquee };
+const marqueeMembers =
+  slicedMembers.length > 3
+    ? [...slicedMembers, ...slicedMembers]
+    : Array.from({ length: 3 }, () => slicedMembers).flat();
+
+if (!hasContentSource || !enable || !slicedMembers?.length) {
+  return null;
+}
+---
+
+<section
+  class:list={[
+    carouselLayout && "overflow-hidden",
+    !hasSectionSpacing && "pt-0",
+  ]}>
+  <div
+    class:list={[
+      hasDarkAppearance && "bg-theme-dark section-spacing-vertical",
+    ]}>
+    <div class:list={[!carouselLayout && "container"]}>
+      <div class="mx-auto space-y-12 md:space-y-16">
+        {
+          title && (
+            <div
+              data-scroll-reveal="blur-up"
+              class:list={[
+                "mx-auto",
+                carouselLayout ? "max-w-159" : "max-w-3xl",
+              ]}>
+              <h2
+                class:list={[hasDarkAppearance && "text-white", "text-center"]}
+                set:html={markdownify(title)}
+              />
+            </div>
+          )
+        }
+        {
+          !title && (
+            <h2
+              class="sr-only"
+              set:html={markdownify(defaultContent?.title || "Team")}
+            />
+          )
+        }
+        {
+          slicedMembers && slicedMembers.length > 0 && !carouselLayout && (
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {slicedMembers.map((item, index) => (
+                <div
+                  data-scroll-reveal="fade-up"
+                  data-scroll-reveal-delay={index * 30}>
+                  <TeamCard
+                    class:list={[
+                      !hasDarkAppearance &&
+                        "hover:shadow-card-hover border bg-white transition duration-300",
+                    ]}
+                    content={item}
+                  />
+                </div>
+              ))}
+            </div>
+          )
+        }
+        {
+          slicedMembers && slicedMembers.length > 0 && carouselLayout && (
+            <div class="overflow-hidden" data-scroll-reveal="blur-up">
+              <Marquee
+                elements={marqueeMembers.length}
+                animationElements={slicedMembers.length}
+                elementWidth={marqueeConfig.elementWidth ?? "20rem"}
+                elementWidthResponsive={
+                  marqueeConfig.elementWidthResponsive ?? "18rem"
+                }
+                elementWidthAuto={marqueeConfig.elementWidthAuto ?? false}
+                pauseOnHover={marqueeConfig.pauseOnHover ?? true}
+                reverse={marqueeConfig.reverse ?? ""}
+                duration={marqueeConfig.duration ?? "40s"}
+                fullWidth={marqueeConfig.fullWidth ?? true}
+                class="items-stretch">
+                {marqueeMembers.map((item) => (
+                  <div class="min-w-(--marquee-element-width-responsive) px-3 md:min-w-(--marquee-element-width)">
+                    <TeamCard
+                      class:list={[
+                        "border-border-light hover:shadow-card-hover h-full border transition duration-300",
+                        hasDarkAppearance && "border-transparent",
+                      ]}
+                      content={item}
+                    />
+                  </div>
+                ))}
+              </Marquee>
+            </div>
+          )
+        }
+        {
+          buttonProps && hasActionButton && (
+            <div
+              data-scroll-reveal="fade-up"
+              data-scroll-reveal-delay="160"
+              class:list={[
+                "flex justify-center",
+                carouselLayout && "container",
+              ]}>
+              <Button {...buttonProps} />
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>

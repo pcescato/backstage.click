@@ -1,19 +1,17 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/layout/Header.astro';
-import Footer from '@/components/layout/Footer.astro';
-import { footerNavItems, legalLinks } from '@/config/nav.config';
+import Base from "@/layouts/Base.astro";
 ---
 
-<BaseLayout
+<Base
   title="Mentions légales"
-  description="Mentions légales du site backstage.click."
+  metaTitle="Mentions légales – Backstage"
+  metaDescription="Mentions légales du site backstage.click."
+  headerLayout="two"
+  headerPosition="fixed"
 >
-  <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
-
   <div class="min-h-screen pt-24">
     <section class="bg-background py-16">
-      <div class="mx-auto max-w-3xl px-6">
+      <div class="mx-auto px-6">
         <h1 class="font-display text-foreground text-4xl font-bold tracking-tight md:text-5xl">
           Mentions légales
         </h1>
@@ -82,6 +80,4 @@ import { footerNavItems, legalLinks } from '@/config/nav.config';
       </div>
     </section>
   </div>
-
-  <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
-</BaseLayout>
+</Base>

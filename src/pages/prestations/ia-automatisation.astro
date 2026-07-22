@@ -1,55 +1,25 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/layout/Header.astro';
-import Footer from '@/components/layout/Footer.astro';
-import Badge from '@/components/ui/data-display/Badge/Badge.astro';
-import Button from '@/components/ui/form/Button/Button.astro';
-import Accordion from '@/components/ui/overlay/Accordion/Accordion.astro';
-import { Hero } from '@/components/hero';
-import { footerNavItems, legalLinks } from '@/config/nav.config';
-
-const faqItems = [
-  {
-    title: 'Quelle différence entre n8n et Zapier ?',
-    content: "n8n est open-source et peut s'auto-héberger, ce qui supprime la limite de workflows imposée par les paliers tarifaires de Zapier et garde les données sous votre contrôle. Zapier reste plus simple à prendre en main sans hébergement à gérer, mais coûte plus cher à l'usage et impose ses propres contraintes SaaS.",
-    defaultOpen: true,
-  },
-  {
-    title: 'Pourquoi utiliser un LLM local (Ollama) plutôt que le cloud ?',
-    content: "Principalement pour la confidentialité : un modèle auto-hébergé ne transmet aucune donnée à un tiers. C'est pertinent pour des données sensibles (RH, santé, juridique) ou par choix de souveraineté. En contrepartie, un modèle cloud reste souvent plus puissant pour des tâches complexes – le choix se fait selon le cas d'usage, pas par défaut.",
-  },
-  {
-    title: 'Comment éviter que les coûts d\'API LLM explosent ?',
-    content: "En routant chaque requête vers le modèle le plus adapté plutôt que le plus puissant par défaut, via des outils comme OpenRouter. Une tâche de classification simple n'a pas besoin du même modèle qu'une génération de contenu complexe. Un suivi de coût par usage permet aussi d'identifier vite les dérives.",
-  },
-  {
-    title: 'L\'IA peut-elle prendre des décisions automatiques sans supervision ?',
-    content: "Ce n'est pas mon approche. L'IA générative est utile pour assister – rédiger, résumer, classer, expliquer – mais les décisions qui comptent (un score, une validation, une action métier critique) restent pilotées par des règles vérifiables ou une validation humaine. C'est ce qui évite les effets de boîte noire difficiles à auditer.",
-  },
-];
+import Base from "@/layouts/Base.astro";
 ---
 
-<BaseLayout
+<Base
   title="IA & automatisation sur-mesure"
-  description="Intégration LLM, automatisation de process métier avec n8n, maîtrise des coûts via OpenRouter. IA pragmatique : assistance, jamais de décision automatique non contrôlée."
+  metaTitle="IA & automatisation sur-mesure"
+  metaDescription="Intégration LLM, automatisation de process métier avec n8n, maîtrise des coûts via OpenRouter. IA pragmatique : assistance, jamais de décision automatique non contrôlée."
+  headerLayout="two"
+  headerPosition="fixed"
 >
-  <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
-
   <div class="min-h-screen pt-16">
-    <Hero
-      layout="centered"
-      size="lg"
-      showGrid
-      class="border-border pt-12 pb-6 md:pt-20 md:pb-12"
-    >
-      <Badge slot="badge" variant="brand" pill class="px-3 py-1 text-sm">
-        IA & automatisation
-      </Badge>
-
-      <h1 slot="title" class="!leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
-        IA & automatisation
-      </h1>
-    </Hero>
+    <section class="border-border pt-12 pb-6 md:pt-20 md:pb-12">
+      <div class="mx-auto max-w-6xl px-6 text-center">
+        <span class="bg-accent/10 text-accent mb-4 inline-block rounded-full px-4 py-1 text-sm font-medium">
+          IA & automatisation
+        </span>
+        <h1 class="font-display text-foreground !leading-[1.05] mt-6 !text-4xl md:!text-5xl lg:!text-6xl">
+          IA & automatisation
+        </h1>
+      </div>
+    </section>
 
     <section class="py-8 md:py-12">
       <div class="mx-auto max-w-6xl px-6">
@@ -92,7 +62,7 @@ const faqItems = [
           </h2>
           <div class="text-foreground-muted mt-6 space-y-4 text-base leading-relaxed">
             <p>
-              L'IA générative peut vite devenir un poste de coût incontrôlé si chaque appel part sur le modèle le plus cher par défaut. 
+              L'IA générative peut vite devenir un poste de coût incontrôlé si chaque appel part sur le modèle le plus cher par défaut.
             </p>
             <p>
               J'utilise OpenRouter pour router chaque requête vers le modèle le plus adapté au besoin réel – un modèle léger pour une tâche simple, un modèle plus puissant seulement quand c'est justifié – avec un suivi de coût précis plutôt qu'une facture cloud qui grimpe sans visibilité.
@@ -122,14 +92,40 @@ const faqItems = [
           <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
             FAQ
           </h2>
-          <div class="mt-6">
-            <Accordion items={faqItems} exclusive />
+          <div class="mt-6 space-y-6">
+            <details open class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">Quelle différence entre n8n et Zapier ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                n8n est open-source et peut s'auto-héberger, ce qui supprime la limite de workflows imposée par les paliers tarifaires de Zapier et garde les données sous votre contrôle. Zapier reste plus simple à prendre en main sans hébergement à gérer, mais coûte plus cher à l'usage et impose ses propres contraintes SaaS.
+              </p>
+            </details>
+            <details class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">Pourquoi utiliser un LLM local (Ollama) plutôt que le cloud ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                Principalement pour la confidentialité : un modèle auto-hébergé ne transmet aucune donnée à un tiers. C'est pertinent pour des données sensibles (RH, santé, juridique) ou par choix de souveraineté. En contrepartie, un modèle cloud reste souvent plus puissant pour des tâches complexes – le choix se fait selon le cas d'usage, pas par défaut.
+              </p>
+            </details>
+            <details class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">Comment éviter que les coûts d'API LLM explosent ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                En routant chaque requête vers le modèle le plus adapté plutôt que le plus puissant par défaut, via des outils comme OpenRouter. Une tâche de classification simple n'a pas besoin du même modèle qu'une génération de contenu complexe. Un suivi de coût par usage permet aussi d'identifier vite les dérives.
+              </p>
+            </details>
+            <details class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">L'IA peut-elle prendre des décisions automatiques sans supervision ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                Ce n'est pas mon approche. L'IA générative est utile pour assister – rédiger, résumer, classer, expliquer – mais les décisions qui comptent (un score, une validation, une action métier critique) restent pilotées par des règles vérifiables ou une validation humaine. C'est ce qui évite les effets de boîte noire difficiles à auditer.
+              </p>
+            </details>
           </div>
         </div>
       </div>
     </section>
+<script>
+(()=>{const d=document.querySelectorAll('section.pb-8 details');d.forEach(el=>{el.addEventListener('toggle',()=>{if(el.open)d.forEach(o=>{if(o!==el)o.open=false})})})})();
+</script>
 
-    <section class="invert-section bg-background border-t border-border py-16 md:py-20">
+    <section class="cta-custom border-t py-16 md:py-20">
       <div class="mx-auto max-w-6xl px-6">
         <div class="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
           <div class="space-y-2">
@@ -141,12 +137,10 @@ const faqItems = [
             </p>
           </div>
           <div class="shrink-0">
-            <Button href="/contact">Prendre rendez-vous →</Button>
+            <a href="/contact/" class="text-flip-hover-anim magnetic-hover-anim btn btn-cta rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case"><span class="text-flip-inner" data-content="Prendre rendez-vous →">Prendre rendez-vous →</span></a>
           </div>
         </div>
       </div>
     </section>
   </div>
-
-  <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
-</BaseLayout>
+</Base>

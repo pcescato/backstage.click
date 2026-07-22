@@ -1,0 +1,31 @@
+---
+import Base from "@/layouts/Base.astro";
+import { getEntryCTM } from "@/lib/contentParser.astro";
+import { generatePaths } from "@/lib/utils/i18nUtils.ts";
+import BannerThree from "@/components/sections/BannerThree.astro";
+import MultipurposeSection from "@/components/sections/Section.astro";
+
+export function getStaticPaths() {
+  return generatePaths();
+}
+
+const homepageContent = await getEntryCTM(
+  "homepage",
+  "-index",
+  Astro.currentLocale,
+);
+
+const skillSectionContent = await getEntryCTM(
+  "sections",
+  "startup-skill-section",
+  Astro.currentLocale,
+);
+---
+
+<Base {...homepageContent?.data} headerLayout="two" headerPosition="fixed">
+  <BannerThree />
+  <MultipurposeSection
+    hasSectionBackground={true}
+    content={skillSectionContent.data}
+  />
+</Base>

@@ -1,0 +1,38 @@
+---
+import Base from "@/layouts/Base.astro";
+import { getCollection } from "astro:content";
+import { render } from "astro:content";
+import PageHeader from "@/components/widgets/PageHeader.astro";
+
+export async function getStaticPaths() {
+  const prestations = await getCollection("prestations", ({ id }) => {
+    return !id.includes("-index");
+  });
+
+  return prestations.map((prestation) => ({
+    params: {
+      single: prestation.data.customSlug || prestation.id.split("/").pop()?.replace(/\.(mdx?|MDX?)$/, ""),
+    },
+    props: {
+      prestation,
+    },
+  }));
+}
+
+const { prestation } = Astro.props;
+const { Content } = await render(prestation);
+---
+
+<Base {...prestation.data} fitToScreen={false}>
+  <PageHeader content={prestation.data} />
+
+  <section class="section-spacing-vertical">
+    <div class="container">
+      <div class="mx-auto">
+        <div class="prose-styles content has-video-modal">
+          <Content />
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,21 +1,27 @@
-import type { APIRoute } from 'astro';
+import config from ".astro/config.generated.json" with { type: "json" };
+import type { APIRoute } from "astro";
 
-export const GET: APIRoute = ({ site }) => {
-  const siteUrl = site?.toString() || 'https://example.com';
+const { enable, disallow } = config.seo.robotsTxt;
 
-  const robotsTxt = `
+const getRobotsTxt = (
+  sitemapURL: URL,
+) => `# Robots.txt file for controlling web crawler access
+
 User-agent: *
+
+# Allowed pages
 Allow: /
 
-# Block API routes
-Disallow: /api/
+# Disallowed pages
+${disallow?.map((item: string) => `Disallow: ${item}`).join("\n") || ""}
 
-Sitemap: ${siteUrl}sitemap-index.xml
-`.trim();
+# Sitemap location
+Sitemap: ${sitemapURL.href}
+`;
 
-  return new Response(robotsTxt, {
-    headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-    },
-  });
+export const GET: APIRoute = ({ site }) => {
+  const sitemapURL = new URL("sitemap-index.xml", site);
+  return enable
+    ? new Response(getRobotsTxt(sitemapURL))
+    : new Response(null, { status: 404 });
 };

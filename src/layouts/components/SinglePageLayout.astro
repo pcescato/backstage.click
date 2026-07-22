@@ -1,0 +1,91 @@
+---
+import buildToc from "@/lib/utils/buildToc";
+import { shortcodes } from "@/lib/shortcodes";
+import TOC from "./widgets/TableOfContents.astro";
+import { getEntryCTM } from "@/lib/contentParser.astro";
+import config from ".astro/config.generated.json";
+import OptimizedImage from "./utilities/OptimizedImage.astro";
+import formatRelativeDate from "@/lib/utils/formatRelativeDate";
+import { markdownify, slugifyyy } from "@/lib/utils/textConverter";
+import { render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  content: CollectionEntry<"pages">;
+  [key: string]: any;
+}
+
+// Configuration and constants
+const { tableOfContents } = config.settings.markup;
+
+const { content, class: className } = Astro.props;
+let { title, date, image, author, categories } = content.data;
+
+// Process markdown content if function is provided
+let Content: any, headings;
+({ Content, headings } = await render(content));
+
+// Fetch author entry if author name is provided
+const authorName = author
+  ? (await getEntryCTM("author", slugifyyy(author), Astro.currentLocale))?.data
+      ?.title
+  : "";
+const metaItems = [
+  date && markdownify(formatRelativeDate(date, "dd MMM, yyyy")),
+  ...(categories?.map((category: string) => markdownify(category)) || []),
+  authorName && `By ${markdownify(authorName)}`,
+].filter(Boolean);
+
+// Build table of contents from headings if available
+const tocHeadings = headings ? buildToc(headings) : undefined;
+
+// Check if table of contents is enable
+const tocEnabled =
+  tableOfContents?.enable && tocHeadings && tocHeadings.length > 0;
+---
+
+<section>
+  <div class="container">
+    <div
+      class:list={["has-video-modal max-w-full space-y-10 lg:p-5", className]}>
+      {
+        image && Content && (
+          <OptimizedImage
+            width={896}
+            height={500}
+            alt={title}
+            src={image as string}
+            data-image-lightbox
+            class:list={["h-125 w-full object-cover"]}
+          />
+        )
+      }
+
+      <div class="space-y-2">
+        <ul
+          class="text-dark flex flex-wrap items-center gap-x-5 gap-y-1 tracking-wide">
+          {
+            metaItems.map((item, index) => (
+              <li
+                class:list={[
+                  index > 0 &&
+                    "before:bg-dark relative pe-5 before:absolute before:inset-e-0 before:top-1/2 before:h-1 before:w-1 before:-translate-y-1/2 before:rounded-full before:content-['']",
+                ]}
+                set:html={item}
+              />
+            ))
+          }
+        </ul>
+        {title && <h1 class="text-h2-sm md:text-h2" set:html={title} />}
+      </div>
+      {tocEnabled && tocHeadings && <TOC toc={tocHeadings} marker={false} />}
+      {
+        Content && (
+          <div class="prose-styles content has-video-modal prose-headings:mb-6 prose-headings:mt-10">
+            <Content components={shortcodes} />
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>

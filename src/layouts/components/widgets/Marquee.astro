@@ -1,0 +1,197 @@
+---
+export interface MarqueeType {
+  elements: number; // Number of elements
+  animationElements?: number; // Number of original elements used for seamless loop distance
+  elementWidth: string; // Width of the marquee
+  elementWidthAuto?: boolean; // Is the width auto
+  elementWidthResponsive: string; // Width of the marquee
+  pauseOnHover?: boolean; // Duration of the marquee
+  reverse?: string; // Use "reverse" to flip marquee direction
+  duration?: string; // Duration of the marquee
+}
+
+interface Props extends MarqueeType {
+  class?: string; // Class of the marquee
+  fullWidth?: boolean; // Expand marquee to the available viewport width
+}
+
+let {
+  elements,
+  animationElements = elements,
+  elementWidth,
+  elementWidthAuto = true,
+  elementWidthResponsive,
+  pauseOnHover = false,
+  duration = "50s",
+  reverse = "",
+  fullWidth = false,
+} = Astro.props;
+
+// Remove value of if `elementWidth`, `elementWidthResponsive` elementWidthAuto true
+if (elementWidthAuto) {
+  elementWidth = "";
+  elementWidthResponsive = "";
+}
+
+const marqueeScript = `<script>
+if (!window.__lianMarqueeReady) {
+  window.__lianMarqueeReady = true;
+  const marqueeResizeObserver = "ResizeObserver" in window
+    ? new ResizeObserver(scheduleMarqueeUpdate)
+    : null;
+  let marqueeFrame;
+
+  function scheduleMarqueeUpdate() {
+    if (marqueeFrame) {
+      window.cancelAnimationFrame(marqueeFrame);
+    }
+
+    marqueeFrame = window.requestAnimationFrame(updateMarquee);
+  }
+
+  function initMarquees() {
+    const marquees = document.querySelectorAll(".marquee");
+
+    marquees.forEach((marquee) => {
+      if (!marquee.dataset.marqueeObserved && marqueeResizeObserver) {
+        marqueeResizeObserver.observe(marquee);
+        marquee.dataset.marqueeObserved = "true";
+      }
+
+      updateMarqueeItem(marquee);
+    });
+  }
+
+  function updateMarquee() {
+    marqueeFrame = undefined;
+    document.querySelectorAll(".marquee").forEach(updateMarqueeItem);
+  }
+
+  function updateMarqueeItem(marquee) {
+    const marqueeContent = marquee.querySelector(".marquee-content");
+    if (!marqueeContent) return;
+
+    const images = marqueeContent.querySelectorAll("img");
+
+    images.forEach((img) => {
+      if (!img.complete) {
+        // Image dimensions can change the measured loop distance.
+        img.addEventListener(
+          "load",
+          () => {
+            updateImageSize(img);
+            scheduleMarqueeUpdate();
+          },
+          { once: true },
+        );
+      } else {
+        updateImageSize(img);
+      }
+    });
+
+    const originalElements =
+      Number(
+        getComputedStyle(marquee).getPropertyValue(
+          "--marquee-animation-elements",
+        ),
+      ) || Math.ceil(marqueeContent.children.length / 2);
+
+    const originalItems = Array.from(marqueeContent.children)
+      .filter((element) => !element.hasAttribute("data-marquee-clone"))
+      .slice(0, originalElements);
+
+    const originalWidth = originalItems
+      .reduce((width, element) => {
+        return width + element.getBoundingClientRect().width;
+      }, 0);
+
+    if (!originalWidth) return;
+
+    const marqueeWidth = marquee.getBoundingClientRect().width;
+    const requiredGroups = Math.max(
+      2,
+      Math.ceil((marqueeWidth + originalWidth) / originalWidth),
+    );
+
+    if (Number(marqueeContent.dataset.marqueeGroups) !== requiredGroups) {
+      marqueeContent
+        .querySelectorAll("[data-marquee-clone]")
+        .forEach((item) => {
+          item.remove();
+        });
+
+      const fragment = document.createDocumentFragment();
+
+      for (let groupIndex = 1; groupIndex < requiredGroups; groupIndex += 1) {
+        originalItems.forEach((item) => {
+          const clone = item.cloneNode(true);
+          clone.setAttribute("data-marquee-clone", "true");
+          clone.setAttribute("aria-hidden", "true");
+          // Duplicated items are decorative: keep their links out of the tab
+          // order so aria-hidden never wraps a focusable element.
+          clone.setAttribute("inert", "");
+          fragment.appendChild(clone);
+        });
+      }
+
+      marqueeContent.appendChild(fragment);
+      marqueeContent.dataset.marqueeGroups = requiredGroups.toString();
+    }
+
+    marqueeContent.style.setProperty("--total-width", originalWidth + "px");
+  }
+
+  function updateImageSize(img) {
+    const computed = getComputedStyle(img);
+    const height = parseFloat(computed.height); // Tailwind-applied height
+    if (!height || !img.naturalWidth || !img.naturalHeight) return;
+
+    const aspectRatio = img.naturalWidth / img.naturalHeight;
+    const width = height * aspectRatio;
+    const nextHeight = Math.round(height).toString();
+    const nextWidth = Math.round(width).toString();
+
+    if (img.getAttribute("height") !== nextHeight) {
+      img.setAttribute("height", nextHeight);
+    }
+
+    if (img.getAttribute("width") !== nextWidth) {
+      img.setAttribute("width", nextWidth);
+    }
+  }
+
+  if (!marqueeResizeObserver) {
+    window.addEventListener("resize", scheduleMarqueeUpdate);
+  }
+
+  // Initial run
+  initMarquees();
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMarquees, { once: true });
+  }
+}
+</script>`;
+---
+
+<div
+  class:list={[
+    "marquee",
+    {
+      "marquee-revers": reverse,
+      "marquee-pause-on-hover": pauseOnHover,
+      "marquee-full-width": fullWidth,
+    },
+  ]}
+  style={`--marquee-elements:${elements};--marquee-animation-elements:${animationElements};--marquee-element-width-responsive:calc(${elementWidthResponsive} / var(--marquee-elements) * ${elements});--marquee-element-width:calc(${elementWidth} / var(--marquee-elements) * ${elements});${"--marquee-duration:" + duration};--marquee-reverse:${reverse};`}>
+  <div
+    class:list={[
+      "marquee-content flex items-center",
+      { "marquee-element-width-auto": elementWidthAuto },
+      Astro.props.class,
+    ]}>
+    <slot />
+  </div>
+</div>
+
+<Fragment set:html={marqueeScript} />

@@ -1,0 +1,85 @@
+{
+  "common": {
+    "readMore": "Lire la suite",
+    "readBlog": "Lire l'article",
+    "viewDetails": "Voir les détails",
+    "viewService": "Voir la prestation",
+    "readMoreAbout": "En savoir plus sur",
+    "learnMore": "En savoir plus",
+    "learnMoreAbout": "En savoir plus sur",
+    "emailPlaceholder": "Adresse e-mail",
+    "paginationPrevious": "Précédent",
+    "paginationNext": "Suivant",
+    "home": "Accueil",
+    "tab": "Onglet"
+  },
+  "aria": {
+    "breadcrumb": "Fil d'Ariane",
+    "closeModal": "Fermer la modale",
+    "closeOffcanvas": "Fermer le panneau",
+    "footer": "Pied de page",
+    "menu": "Menu",
+    "offcanvas": "Panneau latéral",
+    "openSidebarContent": "Ouvrir le panneau latéral",
+    "pagination": "Pagination",
+    "playVideo": "Lire la vidéo",
+    "services": "Prestations",
+    "starRating": "Note de 5 étoiles",
+    "tabs": "Onglets",
+    "toggleNavigation": "Basculer la navigation"
+  },
+  "widgets": {
+    "searchTitle": "Recherche",
+    "postSearchFormPlaceholder": "Rechercher...",
+    "searchInputPlaceholder": "Tapez pour rechercher...",
+    "categoriesTitle": "Catégories",
+    "tagsTitle": "Tags",
+    "recentPostsTitle": "Articles récents"
+  },
+  "form": {
+    "choose": "Choisir",
+    "fallbackLabel": "Veuillez définir un libellé",
+    "fallbackName": "Veuillez définir une valeur name",
+    "fallbackPlaceholder": "Veuillez définir un placeholder",
+    "invalidSelect": "Veuillez sélectionner une option valide.",
+    "sendMessage": "Envoyer le message",
+    "validSelect": "Parfait !",
+    "submitting": "Envoi en cours...",
+    "unknownProvider": "Fournisseur de formulaire inconnu.",
+    "submissionFallback": "Veuillez utiliser l'e-mail de contact configuré pour soumettre un ticket."
+  },
+  "notFound": {
+    "title": "Page non trouvée",
+    "heading": "Oups, cette page n'existe pas",
+    "description": "La page que vous recherchez est introuvable. Vérifiez l'URL et réessayez, ou retournez à l'accueil.",
+    "buttonLabel": "Retour à l'accueil"
+  },
+  "headerOffcanvas": {
+    "description": "",
+    "addressLabel": "Adresse",
+    "contactLabel": "Contact"
+  },
+  "blog": {
+    "authorPrefix": "Par",
+    "category": "Catégorie",
+    "tagsLabel": "Tags :",
+    "share": "Partager :",
+    "paginationPrevious": "Article précédent",
+    "paginationNext": "Article suivant"
+  },
+  "navigation": {
+    "buttonLabel": "Contact"
+  },
+  "select": {
+    "loading": "Chargement...",
+    "noResults": "Aucun résultat trouvé",
+    "searchPlaceholder": "Rechercher..."
+  },
+  "footer": {
+    "description": "Développeur full-stack indépendant. J'interviens de l'analyse à la mise en production — sans intermédiaire, sans délégation des décisions techniques.",
+    "quickLinksTitle": "Liens utiles",
+    "servicesTitle": "Prestations",
+    "informationTitle": "Informations",
+    "copyright": "Copyright © {year} Backstage. Tous droits réservés."
+  }
+}

@@ -1,4 +1,6 @@
-import { SITE_URL, GOOGLE_SITE_VERIFICATION, BING_SITE_VERIFICATION } from 'astro:env/server';
+const SITE_URL = 'https://backstage.click';
+const GOOGLE_SITE_VERIFICATION = '';
+const BING_SITE_VERIFICATION = '';
 
 export interface SiteConfig {
   name: string;
@@ -79,7 +81,7 @@ const siteConfig: SiteConfig = {
       svg: '/favicon.svg',
     },
     colors: {
-      themeColor: '#0ea5e9',
+      themeColor: '#262626',
       backgroundColor: '#ffffff',
     },
   },

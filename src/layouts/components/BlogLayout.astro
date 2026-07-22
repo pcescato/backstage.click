@@ -1,0 +1,96 @@
+---
+import Sidebar from "./widgets/Sidebar.astro";
+import ContentList, {
+  type ContentListProps,
+} from "./widgets/ContentList.astro";
+import BlogSinglePageLayout from "./BlogSinglePageLayout.astro";
+import type { CollectionEntry } from "astro:content";
+
+type sidebarType = {
+  enable: boolean;
+  sticky: boolean;
+  widgets?: string[];
+};
+type Props = {
+  pageType?: "single" | "list"; // Default is "single"
+  sidebar?: sidebarType;
+  content: CollectionEntry<"blog">;
+  contentList?: ContentListProps;
+};
+
+// Destructure Astro props with default values
+const { pageType = "single", sidebar, content, contentList } = Astro.props;
+
+// Sidebar enabled flag
+const sidebarEnabled = sidebar?.enable;
+const isCreativeList = contentList?.options?.layout === "creative";
+---
+
+<section>
+  <div
+    class:list={[
+      "container",
+      sidebarEnabled &&
+        "grid grid-cols-1 gap-y-16 lg:grid-cols-12 lg:items-start",
+      sidebarEnabled && (isCreativeList ? "lg:gap-x-15" : "lg:gap-x-8"),
+    ]}>
+    {
+      pageType === "list" && (
+        <div
+          class:list={[
+            "has-video-modal",
+            sidebarEnabled
+              ? "order-1 space-y-10 lg:col-span-8"
+              : "w-full space-y-12",
+          ]}>
+          <ContentList {...contentList} />
+        </div>
+      )
+    }
+
+    {
+      pageType === "single" && (
+        <ContentList
+          onlyForSearch
+          class="single-page-search-results lg:col-span-8"
+          options={{
+            layout: "grid",
+            columns: 2,
+          }}
+          pagination={{
+            enable: false,
+            currentPage: 1,
+          }}
+        />
+      )
+    }
+
+    {
+      sidebarEnabled && (
+        <Sidebar
+          content={{
+            ...sidebar,
+            currentPost: content,
+          }}
+        />
+      )
+    }
+
+    {
+      pageType === "single" && (
+        <BlogSinglePageLayout class="single-page-content" content={content} />
+      )
+    }
+  </div>
+  <script>
+    import { stickySidebar } from "@/plugins/sticky-sidebar.js";
+
+    const sidebar = document.querySelector(".sticky-sidebar");
+    if (sidebar) {
+      new stickySidebar(sidebar, {
+        offsetTop: 132,
+        offsetBottom: 20,
+      });
+    }
+  </script>
+</section>

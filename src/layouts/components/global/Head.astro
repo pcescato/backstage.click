@@ -1,0 +1,46 @@
+---
+import SEO from "@/components/seo/Seo.astro";
+import OpenGraph from "@/components/seo/OpenGraph.astro";
+import Favicons from "@/components/seo/Favicons.astro";
+import JsonLD from "../widgets/JsonLD.astro";
+import fontsJson from "@/config/fonts.json";
+import { Font } from "astro:assets";
+import config from ".astro/config.generated.json";
+
+const fontVariables = fontsJson.map((font) => font.cssVariable) as any[];
+---
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Language" content={Astro.currentLocale} />
+  <meta name="theme" content="techlo-lite" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=5"
+  />
+  <SEO {...Astro.props} />
+  <meta
+    name="theme-color"
+    media="(prefers-color-scheme: light)"
+    content={"#fff"}
+  />
+  <meta
+    name="theme-color"
+    media="(prefers-color-scheme: dark)"
+    content="#000"
+  />
+  <meta name="generator" content={Astro.generator} />
+  {config.head?.content && <Fragment set:html={config.head?.content} />}
+  <OpenGraph {...Astro.props} />
+  <Favicons />
+  <JsonLD
+    content={{
+      ...Astro.props,
+    }}
+  />
+
+  <!------------------
+    Fonts
+-------------------->
+  {fontVariables.map((font) => <Font cssVariable={font} />)}
+</head>

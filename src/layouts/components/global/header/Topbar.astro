@@ -1,0 +1,81 @@
+---
+import DynamicIcon from "@/helpers/DynamicIcon.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+
+import config from ".astro/config.generated.json";
+
+type TopbarContent = "location" | "office-hours" | "phone";
+
+interface Props {
+  class?: string;
+  leftContent?: TopbarContent | TopbarContent[];
+  layout?: "light" | "navy";
+  size?: "default" | "compact";
+}
+
+const {
+  settings: {
+    contactInfo: { officeHours, phone, email, address },
+  },
+} = config;
+
+let { layout, leftContent = ["office-hours"], size = "default" } = Astro.props;
+
+const resolvedLeftContent = Array.isArray(leftContent)
+  ? leftContent
+  : [leftContent];
+
+const styleClass =
+  layout === "navy" ? "bg-dark text-white" : "bg-theme-light text-dark";
+
+const sizeClass = size === "compact" ? "py-3 text-sm" : "py-4 text-sm";
+---
+
+<div class:list={[sizeClass, styleClass, Astro.props.class]}>
+  <div
+    class="container flex flex-wrap items-center justify-center gap-4 md:justify-between">
+    <div class="relative flex flex-wrap items-center gap-4 lg:flex-nowrap">
+      {
+        resolvedLeftContent.includes("office-hours") && (
+          <div class="flex items-center gap-2">
+            <DynamicIcon name="Clock" class="size-4 shrink-0" />
+            <span set:html={markdownify(officeHours)} />
+          </div>
+        )
+      }
+
+      {
+        resolvedLeftContent.includes("location") && (
+          <div class="flex items-center gap-2">
+            <DynamicIcon name="MapPin" class="size-4 shrink-0" />
+            <span class="hide-line-breaks" set:html={markdownify(address)} />
+          </div>
+        )
+      }
+
+      {
+        resolvedLeftContent.includes("phone") && (
+          <div class="flex items-center gap-2 hover:underline">
+            <DynamicIcon name="Phone" class="size-4 shrink-0" />
+            <a href={`tel:${phone?.replace(/[^0-9+]/g, '')}`} set:html={markdownify(phone)} />
+          </div>
+        )
+      }
+    </div>
+
+    <div
+      class="flex flex-wrap items-center justify-center gap-4 md:justify-between md:gap-10">
+      {!resolvedLeftContent.includes("phone") && (
+        <div class="flex items-center gap-2 hover:underline">
+          <DynamicIcon name="Phone" class="size-4 shrink-0" />
+          <span set:html={markdownify(phone)} />
+        </div>
+      )}
+
+      <div class="flex items-center gap-2 hover:underline">
+        <DynamicIcon name="Mail" class="size-4 shrink-0" />
+        <span set:html={markdownify(email)} />
+      </div>
+    </div>
+  </div>
+</div>

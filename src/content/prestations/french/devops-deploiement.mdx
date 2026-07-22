@@ -1,0 +1,54 @@
+---
+title: "DevOps : déploiement et hébergement"
+customSlug: "devops-deploiement"
+description: "Infrastructure DevOps : déploiement automatisé, hébergement, Nginx, Caddy, LiteSpeed. Sauvegardes multi-destinations, monitoring, sans dépendance à un PaaS."
+metaTitle: "DevOps, déploiement et hébergement web – Backstage"
+metaDescription: "Infrastructure DevOps : déploiement automatisé, hébergement, Nginx, Caddy, LiteSpeed. Sauvegardes multi-destinations, monitoring, sans dépendance à un PaaS."
+date: 2024-01-03
+icon: "/images/icons/services/data.svg"
+image: ""
+---
+
+Choisir un hébergeur et une infrastructure de déploiement, ce n'est pas juste cocher « hébergement mutualisé » ou « cloud manage » sans réfléchir aux conséquences. Je conçois et déploie des infrastructures DevOps sur-mesure — Linux, conteneurs, serveurs web modernes (Nginx, Caddy, LiteSpeed) — pensées pour la performance, la reproductibilité et l'indépendance vis-à-vis d'un hébergeur ou d'un PaaS propriétaire.
+
+## Déploiement automatisé
+
+Pipelines de déploiement via GitHub Actions : chaque mise en production suit un processus reproductible, testé, sans intervention manuelle sur le serveur. Fini les déploiements « à la main » en SSH qui finissent par diverger d'un environnement à l'autre. Ce site (backstage.click) est lui-même déployé via ce type de pipeline.
+
+## Choix et configuration de l'hébergeur
+
+Le choix de l'hébergeur dépend du projet : VPS Linux pour la maîtrise complète de l'infrastructure, conteneurisation Docker quand la portabilité prime, serveurs web modernes selon le besoin — Nginx pour la robustesse éprouvée, Caddy pour la simplicité de configuration et le HTTPS automatique, LiteSpeed pour la performance sur des stacks PHP intensives (WordPress, WooCommerce). Le choix se fait projet par projet, pas par habitude ou par défaut commercial d'un hébergeur.
+
+## Sauvegardes et monitoring
+
+Sauvegardes automatisées multi-destinations (SFTP, rsync, S3) pour éviter la dépendance à un seul point de défaillance. Monitoring de l'infrastructure pour détecter les incidents avant qu'ils n'impactent les utilisateurs. Une infrastructure DevOps solide n'est pas seulement rapide à déployer : elle doit aussi être fiable à restaurer en cas de problème.
+
+## Pourquoi ne pas passer par un PaaS classique
+
+Les plateformes type Vercel, GitHub Pages, Cloudflare Pages ou Heroku simplifient le déploiement initial — pratiques pour un site statique, une application JAMstack ou un prototype — mais elles ajoutent une dépendance forte : coûts qui grimpent avec l'usage, portabilité limitée, moins de contrôle sur la configuration serveur dès que la logique métier se complexifie (jobs applicatifs longs, base de données relationnelle, traitement serveur spécifique).
+
+Une infrastructure DevOps maîtrisée (VPS + conteneurs + pipeline CI/CD) demande un peu plus de mise en place initiale, mais reste sous votre contrôle sur le long terme, sans facture qui explose avec la croissance du trafic.
+
+Cloudflare occupe une place à part dans cette équation, avec deux usages distincts : en tant qu'hébergeur via Cloudflare Pages/Workers pour du statique et du serverless léger, ou en tant que couche CDN/edge (cache, protection DDoS, DNS, règles de sécurité) en façade d'un VPS classique. C'est cette seconde combinaison — VPS + Cloudflare en périphérie — que je privilégie pour des applications avec une vraie logique serveur : contrôle total côté backend, performance et sécurité en périphérie.
+
+## Questions fréquentes
+
+### Quelle est la différence entre Nginx, Caddy et LiteSpeed ?
+
+Nginx est le serveur web le plus répandu, robuste et très documenté. Caddy simplifie la configuration et gère le HTTPS automatiquement, ce qui réduit le temps de mise en place. LiteSpeed est particulièrement performant sur les stacks PHP (WordPress, WooCommerce) grâce à son cache intégré. Le choix dépend du projet, pas d'une préférence par défaut.
+
+### Faut-il un VPS ou un hébergement mutualisé ?
+
+Un hébergement mutualisé convient pour un site simple à faible trafic, mais impose des limitations (accès serveur restreint, ressources partagées, montée en charge difficile). Un VPS donne le contrôle complet de l'infrastructure — nécessaire dès que le projet a des besoins spécifiques (déploiement automatisé, plusieurs services, performance garantie).
+
+### Qu'est-ce qu'un déploiement automatisé change concrètement ?
+
+Il élimine les erreurs humaines de mise en production, garantit qu'un déploiement se déroule de la même façon à chaque fois, et permet de revenir en arrière rapidement en cas de problème. C'est aussi ce qui rend possible un rythme de mise à jour plus fréquent sans risque accru.
+
+### Cloudflare, Vercel, GitHub Pages : est-ce que ça remplace un VPS ?
+
+Ça dépend du projet. Pour un site statique ou une application légère, Cloudflare Pages, Vercel ou GitHub Pages peuvent suffire comme hébergeur à part entière. Dès qu'il faut une vraie logique serveur (base de données, traitements longs, API métier), un VPS reste plus adapté — avec Cloudflare utilisé en périphérie (CDN, sécurité, DNS) plutôt qu'en hébergeur principal.
+
+### Quel est le coût d'une infrastructure DevOps sur-mesure par rapport à un PaaS ?
+
+Le coût initial de mise en place est généralement supérieur à un simple abonnement PaaS, mais le coût récurrent est souvent inférieur dès que le trafic ou les besoins en ressources augmentent — sans les paliers tarifaires abrupts propres aux PaaS. Le premier échange permet d'estimer l'un et l'autre pour votre cas précis.

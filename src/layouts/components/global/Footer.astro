@@ -1,0 +1,98 @@
+---
+import { getLocaleUrlCTM } from "@/lib/utils/i18nUtils.ts";
+import { markdownify } from "@/lib/utils/textConverter";
+import { splitProtectedText } from "@/lib/utils/splitProtectedText";
+import { useTranslations } from "@/lib/utils/i18nUtils.ts";
+import Logo from "@/components/global/Logo.astro";
+import { getFooterMenuGroups } from "@/lib/utils/menu";
+
+const { footerSpaceTop = false, hasFooterDarkBackground = false } = Astro.props;
+
+import config from ".astro/config.generated.json";
+const t = await useTranslations(Astro.currentLocale as string);
+
+let {
+  copyright,
+  contactInfo: { phone, email },
+} = config.settings;
+
+const footerColumns = getFooterMenuGroups(t);
+
+const copyrightText = splitProtectedText(
+  copyright.text || t("footer.copyright") || "",
+).join(" / ");
+---
+
+<footer
+  class:list={[
+    "py-0!",
+    hasFooterDarkBackground ? "footer-dark" : "bg-white",
+    footerSpaceTop && "mt-16 lg:mt-20 xl:mt-24",
+  ]}>
+  <div class="container">
+    <div class="section-spacing-vertical">
+      <div class="flex flex-wrap items-center justify-between gap-6">
+        <div>
+          <Logo class="gap-1.5" />
+          <div class="mt-4 flex flex-wrap gap-4">
+            <div class="flex items-center gap-2 hover:underline">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16.625 17.5C14.8889 17.5 13.1701 17.125 11.4688 16.375C9.76736 15.625 8.22222 14.5556 6.83333 13.1667C5.44444 11.7778 4.375 10.2361 3.625 8.54167C2.875 6.84722 2.5 5.125 2.5 3.375V2.5H7.41667L8.1875 6.6875L5.8125 9.08333C6.11806 9.625 6.45833 10.1389 6.83333 10.625C7.20833 11.1111 7.61111 11.5625 8.04167 11.9792C8.44444 12.3819 8.88542 12.7674 9.36458 13.1354C9.84375 13.5035 10.3611 13.8472 10.9167 14.1667L13.3333 11.75L17.5 12.6042V17.5H16.625Z"
+                  fill="currentColor">
+                </path>
+              </svg>
+              <span set:html={markdownify(phone)} />
+            </div>
+
+            <div class="flex items-center gap-2 hover:underline">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M1.66675 16.6667V3.33333H18.3334V16.6667H1.66675ZM10.0001 10.8333L16.6667 6.66666V4.99999L10.0001 9.16666L3.33341 4.99999V6.66666L10.0001 10.8333Z"
+                  fill="currentColor">
+                </path>
+              </svg>
+
+              <span set:html={markdownify(email)} />
+            </div>
+          </div>
+        </div>
+
+        <ul class="flex flex-wrap gap-x-6 gap-y-2">
+          {footerColumns
+            .filter((col) => col.label === "Informations")
+            .flatMap((col) => col.list)
+            .map((item) => (
+              <li>
+                <a
+                  class="footer-link leading-body text-text-default hover:text-dark text-base transition duration-300"
+                  href={getLocaleUrlCTM(item.url, Astro.currentLocale)}
+                  set:html={item.name}
+                />
+              </li>
+            ))}
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom border-t py-5 text-center">
+      {
+        config.settings.copyright?.enable && (
+          <p
+            class="footer-copyright leading-body text-text-default text-base"
+            set:html={markdownify(copyrightText)}
+          />
+        )
+      }
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,143 @@
+---
+// src/layouts/components/cards/Card.astro
+import { getLocaleUrlCTM, useTranslations } from "@/lib/utils/i18nUtils.ts";
+import Button from "@/components/Button.astro";
+import extractSlug from "@/lib/utils/extractSlug";
+import DynamicIcon from "@/helpers/DynamicIcon.astro";
+import OptimizedImage from "@/components/utilities/OptimizedImage.astro";
+import type { z } from "astro/zod";
+import type { servicesSectionSchema } from "@/sections.schema";
+
+interface Props {
+  class?: string;
+  content: any;
+  options?: NonNullable<z.infer<typeof servicesSectionSchema>>["options"];
+}
+
+const { content, class: className, options } = Astro.props;
+const { icon, title, description, image, button, collection } = {
+  ...content,
+  ...content.data,
+};
+
+const t = await useTranslations(Astro.currentLocale as string);
+const slugLocale = getLocaleUrlCTM(
+  button?.url ? button.url : extractSlug(content),
+  Astro.currentLocale,
+  collection,
+);
+
+const isGrid = options?.layout === "grid";
+const isImageOverlay = options?.layout === "carousel";
+const isButtonEnabled = slugLocale || button?.enable;
+const isIconLeft = icon && isGrid;
+const cursorType = collection === "services" ? "service" : "link";
+const cursorLabel =
+  collection === "services" ? t("common.viewService") : t("common.learnMore");
+const cursorAttrs = isButtonEnabled
+  ? {
+      "data-cursor-label": cursorLabel,
+      "data-cursor-type": cursorType,
+    }
+  : {};
+---
+
+{
+  isImageOverlay ? (
+    <article
+      {...cursorAttrs}
+      class:list={[
+        "group bg-theme-dark relative flex h-95 flex-col justify-end overflow-hidden rounded-2xl text-white",
+        className,
+      ]}>
+      {image && (
+        <OptimizedImage
+          src={image}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          width={612}
+          height={760}
+          widths={[612, 768, 920]}
+          sizes="306px"
+          quality={90}
+          class="absolute inset-0 size-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+        />
+      )}
+
+      {/* Carousel cards transition the icon tile and overlay colors on hover. */}
+      <div class="to-theme-dark absolute inset-0 bg-linear-to-b from-transparent transition-opacity duration-300 group-hover:opacity-0" />
+      <div class="from-primary/0 to-primary absolute inset-0 bg-linear-to-b opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+      <div class="relative z-10 flex flex-col items-center px-7 pb-8 text-center">
+        {icon && (
+          <div class="bg-primary mb-5 flex size-18 items-center justify-center rounded-xl">
+            <DynamicIcon
+              name={icon}
+              inlineSvg={true}
+              class="has-inherited-colors size-9 text-white"
+            />
+          </div>
+        )}
+
+        {title && <h3 class="max-w-64 text-xl text-white" set:html={title} />}
+      </div>
+
+      {slugLocale && (
+        <a
+          class="absolute inset-0 z-20 size-full"
+          href={getLocaleUrlCTM(slugLocale, Astro.currentLocale)}
+          aria-label={"Learn more about " + title}
+        />
+      )}
+    </article>
+  ) : (
+    <div
+      {...cursorAttrs}
+      class:list={[
+        "group relative flex gap-y-8 rounded-2xl bg-white p-8 drop-shadow-xl drop-shadow-transparent transition-all duration-300 hover:drop-shadow-slate-50 md:gap-y-14",
+        className,
+        isIconLeft ? "flex-col md:flex-row" : "flex-col",
+        isGrid && "border",
+      ]}>
+      {icon && (
+        <div class="bg-primary/10 group-hover:bg-primary mr-6 flex size-18 shrink-0 items-center justify-center rounded-2xl transition-all duration-300">
+          <DynamicIcon
+            name={icon}
+            inlineSvg={true}
+            class="text-primary size-9 group-hover:text-white"
+          />
+        </div>
+      )}
+
+      <div class="flex flex-1 flex-col">
+        {title && <h3 class="text-h6 mb-3" set:html={title} />}
+        {description && (
+          <p
+            class:list={["mb-6 text-lg", !isIconLeft && "line-clamp-2"]}
+            set:html={description}
+          />
+        )}
+
+        {isButtonEnabled && (
+          <Button
+            url={button?.url || slugLocale}
+            label={button?.label || t("common.learnMore")}
+            class="z-20 mt-auto flex"
+            {...button}
+            title={title}
+            variant="text"
+          />
+        )}
+
+        {slugLocale && (
+          <a
+            class="absolute inset-0 z-10 size-full"
+            href={getLocaleUrlCTM(slugLocale, Astro.currentLocale)}
+            aria-label={"Learn more about " + title}
+          />
+        )}
+      </div>
+    </div>
+  )
+}

@@ -1,0 +1,666 @@
+---
+import type { z } from "astro/zod";
+import Button from "@/components/Button.astro";
+import config from ".astro/config.generated.json";
+import type { contactFormSchema, inputFieldSchema } from "@/sections.schema";
+import { useTranslations } from "@/lib/utils/i18nUtils.ts";
+import { markdownify, toLowerCase } from "@/lib/utils/textConverter";
+
+type FormType = z.infer<typeof contactFormSchema>;
+type InputField = z.infer<typeof inputFieldSchema>;
+type ChoiceInput = Record<string, any>;
+type CombinedInput = Omit<InputField, "items"> & {
+  group?: string;
+  groupLabel?: string;
+  items?: ChoiceInput[];
+};
+type DropdownItem = NonNullable<
+  NonNullable<InputField["dropdown"]>["items"]
+>[number];
+
+interface Props {
+  form: FormType;
+  class?: string;
+  hideLabels?: boolean;
+  nativeSelect?: boolean;
+}
+
+const {
+  settings: { contactFormAction, contactFormProvider },
+} = config;
+
+const genIdFromLabel = (label: string) =>
+  toLowerCase(label).replace(/\s+/g, "-");
+
+const getFieldName = (input: CombinedInput) =>
+  input.items?.[0]?.name || input.name || input.label || "contact-field";
+
+const getFieldId = (input: CombinedInput) =>
+  input.id || genIdFromLabel(getFieldName(input));
+
+const getChoiceId = (item: ChoiceInput, groupName?: string) =>
+  item.id ||
+  genIdFromLabel(
+    `${groupName || item.name || "choice"}-${item.label || "example-id"}`,
+  );
+
+const withRequiredMark = (value: string | undefined, required?: boolean) => {
+  const content = value || "";
+
+  if (!required || content.includes("*")) {
+    return content;
+  }
+
+  return `${content} *`;
+};
+
+const combineRadio = (list: InputField[]) => {
+  const groupedItems: Record<
+    string,
+    {
+      groupLabel?: string;
+      items: ChoiceInput[];
+    }
+  > = {};
+
+  list.forEach((item) => {
+    if (!item.group) return;
+
+    if (!groupedItems[item.group]) {
+      groupedItems[item.group] = {
+        groupLabel: item.groupLabel || "",
+        items: [],
+      };
+    }
+
+    groupedItems[item.group].items.push(item);
+  });
+
+  const renderedGroups = new Set<string>();
+  const result: CombinedInput[] = [];
+
+  list.forEach((item) => {
+    if (!item.group) {
+      result.push(item as CombinedInput);
+      return;
+    }
+
+    if (renderedGroups.has(item.group)) return;
+
+    renderedGroups.add(item.group);
+    result.push({
+      group: item.group,
+      groupLabel: groupedItems[item.group].groupLabel,
+      items: groupedItems[item.group].items,
+      halfWidth: item.halfWidth,
+      parentClass: item.parentClass,
+    } as CombinedInput);
+  });
+
+  return result;
+};
+
+let { form } = Astro.props;
+const { hideLabels = false, nativeSelect = false } = Astro.props;
+
+form = {
+  ...form,
+  inputs: combineRadio(form.inputs) as any,
+};
+
+const t = await useTranslations(Astro.currentLocale as string);
+const formI18n = {
+  choose: t("form.choose"),
+  fallbackLabel: t("form.fallbackLabel"),
+  fallbackName: t("form.fallbackName"),
+  fallbackPlaceholder: t("form.fallbackPlaceholder"),
+  invalidSelect: t("form.invalidSelect"),
+  validSelect: t("form.validSelect"),
+  submitting: t("form.submitting"),
+  unknownProvider: t("form.unknownProvider"),
+  submissionFallback: t("form.submissionFallback"),
+  selectLoading: t("select.loading"),
+  selectNoResults: t("select.noResults"),
+  selectSearchPlaceholder: t("select.searchPlaceholder"),
+};
+
+const getSelectConfig = (input: CombinedInput) =>
+  JSON.stringify({
+    hasSearch: input.dropdown?.type === "search",
+    searchPlaceholder:
+      input.dropdown?.type === "search"
+        ? input.dropdown.search?.placeholder || formI18n.selectSearchPlaceholder
+        : "",
+    searchClasses: "contact-form-select-search",
+    searchWrapperClasses: "contact-form-select-search-wrap",
+    placeholder: withRequiredMark(
+      input.placeholder || formI18n.fallbackPlaceholder,
+      input.required,
+    ),
+    toggleTag:
+      '<button type="button" aria-expanded="false"><span class="contact-form-select-title" data-title></span></button>',
+    toggleClasses: "contact-form-select-toggle",
+    dropdownClasses: "contact-form-select-dropdown",
+    optionClasses: "contact-form-select-option",
+    optionTemplate:
+      '<div class="contact-form-select-option-inner"><span data-title></span><span class="contact-form-select-selected-icon hidden hs-selected:block"><svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>',
+    extraMarkup: [
+      '<div class="contact-form-select-arrow"><svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></div>',
+    ],
+    disabledOptionClasses: "opacity-50 cursor-not-allowed",
+    selectedOptionClasses: "bg-primary text-white",
+    noResultsMessage: `<div class="px-4 py-2 text-text-default text-sm">${formI18n.selectNoResults}</div>`,
+    loadingIndicatorMarkup: `<div class="px-4 py-2 text-sm text-text-default">${formI18n.selectLoading}</div>`,
+  });
+
+const combinedInputs = form.inputs as CombinedInput[];
+const messageInputs = combinedInputs.filter((input) => input.note);
+const visibleInputs = combinedInputs.filter((input) => !input.note);
+const messageContent = {
+  success:
+    messageInputs.find((input) => input.note === "success")?.content || "",
+  error:
+    messageInputs.find((input) => input.note === "deprecated")?.content || "",
+};
+const defaultSuccessMessage =
+  messageContent.success || formI18n.submissionFallback;
+const defaultErrorMessage = messageContent.error || formI18n.submissionFallback;
+---
+
+<form
+  id="contact-form"
+  {...{
+    "data-action": contactFormAction,
+    "data-provider": contactFormProvider,
+    "data-message-submitting": formI18n.submitting,
+    "data-message-submission-fallback": formI18n.submissionFallback,
+    "data-message-unknown-provider": formI18n.unknownProvider,
+    "data-netlify": contactFormProvider === "netlify" ? "true" : undefined,
+    action: contactFormProvider === "netlify" ? contactFormAction : undefined,
+  }}
+  method="post"
+  class:list={["contact-form", Astro.props.class]}>
+  {
+    form.emailSubject && (
+      <input
+        type="hidden"
+        name={
+          ["formsubmit.co", "formspree"].includes(contactFormProvider)
+            ? "_subject"
+            : "subject"
+        }
+        value={form.emailSubject}
+      />
+    )
+  }
+
+  {
+    contactFormProvider === "formsubmit.co" && (
+      <input type="hidden" name="_template" value="table" />
+    )
+  }
+
+  {
+    visibleInputs.map((input) => (
+      <div
+        input-wrapper
+        data-field-name={getFieldName(input)}
+        class:list={[
+          "contact-form-field",
+          input.halfWidth
+            ? "contact-form-field--half"
+            : "contact-form-field--full",
+          input.parentClass,
+        ]}>
+        {!input.note && input.items && input.groupLabel && !hideLabels && (
+          <label class="contact-form-field-label">
+            {withRequiredMark(
+              input.groupLabel,
+              input.items.some((item) => item.required),
+            )}
+          </label>
+        )}
+
+        {!input.note && !input.items && input.label && !hideLabels && (
+          <label class="contact-form-field-label" for={getFieldId(input)}>
+            {withRequiredMark(input.label, input.required)}
+          </label>
+        )}
+
+        {input.dropdown ? (
+          <div class="contact-form-control-shell contact-form-select-shell">
+            <select
+              id={getFieldId(input)}
+              {...(nativeSelect
+                ? {
+                    name: getFieldName(input),
+                    required: input.required ? true : undefined,
+                  }
+                : {
+                    "data-name": getFieldName(input),
+                    "data-hs-select": getSelectConfig(input),
+                    required: input.required ? true : undefined,
+                  })}
+              aria-label={
+                input.label ||
+                input.placeholder ||
+                getFieldName(input) ||
+                formI18n.fallbackLabel
+              }
+              class:list={[
+                nativeSelect
+                  ? "contact-form-control contact-form-native-control"
+                  : "contact-form-native-select",
+              ]}>
+              <option value="">{formI18n.choose}</option>
+              {input.dropdown.items?.map((option: DropdownItem) => (
+                <option
+                  {...(option.selected && { selected: true })}
+                  value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            {nativeSelect && (
+              <span class="contact-form-select-arrow">
+                <svg
+                  class="size-4 shrink-0"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true">
+                  <path d="m7 15 5 5 5-5" />
+                  <path d="m7 9 5-5 5 5" />
+                </svg>
+              </span>
+            )}
+          </div>
+        ) : input.tag === "textarea" ? (
+          <div class="contact-form-control-shell">
+            <textarea
+              id={getFieldId(input)}
+              rows={input.rows || "4"}
+              name={getFieldName(input)}
+              placeholder={withRequiredMark(
+                input.placeholder || formI18n.fallbackPlaceholder,
+                input.required,
+              )}
+              aria-label={
+                input.label ||
+                input.placeholder ||
+                getFieldName(input) ||
+                formI18n.fallbackLabel
+              }
+              class="contact-form-control contact-form-control--textarea"
+              {...(input.required && { required: true })}
+              set:html={input.defaultValue || ""}
+            />
+          </div>
+        ) : input.items ? (
+          <div class="contact-form-choice-group">
+            {input.items?.map((item: ChoiceInput) => (
+              <div class="contact-form-choice-item">
+                <input
+                  {...{
+                    value:
+                      typeof item.value === "boolean"
+                        ? String(item.value)
+                        : item.value || item.label,
+                    checked: item.checked ? true : undefined,
+                  }}
+                  type={item.type || "text"}
+                  name={item.name || input.groupLabel || formI18n.fallbackName}
+                  id={getChoiceId(item, input.group || input.groupLabel)}
+                  class:list={[
+                    "contact-form-choice-input",
+                    item.type === "radio"
+                      ? "contact-form-choice-input--radio"
+                      : "contact-form-choice-input--checkbox",
+                  ]}
+                  {...(item.required && { required: true })}
+                />
+                <label
+                  for={getChoiceId(item, input.group || input.groupLabel)}
+                  class="contact-form-choice-label"
+                  set:html={
+                    markdownify(item.label || "") || formI18n.fallbackLabel
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        ) : input.type === "checkbox" || input.type === "radio" ? (
+          <div class="contact-form-choice-group">
+            <div class="contact-form-choice-item">
+              <input
+                {...{
+                  value:
+                    typeof input.value === "boolean"
+                      ? String(input.value)
+                      : input.value || input.label,
+                  checked: input.checked ? true : undefined,
+                }}
+                type={input.type || "text"}
+                name={input.name || formI18n.fallbackName}
+                id={getChoiceId(input, input.name || input.groupLabel)}
+                placeholder={input.placeholder || formI18n.fallbackPlaceholder}
+                class:list={[
+                  "contact-form-choice-input",
+                  input.type === "radio"
+                    ? "contact-form-choice-input--radio"
+                    : "contact-form-choice-input--checkbox",
+                ]}
+                {...(input.required && { required: true })}
+              />
+              <label
+                for={getChoiceId(input, input.name || input.groupLabel)}
+                class="contact-form-choice-label"
+                set:html={
+                  (input.label && markdownify(input.label)) ||
+                  input.label ||
+                  formI18n.fallbackLabel
+                }
+              />
+            </div>
+          </div>
+        ) : (
+          <div class="contact-form-control-shell">
+            <input
+              {...(input.defaultValue && {
+                value: input.defaultValue,
+              })}
+              id={getFieldId(input)}
+              type={input.type || "text"}
+              name={getFieldName(input)}
+              autocomplete="on"
+              placeholder={withRequiredMark(
+                input.placeholder || formI18n.fallbackPlaceholder,
+                input.required,
+              )}
+              aria-label={
+                input.label ||
+                input.placeholder ||
+                getFieldName(input) ||
+                formI18n.fallbackLabel
+              }
+              class="contact-form-control"
+              {...(input.required && { required: true })}
+            />
+          </div>
+        )}
+      </div>
+    ))
+  }
+
+  {
+    form.submitButton && (
+      <div class="contact-form-submit">
+        <Button
+          tag="button"
+          type="submit"
+          id="contact-submit"
+          hoverEffect="creative-fill"
+          class="text-base-sm effect-color-light w-fit md:text-base"
+          {...form.submitButton}
+        />
+      </div>
+    )
+  }
+
+  <div
+    class="contact-form-message contact-form-message--pending message pending hidden"
+    role="status"
+    aria-live="polite">
+    <div
+      class="contact-form-message-content prose-styles"
+      data-default={formI18n.submitting}
+      set:html={markdownify(formI18n.submitting, true)}
+    />
+  </div>
+
+  <div
+    class="contact-form-message contact-form-message--success message success hidden"
+    role="status"
+    aria-live="polite">
+    <div
+      class="contact-form-message-content prose-styles"
+      data-default={defaultSuccessMessage}
+      set:html={markdownify(defaultSuccessMessage, true)}
+    />
+  </div>
+
+  <div
+    class="contact-form-message contact-form-message--error message error hidden"
+    role="alert"
+    aria-live="assertive">
+    <div
+      class="contact-form-message-content prose-styles"
+      data-default={defaultErrorMessage}
+      set:html={markdownify(defaultErrorMessage, true)}
+    />
+  </div>
+
+  {
+    form.note && (
+      <div class="contact-form-note" set:html={markdownify(form.note, true)} />
+    )
+  }
+</form>
+
+<script>
+  import {
+    formspreeSubmit,
+    netlifySubmit,
+    formSubmit,
+    isFormFilled,
+    setMessage,
+    validateSelectTag,
+  } from "@/lib/utils/FormHandle";
+
+  const initContactForm = () => {
+    const form = document.getElementById(
+      "contact-form",
+    ) as HTMLFormElement | null;
+
+    if (!form || form.dataset.contactFormReady) return;
+
+    form.dataset.contactFormReady = "true";
+
+    let selectTags = form.querySelectorAll(
+      "[input-wrapper]:not(.hidden) select[data-hs-select]",
+    ) as NodeListOf<HTMLSelectElement>;
+
+    const getFieldWrapper = (
+      target: string | Element | null | undefined,
+    ): HTMLElement | null => {
+      if (!target) return null;
+
+      if (typeof target !== "string") {
+        return target.closest("[input-wrapper]");
+      }
+
+      const escapedName =
+        typeof CSS !== "undefined" && CSS.escape ? CSS.escape(target) : target;
+      return form.querySelector<HTMLElement>(
+        `[input-wrapper][data-field-name="${escapedName}"]`,
+      );
+    };
+
+    const markFieldFilled = (
+      target: string | Element | null | undefined,
+      filled: boolean,
+    ) => {
+      const field = getFieldWrapper(target);
+      if (!field) return;
+
+      field.classList.toggle("is-filled", filled);
+      if (filled) {
+        field.classList.remove("is-error");
+      }
+    };
+
+    const markFieldError = (target: string | Element | null | undefined) => {
+      const field = getFieldWrapper(target);
+      if (!field) return;
+
+      field.classList.add("is-error");
+      field.classList.remove("is-filled");
+    };
+
+    const clearFieldError = (target: string | Element | null | undefined) => {
+      getFieldWrapper(target)?.classList.remove("is-error");
+    };
+
+    const syncFieldValueState = (
+      element: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
+    ) => {
+      if (element instanceof HTMLSelectElement) {
+        markFieldFilled(element, element.value !== "");
+        return;
+      }
+
+      if (element.type === "radio" || element.type === "checkbox") {
+        const checkedItems = form.querySelectorAll(
+          `[name="${element.name}"]:checked`,
+        );
+        markFieldFilled(element.name, checkedItems.length > 0);
+        return;
+      }
+
+      markFieldFilled(element, Boolean(element.value.trim()));
+    };
+
+    const syncSelectState = (items: HTMLSelectElement[]) => {
+      items.forEach((item) => {
+        const name = item.getAttribute("data-name");
+
+        if (name) {
+          item.setAttribute("name", name);
+        }
+
+        item.classList.toggle("hs-select-active", item.value !== "");
+        validateSelectTag(item);
+      });
+    };
+
+    const inputFields = form.querySelectorAll<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >("input[name], textarea[name], select[name], select[data-hs-select]");
+
+    inputFields.forEach((el) => {
+      const eventName =
+        el instanceof HTMLInputElement &&
+        (el.type === "checkbox" || el.type === "radio")
+          ? "change"
+          : "input";
+
+      el.addEventListener(eventName, () => {
+        syncFieldValueState(el);
+        clearFieldError(el);
+      });
+
+      if (eventName !== "change") {
+        el.addEventListener("change", () => {
+          syncFieldValueState(el);
+          clearFieldError(el);
+        });
+      }
+
+      syncFieldValueState(el);
+    });
+
+    syncSelectState(Array.from(selectTags));
+
+    selectTags.forEach((tag) => {
+      tag.addEventListener("change", () => {
+        syncSelectState(Array.from(selectTags));
+        clearFieldError(tag);
+      });
+    });
+
+    form.addEventListener(
+      "invalid",
+      (e) => {
+        const target = e.target;
+        if (
+          target instanceof HTMLInputElement ||
+          target instanceof HTMLTextAreaElement ||
+          target instanceof HTMLSelectElement
+        ) {
+          markFieldError(target);
+        }
+      },
+      true,
+    );
+
+    form.addEventListener("submit", async (e: Event) => {
+      e.preventDefault();
+
+      const provider = form.getAttribute("data-provider") || "";
+      const action = form.getAttribute("data-action") || "";
+      const submittingMessage = form.dataset.messageSubmitting || "";
+      const submissionFallbackMessage =
+        form.dataset.messageSubmissionFallback || "";
+      const unknownProviderMessage = form.dataset.messageUnknownProvider || "";
+
+      form
+        .querySelectorAll<HTMLElement>("[input-wrapper]")
+        .forEach((field) => field.classList.remove("is-error"));
+
+      selectTags = form.querySelectorAll(
+        "[input-wrapper]:not(.hidden) select[data-hs-select]",
+      ) as NodeListOf<HTMLSelectElement>;
+
+      syncSelectState(Array.from(selectTags));
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      if (isFormFilled(form)) {
+        setMessage(submittingMessage, "pending", true, form);
+
+        try {
+          switch (provider) {
+            case "netlify":
+              await netlifySubmit(form, action);
+              break;
+            case "formsubmit.co":
+              await formSubmit({
+                form,
+                action,
+              });
+              break;
+            case "formspree":
+              await formspreeSubmit(
+                Object.fromEntries(new FormData(form).entries()),
+                5000,
+                form,
+              );
+              break;
+            default:
+              throw new Error(unknownProviderMessage);
+          }
+        } catch (error) {
+          setMessage(
+            error + "! " + submissionFallbackMessage,
+            false,
+            false,
+            form,
+          );
+        }
+      }
+    });
+  };
+
+  initContactForm();
+  document.addEventListener("DOMContentLoaded", initContactForm);
+  document.addEventListener("astro:page-load", initContactForm);
+</script>

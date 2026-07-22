@@ -1,59 +1,25 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/layout/Header.astro';
-import Footer from '@/components/layout/Footer.astro';
-import Badge from '@/components/ui/data-display/Badge/Badge.astro';
-import Button from '@/components/ui/form/Button/Button.astro';
-import Accordion from '@/components/ui/overlay/Accordion/Accordion.astro';
-import { Hero } from '@/components/hero';
-import { footerNavItems, legalLinks } from '@/config/nav.config';
-
-const faqItems = [
-  {
-    title: 'Quelle est la différence entre Nginx, Caddy et LiteSpeed ?',
-    content: "Nginx est le serveur web le plus répandu, robuste et très documenté. Caddy simplifie la configuration et gère le HTTPS automatiquement, ce qui réduit le temps de mise en place. LiteSpeed est particulièrement performant sur les stacks PHP (WordPress, WooCommerce) grâce à son cache intégré. Le choix dépend du projet, pas d'une préférence par défaut.",
-    defaultOpen: true,
-  },
-  {
-    title: 'Faut-il un VPS ou un hébergement mutualisé ?',
-    content: "Un hébergement mutualisé convient pour un site simple à faible trafic, mais impose des limitations (accès serveur restreint, ressources partagées, montée en charge difficile). Un VPS donne le contrôle complet de l'infrastructure – nécessaire dès que le projet a des besoins spécifiques (déploiement automatisé, plusieurs services, performance garantie).",
-  },
-  {
-    title: 'Qu\'est-ce qu\'un déploiement automatisé change concrètement ?',
-    content: "Il élimine les erreurs humaines de mise en production, garantit qu'un déploiement se déroule de la même façon à chaque fois, et permet de revenir en arrière rapidement en cas de problème. C'est aussi ce qui rend possible un rythme de mise à jour plus fréquent sans risque accru.",
-  },
-  {
-    title: 'Cloudflare, Vercel, GitHub Pages : est-ce que ça remplace un VPS ?',
-    content: "Ça dépend du projet. Pour un site statique ou une application légère, Cloudflare Pages, Vercel ou GitHub Pages peuvent suffire comme hébergeur à part entière. Dès qu'il faut une vraie logique serveur (base de données, traitements longs, API métier), un VPS reste plus adapté – avec Cloudflare utilisé en périphérie (CDN, sécurité, DNS) plutôt qu'en hébergeur principal.",
-  },
-  {
-    title: 'Quel est le coût d\'une infrastructure DevOps sur-mesure par rapport à un PaaS ?',
-    content: "Le coût initial de mise en place est généralement supérieur à un simple abonnement PaaS, mais le coût récurrent est souvent inférieur dès que le trafic ou les besoins en ressources augmentent – sans les paliers tarifaires abrupts propres aux PaaS. Le premier échange permet d'estimer l'un et l'autre pour votre cas précis.",
-  },
-];
+import Base from "@/layouts/Base.astro";
 ---
 
-<BaseLayout
+<Base
   title="DevOps, déploiement et hébergement web"
-  description="Infrastructure DevOps : déploiement automatisé, hébergement, Nginx, Caddy, LiteSpeed. Sauvegardes multi-destinations, monitoring, sans dépendance à un PaaS."
+  metaTitle="DevOps, déploiement et hébergement web"
+  metaDescription="Infrastructure DevOps : déploiement automatisé, hébergement, Nginx, Caddy, LiteSpeed. Sauvegardes multi-destinations, monitoring, sans dépendance à un PaaS."
+  headerLayout="two"
+  headerPosition="fixed"
 >
-  <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
-
   <div class="min-h-screen pt-16">
-    <Hero
-      layout="centered"
-      size="lg"
-      showGrid
-      class="border-border pt-12 pb-6 md:pt-20 md:pb-12"
-    >
-      <Badge slot="badge" variant="brand" pill class="px-3 py-1 text-sm">
-        Infrastructure
-      </Badge>
-
-      <h1 slot="title" class="!leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
-        DevOps : déploiement et hébergement d'applications web
-      </h1>
-    </Hero>
+    <section class="border-border pt-12 pb-6 md:pt-20 md:pb-12">
+      <div class="mx-auto max-w-6xl px-6 text-center">
+        <span class="bg-accent/10 text-accent mb-4 inline-block rounded-full px-4 py-1 text-sm font-medium">
+          Infrastructure
+        </span>
+        <h1 class="font-display text-foreground !leading-[1.05] mt-6 !text-4xl md:!text-5xl lg:!text-6xl">
+          DevOps : déploiement et hébergement d'applications web
+        </h1>
+      </div>
+    </section>
 
     <section class="py-8 md:py-12">
       <div class="mx-auto max-w-6xl px-6">
@@ -123,14 +89,46 @@ const faqItems = [
           <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
             FAQ
           </h2>
-          <div class="mt-6">
-            <Accordion items={faqItems} exclusive />
+          <div class="mt-6 space-y-6">
+            <details open class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">Quelle est la différence entre Nginx, Caddy et LiteSpeed ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                Nginx est le serveur web le plus répandu, robuste et très documenté. Caddy simplifie la configuration et gère le HTTPS automatiquement, ce qui réduit le temps de mise en place. LiteSpeed est particulièrement performant sur les stacks PHP (WordPress, WooCommerce) grâce à son cache intégré. Le choix dépend du projet, pas d'une préférence par défaut.
+              </p>
+            </details>
+            <details class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">Faut-il un VPS ou un hébergement mutualisé ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                Un hébergement mutualisé convient pour un site simple à faible trafic, mais impose des limitations (accès serveur restreint, ressources partagées, montée en charge difficile). Un VPS donne le contrôle complet de l'infrastructure – nécessaire dès que le projet a des besoins spécifiques (déploiement automatisé, plusieurs services, performance garantie).
+              </p>
+            </details>
+            <details class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">Qu'est-ce qu'un déploiement automatisé change concrètement ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                Il élimine les erreurs humaines de mise en production, garantit qu'un déploiement se déroule de la même façon à chaque fois, et permet de revenir en arrière rapidement en cas de problème. C'est aussi ce qui rend possible un rythme de mise à jour plus fréquent sans risque accru.
+              </p>
+            </details>
+            <details class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">Cloudflare, Vercel, GitHub Pages : est-ce que ça remplace un VPS ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                Ça dépend du projet. Pour un site statique ou une application légère, Cloudflare Pages, Vercel ou GitHub Pages peuvent suffire comme hébergeur à part entière. Dès qu'il faut une vraie logique serveur (base de données, traitements longs, API métier), un VPS reste plus adapté – avec Cloudflare utilisé en périphérie (CDN, sécurité, DNS) plutôt qu'en hébergeur principal.
+              </p>
+            </details>
+            <details class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">Quel est le coût d'une infrastructure DevOps sur-mesure par rapport à un PaaS ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                Le coût initial de mise en place est généralement supérieur à un simple abonnement PaaS, mais le coût récurrent est souvent inférieur dès que le trafic ou les besoins en ressources augmentent – sans les paliers tarifaires abrupts propres aux PaaS. Le premier échange permet d'estimer l'un et l'autre pour votre cas précis.
+              </p>
+            </details>
           </div>
         </div>
       </div>
     </section>
+<script>
+(()=>{const d=document.querySelectorAll('section.pb-8 details');d.forEach(el=>{el.addEventListener('toggle',()=>{if(el.open)d.forEach(o=>{if(o!==el)o.open=false})})})})();
+</script>
 
-    <section class="invert-section bg-background border-t border-border py-16 md:py-20">
+    <section class="cta-custom border-t py-16 md:py-20">
       <div class="mx-auto max-w-6xl px-6">
         <div class="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
           <div class="space-y-2">
@@ -142,12 +140,10 @@ const faqItems = [
             </p>
           </div>
           <div class="shrink-0">
-            <Button href="/contact">Prendre rendez-vous →</Button>
+            <a href="/contact/" class="text-flip-hover-anim magnetic-hover-anim btn btn-cta rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case"><span class="text-flip-inner" data-content="Prendre rendez-vous →">Prendre rendez-vous →</span></a>
           </div>
         </div>
       </div>
     </section>
   </div>
-
-  <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
-</BaseLayout>
+</Base>

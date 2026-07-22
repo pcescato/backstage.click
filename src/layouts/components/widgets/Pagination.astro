@@ -1,0 +1,91 @@
+---
+import Icons from "@/helpers/Icons.astro";
+import { getLocaleUrlCTM, useTranslations } from "@/lib/utils/i18nUtils.ts";
+
+interface Props {
+  collection?: string;
+  currentPage?: number;
+  totalPages?: number;
+  class?: string;
+}
+
+const {
+  collection,
+  currentPage = 1,
+  totalPages = 1,
+  class: className,
+} = Astro.props;
+
+const indexPageLink = currentPage === 2;
+const hasPrevPage = currentPage > 1;
+const hasNextPage = totalPages > currentPage!;
+const t = await useTranslations(Astro.currentLocale as string);
+
+let pageList: number[] = [];
+for (let i = 1; i <= totalPages; i++) {
+  pageList.push(i);
+}
+---
+
+{
+  totalPages > 1 && (
+    <nav
+      id="pagination"
+      class:list={[
+        "mt-10 flex flex-wrap items-center justify-center gap-3 font-normal",
+        className,
+      ]}
+      aria-label={t("aria.pagination")}>
+      {/* previous */}
+      {hasPrevPage && (
+        <a
+          href={getLocaleUrlCTM(
+            indexPageLink
+              ? `${collection ? "/" + collection : "/"}`
+              : `${collection ? "/" + collection : ""}/page/${currentPage - 1}`,
+            Astro.currentLocale,
+          )}
+          class="hover:bg-primary text-text-default bg-theme-light flex h-15 w-15 items-center justify-center gap-3 rounded-md transition duration-300 hover:text-white">
+          <Icons class="text-xl" icon="MoveLeft" />
+          <span class="sr-only">{t("common.paginationPrevious")}</span>
+        </a>
+      )}
+
+      {/* page index */}
+      {pageList.map((pagination, i) =>
+        pagination === currentPage ? (
+          <span
+            aria-current="page"
+            class="bg-primary flex h-15 w-15 cursor-not-allowed items-center justify-center rounded-md text-white">
+            {pagination}
+          </span>
+        ) : (
+          <a
+            href={getLocaleUrlCTM(
+              i === 0
+                ? `${collection ? "/" + collection : "/"}`
+                : `${collection ? "/" + collection : ""}/page/${pagination}`,
+              Astro.currentLocale,
+            )}
+            aria-current="page"
+            class="hover:bg-primary bg-theme-light text-dark flex h-15 w-15 items-center justify-center rounded-md transition duration-300 hover:text-white">
+            {pagination}
+          </a>
+        ),
+      )}
+
+      {/* next page */}
+      {hasNextPage && (
+        <a
+          href={getLocaleUrlCTM(
+            `${collection ? "/" + collection : ""}/page/${currentPage + 1}`,
+            Astro.currentLocale,
+          )}
+          class="hover:bg-primary text-text-default bg-theme-light flex h-15 w-15 items-center justify-center gap-3 rounded-md transition duration-300 hover:text-white">
+          <span class="sr-only">{t("common.paginationNext")}</span>
+          <Icons class="text-xl" icon="MoveRight" />
+        </a>
+      )}
+    </nav>
+  )
+}

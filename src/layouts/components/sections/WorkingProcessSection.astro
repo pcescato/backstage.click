@@ -1,0 +1,96 @@
+---
+import type { z } from "astro/zod";
+import type { Section } from "@/types";
+import OptimizedImage from "@/components/utilities/OptimizedImage.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import overrideObjects from "@/lib/utils/overrideObjects.ts";
+import { getEntryCTM } from "@/lib/contentParser.astro";
+import type { workingProcessSectionSchema } from "@/sections.schema";
+
+type WorkingProcessContent = Section &
+  NonNullable<z.infer<typeof workingProcessSectionSchema>>;
+
+type Props = {
+  content?: WorkingProcessContent;
+  hasSectionSpacing?: boolean;
+};
+
+const defaultContent = (
+  await getEntryCTM("sections", "working-process", Astro.currentLocale)
+)?.data as WorkingProcessContent;
+
+const actualContent = overrideObjects(
+  { ...defaultContent },
+  Astro.props.content,
+) as WorkingProcessContent;
+
+const { enable = true, title, list = [] } = actualContent;
+const { hasSectionSpacing = true } = Astro.props;
+
+if (!enable) {
+  return null;
+}
+---
+
+<section class:list={[!hasSectionSpacing && "pt-0"]}>
+  <div class="container space-y-16">
+    {
+      title && (
+        <h2
+          class="mx-auto max-w-4xl text-center"
+          data-scroll-reveal="blur-up"
+          set:html={markdownify(title)}
+        />
+      )
+    }
+
+    <div
+      class="relative grid grid-cols-1 gap-y-12 md:grid-cols-3 md:gap-x-10 lg:gap-x-20">
+      {/* The connector line sits behind the step numbers on desktop. */}
+      <svg
+        class="text-border-light absolute top-70 right-0 left-0 hidden h-1 w-full md:block"
+        viewBox="0 0 1116 4"
+        fill="none"
+        aria-hidden="true"
+        preserveAspectRatio="none">
+        <path
+          d="M0 2H1116"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-dasharray="8 14">
+        </path>
+      </svg>
+
+      {
+        list.map((item, index) => (
+          <article
+            class="relative flex flex-col items-center text-center"
+            data-scroll-reveal="zoom-in"
+            data-scroll-reveal-delay={index * 140}>
+            <div class="flex h-55 items-end justify-center">
+              <OptimizedImage
+                src={item.image}
+                alt=""
+                aria-hidden="true"
+                width={200}
+                widths={[228, 254, 270, 300]}
+                sizes="(min-width: 768px) 30vw, 70vw"
+                class="h-full w-auto object-contain"
+              />
+            </div>
+
+            <span class="bg-primary relative z-10 mt-10 flex size-10 items-center justify-center rounded-full text-sm leading-none font-semibold text-white">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+
+            <h3 class="mt-7 text-xl" set:html={markdownify(item.title)} />
+            <p class="text-text-default leading-body mx-auto mt-3 max-w-md">
+              {item.description}
+            </p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,261 @@
+---
+// Multipurpose Section
+// src/layouts/components/sections/Section.astro
+import { z } from "astro/zod";
+import type { Section } from "@/types";
+import { markdownify } from "@/lib/utils/textConverter";
+import { getEntryCTM } from "@/lib/contentParser.astro";
+import AnimatedNumber from "@/components/widgets/AnimatedNumber.astro";
+import OptimizedImage from "@/components/utilities/OptimizedImage.astro";
+import overrideObjects from "@/lib/utils/overrideObjects.ts";
+import { multipurposeSectionSchema } from "@/sections.schema";
+import Button from "../Button.astro";
+import SkillBar from "../widgets/SkillBar.astro";
+import FeatureListCard from "../widgets/FeatureListCard.astro";
+
+// Type for this section data
+type AboutSection = Section & z.infer<typeof multipurposeSectionSchema>;
+type Props = {
+  content?: AboutSection;
+  dividerTop?: boolean;
+  hasSectionSpacing?: boolean;
+  hasSectionBackground?: boolean;
+};
+
+// Fetching the default content for the features section
+const defaultContent = (
+  await getEntryCTM("sections", "about-section", Astro.currentLocale)
+)?.data as AboutSection;
+
+// Merges custom content overrides (e.g., just a title) with defaultContent fallbacks. Enables easy section reuse across pages with partial data changes.
+const actualContent =
+  Astro.props.content ||
+  (overrideObjects({ ...defaultContent }, Astro.props.content) as AboutSection);
+
+// Extracting required values from 'content' object
+const {
+  title,
+  subtitle,
+  description,
+  images = { large: "", small: "" },
+  imagePosition,
+  buttons,
+  extraType,
+  skills,
+  listItems,
+  stats,
+} = actualContent;
+const {
+  dividerTop,
+  hasSectionBackground = false,
+  hasSectionSpacing = true,
+} = Astro.props;
+
+const isRight = imagePosition === "right";
+---
+
+<section class:list={[!hasSectionSpacing && "pt-0"]}>
+  <div
+    class:list={[
+      hasSectionBackground && "bg-theme-light section-spacing-vertical",
+    ]}>
+    <div class="container">
+      <div
+        class:list={[
+          "grid place-items-center gap-16 lg:grid-cols-2 xl:gap-24",
+          { "border-t pt-20": dividerTop },
+        ]}>
+        <div
+          class:list={["relative isolate z-0", { "lg:order-2": isRight }]}
+          data-scroll-reveal="image-clip">
+          <svg class="absolute h-0 w-0" aria-hidden="true">
+            <clipPath
+              id="about-clip-path-1-x"
+              clipPathUnits="objectBoundingBox">
+              <path
+                d="M1,0.828 C1,0.845, 0.993,0.861, 0.981,0.872 L0.87,0.982 C0.858,0.993, 0.842,1, 0.825,1 H0.064 C0.029,1, 0,0.972, 0,0.938 V0.172 C0,0.155, 0.007,0.139, 0.019,0.128 L0.13,0.018 C0.142,0.007, 0.158,0, 0.175,0 H0.936 C0.971,0, 1,0.028, 1,0.063 V0.828 Z">
+              </path>
+            </clipPath>
+          </svg>
+
+          {
+            images.large && (
+              <div
+                class:list={[
+                  "relative h-125 w-4/5 rounded-4xl pb-14 sm:h-142",
+                  isRight ? "ml-auto" : "mr-auto",
+                ]}>
+                <div
+                  class:list={[
+                    "clip-about-shape h-full w-full",
+                    { "flip-vertical": isRight },
+                  ]}>
+                  <OptimizedImage
+                    width={900}
+                    src={images.large}
+                    class:list={[
+                      "h-full w-full object-cover",
+                      { "flip-vertical": isRight },
+                    ]}
+                  />
+                </div>
+
+                {/* Decorative dots sit behind the large image. When imagePosition is "right", the offsets mirror to the left edge. */}
+                <OptimizedImage
+                  class:list={[
+                    "pointer-events-none absolute top-20 -z-10 rotate-180 select-none",
+                    isRight ? "-left-20" : "-right-20",
+                  ]}
+                  src="/images/banner-dots-dark.svg"
+                />
+                <OptimizedImage
+                  class:list={[
+                    "pointer-events-none absolute top-36 -z-10 select-none",
+                    isRight ? "-left-10" : "-right-10",
+                  ]}
+                  src="/images/banner-dots-dark.svg"
+                />
+              </div>
+            )
+          }
+
+          {
+            images.small && (
+              <>
+                <div
+                  class:list={[
+                    "clip-about-shape absolute right-0 bottom-0 h-1/2 w-7/12 scale-105 bg-white sm:bottom-0 sm:w-5/12",
+                    isRight ? "flip-horizontal left-0" : "right-0",
+                  ]}
+                />
+                <div
+                  class:list={[
+                    "absolute bottom-0 h-1/2 w-7/12 rounded-4xl sm:w-5/12",
+                    isRight ? "left-0" : "right-0",
+                  ]}>
+                  <div
+                    class:list={[
+                      "clip-about-shape h-full w-full",
+                      { "flip-vertical": isRight },
+                    ]}>
+                    <OptimizedImage
+                      width={300}
+                      src={images.small}
+                      class:list={[
+                        "h-full w-full object-cover",
+                        { "flip-vertical": isRight },
+                      ]}
+                    />
+                  </div>
+
+                  {/* Decorative dots sit behind the small overlay image on the outer edge opposite the large image. */}
+                  <OptimizedImage
+                    class:list={[
+                      "pointer-events-none absolute bottom-0 -z-10 select-none",
+                      isRight ? "-right-20" : "-left-20",
+                    ]}
+                    src="/images/banner-dots-dark.svg"
+                  />
+                </div>
+              </>
+            )
+          }
+
+          {
+            /* Faint background dots stay fixed at the media group's top-left corner. */
+          }
+          <OptimizedImage
+            src="/images/banner-dots.svg"
+            class="absolute -top-10 -left-10 -z-10 opacity-20"
+          />
+        </div>
+
+        <div
+          class:list={["space-y-6", { "lg:order-1": isRight }]}
+          data-scroll-reveal="blur-up"
+          data-scroll-reveal-delay="120">
+          {title && <h2 set:html={markdownify(title)} />}
+          {subtitle && <h3 class="h6" set:html={markdownify(subtitle)} />}
+          {description && <p set:html={markdownify(description)} />}
+
+          {
+            extraType !== "none" && (
+              <div class="pt-4">
+                {extraType === "skills" &&
+                  skills?.map((skill) => (
+                    <SkillBar label={skill.label} value={skill.value} />
+                  ))}
+
+                {extraType === "list-x" && (
+                  <div class="grid grid-cols-1 max-sm:divide-y max-sm:*:not-last:mb-5 max-sm:*:not-last:pb-5 sm:grid-cols-2 sm:divide-x sm:*:not-first:ps-10">
+                    {listItems?.map((item, index) => (
+                      <div
+                        data-scroll-reveal="fade-up"
+                        data-scroll-reveal-delay={index * 120}>
+                        <FeatureListCard
+                          hasSectionBackground={hasSectionBackground}
+                          item={item}
+                          variant="list-x"
+                          headingTag={subtitle ? "h4" : "h3"}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {extraType === "list-y" && (
+                  <div class="space-y-6">
+                    {listItems?.map((item, index) => (
+                      <div
+                        data-scroll-reveal="fade-up"
+                        data-scroll-reveal-delay={index * 120}>
+                        <FeatureListCard
+                          item={item}
+                          variant="list-y"
+                          headingTag={subtitle ? "h4" : "h3"}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {extraType === "stats" && (
+                  <div class="border-border-light mt-8 flex flex-wrap gap-12 border-t pt-8">
+                    {stats?.map((stat, index) => (
+                      <div
+                        data-scroll-reveal="zoom-in"
+                        data-scroll-reveal-delay={index * 120}>
+                        <div class="text-display-6 text-dark font-bold">
+                          <AnimatedNumber
+                            content={{
+                              value: stat.value,
+                              appendValue: stat.appendValue,
+                              prependValue: stat.prependValue,
+                            }}
+                          />
+                        </div>
+                        <p class="text-text-default mt-1 font-medium">
+                          {stat.label}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          }
+
+          {
+            buttons && buttons.length > 0 && (
+              <div class="flex flex-wrap gap-4 pt-2">
+                {buttons.map((btn) => (
+                  <Button {...btn} />
+                ))}
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

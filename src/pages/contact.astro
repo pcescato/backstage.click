@@ -1,134 +1,126 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/layout/Header.astro';
-import Footer from '@/components/layout/Footer.astro';
-import Badge from '@/components/ui/data-display/Badge/Badge.astro';
-import Button from '@/components/ui/form/Button/Button.astro';
-import Checkbox from '@/components/ui/form/Checkbox/Checkbox.astro';
-import Tabs from '@/components/ui/overlay/Tabs/Tabs.astro';
-import { Hero } from '@/components/hero';
-import { footerNavItems, legalLinks } from '@/config/nav.config';
+import Base from "@/layouts/Base.astro";
 ---
 
-<BaseLayout
+<Base
   title="Contact"
-  description="Réserver un créneau ou écrire directement pour échanger sur votre projet."
+  metaTitle="Contact – Backstage"
+  metaDescription="Réserver un créneau ou écrire directement pour échanger sur votre projet."
+  headerLayout="two"
+  headerPosition="fixed"
 >
-  <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
-
   <div class="min-h-screen pt-16">
-    <Hero
-      layout="centered"
-      size="lg"
-      showGrid
-      class="border-border border-b pt-12 pb-6 md:pt-20 md:pb-12"
-    >
-      <Badge slot="badge" variant="brand" pill class="px-3 py-1 text-sm">Contact</Badge>
-
-      <h1 slot="title" class="max-w-4xl !leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
-        Réserver un créneau ou écrire directement
-      </h1>
-
-      <p slot="description" class="max-w-3xl">
-        15 minutes suffisent pour faire le point.
-      </p>
-    </Hero>
+    <section class="border-border border-b pt-12 pb-6 md:pt-20 md:pb-12">
+      <div class="mx-auto max-w-6xl px-6 text-center">
+        <span class="bg-accent/10 text-accent mb-4 inline-block rounded-full px-4 py-1 text-sm font-medium">Contact</span>
+        <h1 class="font-display text-foreground !leading-[1.05] mt-6 !text-4xl md:!text-5xl lg:!text-6xl">
+          Réserver un créneau ou écrire directement
+        </h1>
+        <p class="text-foreground-muted mx-auto mt-6">
+          15 minutes suffisent pour faire le point.
+        </p>
+      </div>
+    </section>
 
     <section class="border-border bg-background border-b py-20">
       <div class="mx-auto max-w-6xl px-6">
-        <Tabs
-          tabs={[
-            { id: 'rendez-vous', label: 'Prendre rendez-vous' },
-            { id: 'message', label: 'Écrire un message' },
-          ]}
-          defaultValue="rendez-vous"
-        >
-          <div data-tab-content="rendez-vous">
-            <div class="border-border overflow-hidden rounded-xl border bg-card shadow-lg transition-all duration-200 ease-out">
-              <!-- Début de widget en ligne Calendly -->
-              <div class="calendly-inline-widget" data-url="https://calendly.com/backstage-click/15min" style="min-width:320px;height:700px;"></div>
-              <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
-              <!-- Fin de widget en ligne Calendly -->
-            </div>
+        <div class="grid gap-6 md:grid-cols-2">
+          <div>
+            <button id="tab-rendez-vous" class="w-full rounded-t-xl border border-b-0 border-border bg-card px-6 py-3 text-left text-sm font-semibold text-foreground transition-colors" onclick="document.getElementById('tab-rendez-vous').classList.add('bg-card','text-foreground');document.getElementById('tab-message').classList.remove('bg-card','text-foreground');document.getElementById('tab-message').classList.add('bg-transparent','text-foreground-muted');document.getElementById('content-rendez-vous').classList.remove('hidden');document.getElementById('content-message').classList.add('hidden');">
+              Prendre rendez-vous
+            </button>
           </div>
+          <div>
+            <button id="tab-message" class="w-full rounded-t-xl border border-b-0 border-border bg-transparent px-6 py-3 text-left text-sm font-semibold text-foreground-muted transition-colors" onclick="document.getElementById('tab-message').classList.add('bg-card','text-foreground');document.getElementById('tab-rendez-vous').classList.remove('bg-card','text-foreground');document.getElementById('tab-rendez-vous').classList.add('bg-transparent','text-foreground-muted');document.getElementById('content-message').classList.remove('hidden');document.getElementById('content-rendez-vous').classList.add('hidden');">
+              Écrire un message
+            </button>
+          </div>
+        </div>
 
-          <div data-tab-content="message">
-            <div class="border-border rounded-xl border bg-card p-8 shadow-lg transition-all duration-200 ease-out">
-              <form id="contact-form" action="/api/contact.php" method="POST" class="space-y-4">
-                <div class="grid gap-4 md:grid-cols-2">
-                  <div class="space-y-1.5">
-                    <label for="contact-nom" class="text-sm font-medium leading-none">Nom *</label>
-                    <input
-                      id="contact-nom"
-                      name="nom"
-                      type="text"
-                      required
-                      autocomplete="name"
-                      class="h-10 w-full rounded-lg border border-border bg-background pl-4 pr-4 text-sm transition-colors duration-(--transition-fast) placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                  </div>
+        <div id="content-rendez-vous" class="border border-border rounded-b-xl rounded-tr-xl bg-card shadow-lg transition-all duration-200 ease-out">
+          <div class="border-border overflow-hidden rounded-xl border bg-card shadow-lg transition-all duration-200 ease-out">
+            <!-- Début de widget en ligne Calendly -->
+            <div class="calendly-inline-widget" data-url="https://calendly.com/backstage-click/15min" style="min-width:320px;height:700px;"></div>
+            <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+            <!-- Fin de widget en ligne Calendly -->
+          </div>
+        </div>
 
-                  <div class="space-y-1.5">
-                    <label for="contact-email" class="text-sm font-medium leading-none">
-                      Email *
-                    </label>
-                    <input
-                      id="contact-email"
-                      name="email"
-                      type="email"
-                      required
-                      autocomplete="email"
-                      class="h-10 w-full rounded-lg border border-border bg-background pl-4 pr-4 text-sm transition-colors duration-(--transition-fast) placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                  </div>
-                </div>
+        <div id="content-message" class="hidden border border-border rounded-b-xl rounded-tr-xl bg-card p-8 shadow-lg transition-all duration-200 ease-out">
+          <form id="contact-form" action="/api/contact.php" method="POST" class="space-y-4">
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="space-y-1.5">
+                <label for="contact-nom" class="text-sm font-medium leading-none">Nom *</label>
+                <input
+                  id="contact-nom"
+                  name="nom"
+                  type="text"
+                  required
+                  autocomplete="name"
+                  class="h-10 w-full rounded-lg border border-border bg-background pl-4 pr-4 text-sm transition-colors duration-(--transition-fast) placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                />
+              </div>
 
-                <div class="space-y-1.5">
-                  <label for="contact-sujet" class="text-sm font-medium leading-none">Sujet</label>
-                  <input
-                    id="contact-sujet"
-                    name="sujet"
-                    type="text"
-                    class="h-10 w-full rounded-lg border border-border bg-background pl-4 pr-4 text-sm transition-colors duration-(--transition-fast) placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                  />
-                </div>
-
-                <div class="space-y-1.5">
-                  <label for="contact-message" class="text-sm font-medium leading-none">
-                    Message *
-                  </label>
-                  <textarea
-                    id="contact-message"
-                    name="message"
-                    rows="5"
-                    required
-                    class="min-h-[80px] w-full resize-y rounded-lg border border-border bg-background px-4 py-3 text-sm transition-colors duration-(--transition-fast) placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                  ></textarea>
-                </div>
-
-                <div style="position:absolute;left:-9999px" aria-hidden="true">
-                  <input type="text" name="website" tabindex="-1" autocomplete="off" />
-                </div>
-
-                <Checkbox id="contact-rgpd" name="rgpd_consent" required>
-                  <span slot="label" class="text-sm font-medium text-foreground">
-                    J'accepte la <a href="/politique-confidentialite" target="_blank" rel="noopener noreferrer" class="text-primary underline hover:text-primary/80 transition-colors">politique de confidentialité</a> *
-                  </span>
-                </Checkbox>
-
-                <div id="contact-error" class="hidden text-sm text-destructive"></div>
-
-                <Button type="submit" fullWidth id="contact-submit">
-                  Envoyer →
-                </Button>
-              </form>
-
-              <div id="contact-success" class="hidden text-center text-sm text-success">
-                Message envoyé. Je vous réponds sous 24h.
+              <div class="space-y-1.5">
+                <label for="contact-email" class="text-sm font-medium leading-none">
+                  Email *
+                </label>
+                <input
+                  id="contact-email"
+                  name="email"
+                  type="email"
+                  required
+                  autocomplete="email"
+                  class="h-10 w-full rounded-lg border border-border bg-background pl-4 pr-4 text-sm transition-colors duration-(--transition-fast) placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                />
               </div>
             </div>
+
+            <div class="space-y-1.5">
+              <label for="contact-sujet" class="text-sm font-medium leading-none">Sujet</label>
+              <input
+                id="contact-sujet"
+                name="sujet"
+                type="text"
+                class="h-10 w-full rounded-lg border border-border bg-background pl-4 pr-4 text-sm transition-colors duration-(--transition-fast) placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              />
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="contact-message" class="text-sm font-medium leading-none">
+                Message *
+              </label>
+              <textarea
+                id="contact-message"
+                name="message"
+                rows="5"
+                required
+                class="min-h-[80px] w-full resize-y rounded-lg border border-border bg-background px-4 py-3 text-sm transition-colors duration-(--transition-fast) placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              ></textarea>
+            </div>
+
+            <div style="position:absolute;left:-9999px" aria-hidden="true">
+              <input type="text" name="website" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <label class="flex items-start gap-2 text-sm font-medium">
+              <input type="checkbox" name="rgpd_consent" required class="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-primary" />
+              <span class="text-foreground">
+                J'accepte la <a href="/politique-confidentialite" target="_blank" rel="noopener noreferrer" class="text-primary underline hover:text-primary/80 transition-colors">politique de confidentialité</a> *
+              </span>
+            </label>
+
+            <div id="contact-error" class="hidden text-sm text-destructive"></div>
+
+            <button type="submit" id="contact-submit" class="text-flip-hover-anim magnetic-hover-anim btn btn-primary w-full">
+              <span class="btn-text text-flip-inner" data-content="Envoyer →">Envoyer →</span>
+            </button>
+          </form>
+
+          <div id="contact-success" class="hidden text-center text-sm text-success">
+            Message envoyé. Je vous réponds sous 24h.
           </div>
-        </Tabs>
+        </div>
       </div>
     </section>
 
@@ -234,6 +226,4 @@ import { footerNavItems, legalLinks } from '@/config/nav.config';
     initContactForm();
     document.addEventListener('astro:after-swap', initContactForm);
   </script>
-
-  <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
-</BaseLayout>
+</Base>

@@ -1,0 +1,125 @@
+{
+  "header": [
+    {
+      "enable": true,
+      "name": "Diagnostic",
+      "url": "/diagnostic/"
+    },
+    {
+      "enable": true,
+      "name": "Prestations",
+      "url": "/prestations/",
+      "hasChildren": true,
+      "children": [
+        {
+          "enable": true,
+          "name": "Toutes les prestations",
+          "url": "/prestations/"
+        },
+        {
+          "enable": true,
+          "name": "CRM & ERP sur-mesure pour PME",
+          "url": "/prestations/crm-erp-pme/"
+        },
+        {
+          "enable": true,
+          "name": "WordPress : maintenance, optimisation et migration",
+          "url": "/prestations/wordpress/"
+        },
+        {
+          "enable": true,
+          "name": "DevOps : déploiement et hébergement",
+          "url": "/prestations/devops-deploiement/"
+        },
+        {
+          "enable": true,
+          "name": "IA & automatisation",
+          "url": "/prestations/ia-automatisation/"
+        }
+      ]
+    },
+    {
+      "enable": true,
+      "name": "Outils",
+      "url": "/outils/"
+    },
+    {
+      "enable": true,
+      "name": "GCF Pro",
+      "url": "https://gcfpro.fr/",
+      "rel": "noopener noreferrer"
+    },
+    {
+      "enable": true,
+      "name": "Contact",
+      "url": "/contact/"
+    }
+  ],
+  "footer": [
+    {
+      "label": "Prestations",
+      "list": [
+        {
+          "enable": true,
+          "name": "CRM & ERP sur-mesure",
+          "url": "/prestations/crm-erp-pme/"
+        },
+        {
+          "enable": true,
+          "name": "WordPress",
+          "url": "/prestations/wordpress/"
+        },
+        {
+          "enable": true,
+          "name": "DevOps",
+          "url": "/prestations/devops-deploiement/"
+        },
+        {
+          "enable": true,
+          "name": "IA & automatisation",
+          "url": "/prestations/ia-automatisation/"
+        }
+      ]
+    },
+    {
+      "label": "Liens utiles",
+      "list": [
+        {
+          "enable": true,
+          "name": "Diagnostic gratuit",
+          "url": "/diagnostic/"
+        },
+        {
+          "enable": true,
+          "name": "Outils",
+          "url": "/outils/"
+        },
+        {
+          "enable": true,
+          "name": "GCF Pro",
+          "url": "https://gcfpro.fr/"
+        },
+        {
+          "enable": true,
+          "name": "Contact",
+          "url": "/contact/"
+        }
+      ]
+    },
+    {
+      "label": "Informations",
+      "list": [
+        {
+          "enable": true,
+          "name": "Mentions légales",
+          "url": "/mentions-legales/"
+        },
+        {
+          "enable": true,
+          "name": "Politique de confidentialité",
+          "url": "/politique-confidentialite/"
+        }
+      ]
+    }
+  ]
+}

@@ -1,55 +1,25 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/layout/Header.astro';
-import Footer from '@/components/layout/Footer.astro';
-import Badge from '@/components/ui/data-display/Badge/Badge.astro';
-import Button from '@/components/ui/form/Button/Button.astro';
-import Accordion from '@/components/ui/overlay/Accordion/Accordion.astro';
-import { Hero } from '@/components/hero';
-import { footerNavItems, legalLinks } from '@/config/nav.config';
-
-const faqItems = [
-  {
-    title: 'Combien coûte la maintenance WordPress d\'un site existant ?',
-    content: "Tout dépend du volume de contenu, du nombre de plugins et de l'état de sécurité initial. Un premier échange permet d'évaluer l'ampleur du travail et de proposer un forfait ou un abonnement de maintenance adapté.",
-    defaultOpen: true,
-  },
-  {
-    title: 'Faut-il migrer son WordPress vers un site statique ?',
-    content: "Pas systématiquement. Si votre site a besoin d'un back-office pour des utilisateurs non techniques, ou d'une boutique WooCommerce active, WordPress reste pertinent – dans ce cas la maintenance et l'optimisation sont la bonne réponse. La migration a du sens quand le site est principalement du contenu éditorial (blog, vitrine) où la flexibilité d'un CMS n'apporte rien.",
-  },
-  {
-    title: 'La migration vers Astro ou Hugo fait-elle perdre le référencement existant ?',
-    content: "Non, si elle est faite correctement. Le pipeline de migration préserve les URLs, les métadonnées et la structure du contenu, avec un objectif de préservation SEO à 100%. C'est justement le risque principal d'une migration mal faite qu'il faut éviter.",
-  },
-  {
-    title: 'Quelle est la différence entre optimisation et migration ?',
-    content: "L'optimisation améliore un WordPress existant sans changer son architecture (cache, images, scripts). La migration change l'architecture elle-même en sortant de WordPress. La première est plus rapide et moins risquée ; la seconde apporte un gain de performance plus radical mais demande un vrai projet.",
-  },
-];
+import Base from "@/layouts/Base.astro";
 ---
 
-<BaseLayout
+<Base
   title="Maintenance, optimisation et migration WordPress"
-  description="Maintenance, optimisation Core Web Vitals et migration WordPress vers Astro/Hugo. Pipeline propriétaire de migration de WordPress vers Astro / Hugo : préservation SEO, réduction du temps de migration."
+  metaTitle="Maintenance, optimisation et migration WordPress"
+  metaDescription="Maintenance, optimisation Core Web Vitals et migration WordPress vers Astro/Hugo. Pipeline propriétaire de migration de WordPress vers Astro / Hugo : préservation SEO, réduction du temps de migration."
+  headerLayout="two"
+  headerPosition="fixed"
 >
-  <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
-
   <div class="min-h-screen pt-16">
-    <Hero
-      layout="centered"
-      size="lg"
-      showGrid
-      class="border-border pt-12 pb-6 md:pt-20 md:pb-12"
-    >
-      <Badge slot="badge" variant="brand" pill class="px-3 py-1 text-sm">
-        WordPress
-      </Badge>
-
-      <h1 slot="title" class="!leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
-        WordPress : maintenance, optimisation et migration
-      </h1>
-    </Hero>
+    <section class="border-border pt-12 pb-6 md:pt-20 md:pb-12">
+      <div class="mx-auto max-w-6xl px-6 text-center">
+        <span class="bg-accent/10 text-accent mb-4 inline-block rounded-full px-4 py-1 text-sm font-medium">
+          WordPress
+        </span>
+        <h1 class="font-display text-foreground !leading-[1.05] mt-6 !text-4xl md:!text-5xl lg:!text-6xl">
+          WordPress : maintenance, optimisation et migration
+        </h1>
+      </div>
+    </section>
 
     <section class="py-8 md:py-12">
       <div class="mx-auto max-w-6xl px-6">
@@ -118,14 +88,40 @@ const faqItems = [
           <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
             FAQ
           </h2>
-          <div class="mt-6">
-            <Accordion items={faqItems} exclusive />
+          <div class="mt-6 space-y-6">
+            <details open class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">Combien coûte la maintenance WordPress d'un site existant ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                Tout dépend du volume de contenu, du nombre de plugins et de l'état de sécurité initial. Un premier échange permet d'évaluer l'ampleur du travail et de proposer un forfait ou un abonnement de maintenance adapté.
+              </p>
+            </details>
+            <details class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">Faut-il migrer son WordPress vers un site statique ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                Pas systématiquement. Si votre site a besoin d'un back-office pour des utilisateurs non techniques, ou d'une boutique WooCommerce active, WordPress reste pertinent – dans ce cas la maintenance et l'optimisation sont la bonne réponse. La migration a du sens quand le site est principalement du contenu éditorial (blog, vitrine) où la flexibilité d'un CMS n'apporte rien.
+              </p>
+            </details>
+            <details class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">La migration vers Astro ou Hugo fait-elle perdre le référencement existant ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                Non, si elle est faite correctement. Le pipeline de migration préserve les URLs, les métadonnées et la structure du contenu, avec un objectif de préservation SEO à 100%. C'est justement le risque principal d'une migration mal faite qu'il faut éviter.
+              </p>
+            </details>
+            <details class="group">
+              <summary class="text-foreground cursor-pointer font-semibold text-base">Quelle est la différence entre optimisation et migration ?</summary>
+              <p class="text-foreground-muted mt-3 text-base leading-relaxed">
+                L'optimisation améliore un WordPress existant sans changer son architecture (cache, images, scripts). La migration change l'architecture elle-même en sortant de WordPress. La première est plus rapide et moins risquée ; la seconde apporte un gain de performance plus radical mais demande un vrai projet.
+              </p>
+            </details>
           </div>
         </div>
       </div>
     </section>
+<script>
+(()=>{const d=document.querySelectorAll('section.pb-8 details');d.forEach(el=>{el.addEventListener('toggle',()=>{if(el.open)d.forEach(o=>{if(o!==el)o.open=false})})})})();
+</script>
 
-    <section class="invert-section bg-background border-t border-border py-16 md:py-20">
+    <section class="cta-custom border-t py-16 md:py-20">
       <div class="mx-auto max-w-6xl px-6">
         <div class="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
           <div class="space-y-2">
@@ -137,12 +133,10 @@ const faqItems = [
             </p>
           </div>
           <div class="shrink-0">
-            <Button href="/contact">Prendre rendez-vous →</Button>
+            <a href="/contact/" class="text-flip-hover-anim magnetic-hover-anim btn btn-cta rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case"><span class="text-flip-inner" data-content="Prendre rendez-vous →">Prendre rendez-vous →</span></a>
           </div>
         </div>
       </div>
     </section>
   </div>
-
-  <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
-</BaseLayout>
+</Base>

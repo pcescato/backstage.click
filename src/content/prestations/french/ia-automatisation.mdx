@@ -1,0 +1,46 @@
+---
+title: "IA & automatisation"
+customSlug: "ia-automatisation"
+description: "Intégration LLM, automatisation de process métier avec n8n, maîtrise des coûts via OpenRouter. IA pragmatique : assistance, jamais de décision automatique non contrôlée."
+metaTitle: "IA & automatisation sur-mesure – Backstage"
+metaDescription: "Intégration LLM, automatisation de process métier avec n8n, maîtrise des coûts via OpenRouter. IA pragmatique : assistance, jamais de décision automatique non contrôlée."
+date: 2024-01-04
+icon: "/images/icons/services/data.svg"
+image: ""
+---
+
+L'IA générative est partout, mais son intégration réelle dans un process métier demande plus qu'un appel à ChatGPT. Je conçois des automatisations et des intégrations LLM pragmatiques : le bon modèle au bon endroit, des coûts maîtrisés, et un principe non négociable — l'IA assiste, elle ne décide jamais seule sur ce qui compte vraiment.
+
+## Intégration de l'IA
+
+Connexion à des modèles de langage (LLM) selon le besoin : cloud quand la puissance ou la simplicité prime, local quand la confidentialité des données est un enjeu — un modèle Ollama auto-hébergé ne fait transiter aucune donnée client vers un tiers. Le choix du modèle n'est jamais automatique : il dépend du cas d'usage, du budget, et de la sensibilité des données traitées.
+
+## Automatisation de process métier
+
+Automatisation de tâches répétitives avec n8n — équivalent open-source et auto-hébergeable de Zapier, qui permet d'orchestrer des workflows (déclencheurs, API, IA, bases de données) sans dépendre d'un abonnement SaaS par tâche. Contrairement à Zapier, n8n s'auto-héberge : pas de limite de workflow imposée par un palier tarifaire, contrôle complet sur les données qui transitent.
+
+## Maîtrise des coûts
+
+L'IA générative peut vite devenir un poste de coût incontrôlé si chaque appel part sur le modèle le plus cher par défaut. J'utilise OpenRouter pour router chaque requête vers le modèle le plus adapté au besoin réel — un modèle léger pour une tâche simple, un modèle plus puissant seulement quand c'est justifié — avec un suivi de coût précis plutôt qu'une facture cloud qui grimpe sans visibilité.
+
+## Le principe : l'IA assiste, elle ne décide pas
+
+Un exemple : dans DB Grade, mon outil d'audit de bases de données, le LLM génère la narration explicative du rapport, mais il n'a jamais accès au calcul du score : le score est déterministe, calculé par des règles fixes, et le LLM ne peut ni le modifier ni l'influencer. C'est ce principe que j'applique à toute intégration IA : l'generation assistée reste sous contrôle humain et sous contrôle de règles métier vérifiables, jamais une boîte noire qui décide seule. Tous mes développements appliquent la même logique : l'IA est une aide, un facilitateur, mais la validation finale reste humaine avant tout.
+
+## Questions fréquentes
+
+### Quelle différence entre n8n et Zapier ?
+
+n8n est open-source et peut s'auto-héberger, ce qui supprime la limite de workflows imposée par les paliers tarifaires de Zapier et garde les données sous votre contrôle. Zapier reste plus simple à prendre en main sans hébergement à gérer, mais coûte plus cher à l'usage et impose ses propres contraintes SaaS.
+
+### Pourquoi utiliser un LLM local (Ollama) plutôt que le cloud ?
+
+Principalement pour la confidentialité : un modèle auto-hébergé ne transmet aucune donnée à un tiers. C'est pertinent pour des données sensibles (RH, santé, juridique) ou par choix de souveraineté. En contrepartie, un modèle cloud reste souvent plus puissant pour des tâches complexes — le choix se fait selon le cas d'usage, pas par défaut.
+
+### Comment éviter que les coûts d'API LLM explosent ?
+
+En routant chaque requête vers le modèle le plus adapté plutôt que le plus puissant par défaut, via des outils comme OpenRouter. Une tâche de classification simple n'a pas besoin du même modèle qu'une génération de contenu complexe. Un suivi de coût par usage permet aussi d'identifier vite les dérives.
+
+### L'IA peut-elle prendre des décisions automatiques sans supervision ?
+
+Ce n'est pas mon approche. L'IA générative est utile pour assister — rédiger, résumer, classer, expliquer — mais les décisions qui comptent (un score, une validation, une action métier critique) restent pilotées par des règles vérifiables ou une validation humaine. C'est ce qui évite les effets de boîte noire difficiles à auditer.

@@ -1,0 +1,52 @@
+---
+/**
+ * DynamicIcon Component
+ *
+ * A flexible UI component for displaying icons.
+ * It supports both Lucide icons and custom icons using the `src` attribute.
+ * Optimized for direct usage in `.mdx` files.
+ *
+ * Props:
+ * - `name`: The icon name from Lucide or a custom icon path.
+ * - `rest`: Additional props to be spread on the underlying component.
+ *
+ * Example:
+ * <DynamicIcon name="lucide-icon" />
+ * <DynamicIcon src="/images/custom-icon.png" />
+ */
+import Icons from "./Icons.astro";
+import type { IconName as SupportedIconName } from "../../lib/iconNames.ts";
+import OptimizedImage from "@/components/utilities/OptimizedImage.astro";
+
+interface CustomIconProps {
+  name: SupportedIconName;
+  [key: string]: any;
+}
+
+type Props = CustomIconProps & OptimizedImageProps;
+
+type OptimizedImageProps = {
+  inlineSvg?: boolean;
+  src?: string;
+  alt?: string;
+  [key: string]: any;
+};
+
+const { name, ...rest } = Astro.props;
+
+// Check if the name is provided
+if (!name) {
+  console.log("Icon Name or Path is required");
+  return;
+}
+
+const isAsset = name.includes("/") || name.includes(".");
+---
+
+{
+  isAsset ? (
+    <OptimizedImage src={name} {...rest} />
+  ) : (
+    <Icons icon={name as SupportedIconName} {...rest} />
+  )
+}

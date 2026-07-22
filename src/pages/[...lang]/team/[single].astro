@@ -1,0 +1,50 @@
+---
+import Base from "@/layouts/Base.astro";
+import { getCollectionCTM } from "@/lib/contentParser.astro";
+import { getEntryCTM } from "@/lib/contentParser.astro";
+import { supportedLanguages } from "@/lib/utils/i18nUtils.ts";
+import TeamSingle from "@/components/TeamSingle.astro";
+import extractSlug from "@/lib/utils/extractSlug";
+import config from ".astro/config.generated.json";
+import PageHeader from "@/components/widgets/PageHeader.astro";
+
+export async function getStaticPaths() {
+  const paths = await Promise.all(
+    supportedLanguages.map(async (lang) => {
+      const { defaultLanguage, showDefaultLangInUrl } =
+        config.settings.multilingual;
+
+      const teamIndex = await getEntryCTM("team", "-index", lang.languageCode);
+
+      let teamCollection = await getCollectionCTM("team", lang.languageCode);
+
+      // If draft true in index.md file frontmatter don't include any page related to this page collection in production
+      if (teamIndex?.data.draft && import.meta.env.PROD) {
+        return [];
+      }
+
+      return teamCollection.map((team) => ({
+        params: {
+          lang:
+            lang.languageCode === defaultLanguage && !showDefaultLangInUrl
+              ? undefined
+              : lang.languageCode,
+          single: extractSlug(team).split("/").pop(),
+        },
+        props: {
+          team,
+        },
+      }));
+    }),
+  );
+
+  return paths.flat();
+}
+
+const { team } = Astro.props;
+---
+
+<Base {...team.data} fitToScreen={false}>
+  <PageHeader content={team.data} />
+  <TeamSingle content={team} />
+</Base>

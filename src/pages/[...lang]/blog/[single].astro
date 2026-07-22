@@ -1,0 +1,62 @@
+---
+import Base from "@/layouts/Base.astro";
+import { getCollectionCTM } from "@/lib/contentParser.astro";
+import { getEntryCTM } from "@/lib/contentParser.astro";
+import { supportedLanguages } from "@/lib/utils/i18nUtils.ts";
+import BlogLayout from "@/components/BlogLayout.astro";
+import PageHeader from "@/components/widgets/PageHeader.astro";
+import extractSlug from "@/lib/utils/extractSlug";
+import config from ".astro/config.generated.json";
+
+export async function getStaticPaths() {
+  const paths = await Promise.all(
+    supportedLanguages.map(async (lang) => {
+      const blogFolder = config.settings.blogFolder as "blog";
+      const { defaultLanguage, showDefaultLangInUrl } =
+        config.settings.multilingual;
+
+      const postIndex = await getEntryCTM(
+        blogFolder,
+        "-index",
+        lang.languageCode,
+      );
+
+      let posts = await getCollectionCTM(blogFolder, lang.languageCode);
+
+      // If draft true in index.md file frontmatter don't include any page related to this page collection in production
+      if (postIndex?.data.draft && import.meta.env.PROD) {
+        return [];
+      }
+
+      return posts.map((post) => ({
+        params: {
+          lang:
+            lang.languageCode === defaultLanguage && !showDefaultLangInUrl
+              ? undefined
+              : lang.languageCode,
+          single: extractSlug(post).split("/").pop(),
+        },
+        props: {
+          post,
+        },
+      }));
+    }),
+  );
+
+  return paths.flat();
+}
+
+const { post } = Astro.props;
+---
+
+<Base {...post.data}>
+  <PageHeader content={post.data} />
+  <BlogLayout
+    sidebar={{
+      enable: true,
+      sticky: true,
+      widgets: ["Search", "Categories", "RecentPosts", "Tags"],
+    }}
+    content={post}
+  />
+</Base>

@@ -1,0 +1,152 @@
+---
+// src/layouts/components/widgets/AnimatedNumber.astro
+import { markdownify } from "@/lib/utils/textConverter";
+import type { animatedNumber } from "@/sections.schema";
+import type { z } from "astro/zod";
+
+interface Props {
+  class?: string;
+  animateOn?: "click" | undefined;
+  transitionTime?: string;
+  childClass?: string;
+  enable?: boolean;
+  content: z.infer<typeof animatedNumber>;
+}
+
+const {
+  enable = true,
+  animateOn,
+  transitionTime,
+  class: className,
+  childClass: childClassName,
+  content,
+} = Astro.props;
+
+const shouldAnimate = enable;
+
+// Check number char length and give that number of zero
+const addZero = (content: string) => {
+  return "0".repeat(Number(content.length));
+};
+---
+
+<div
+  class:list={[
+    "inline-flex place-items-stretch leading-none",
+    { "has-animated-number": shouldAnimate },
+    className,
+  ]}>
+  {
+    content.prependValue && (
+      <span
+        class:list={["prepend", childClassName]}
+        set:html={markdownify(content.prependValue)}
+      />
+    )
+  }
+
+  <span
+    {...{
+      "data-count": shouldAnimate ? content.value || undefined : undefined,
+      "data-type":
+        shouldAnimate && content.type ? content.type.toLowerCase() : undefined,
+      style: shouldAnimate
+        ? { "--animated-number-duration": transitionTime }
+        : undefined,
+    }}
+    class:list={[{ "animated-number-value": shouldAnimate }, childClassName]}
+    set:html={shouldAnimate && content.value && animateOn !== "click"
+      ? addZero(content.value as string)
+      : content.value}
+  />
+
+  {
+    content.appendValue && (
+      <span
+        class:list={["append", childClassName]}
+        set:html={markdownify(content.appendValue)}
+      />
+    )
+  }
+</div>
+<script>
+  window.addEventListener("load", () => {
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    const animateNumbers = (
+      containerSelector = ".has-animated-number",
+      numberSelector = ".animated-number-value",
+    ) => {
+      const containers = document.querySelectorAll(containerSelector);
+      if (!containers.length) return;
+
+      const observer = new IntersectionObserver(
+        (entries, currentObserver) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            const numbers = entry.target.querySelectorAll(numberSelector);
+
+            numbers.forEach((numEl) => {
+              if (!(numEl instanceof HTMLElement)) return;
+
+              const countNumber = numEl.getAttribute("data-count") || "";
+              const numericValue = Number(countNumber);
+
+              if (
+                prefersReducedMotion ||
+                !countNumber ||
+                Number.isNaN(numericValue)
+              ) {
+                numEl.textContent = countNumber;
+                return;
+              }
+
+              const startTime = performance.now();
+              const duration =
+                parseFloat(
+                  getComputedStyle(numEl).getPropertyValue(
+                    "--animated-number-duration",
+                  ),
+                ) || 1200;
+              const startValue = 0;
+              const isInteger = Number.isInteger(numericValue);
+
+              const updateValue = (now: number) => {
+                const progress = Math.min((now - startTime) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const currentValue =
+                  startValue + (numericValue - startValue) * eased;
+
+                numEl.textContent = isInteger
+                  ? String(Math.round(currentValue))
+                  : currentValue.toFixed(
+                      String(countNumber).includes(".")
+                        ? String(countNumber).split(".")[1]?.length || 1
+                        : 1,
+                    );
+
+                if (progress < 1) {
+                  requestAnimationFrame(updateValue);
+                } else {
+                  numEl.textContent = countNumber;
+                }
+              };
+
+              requestAnimationFrame(updateValue);
+            });
+
+            currentObserver.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.25, rootMargin: "0px 0px -10% 0px" },
+      );
+
+      containers.forEach((container) => observer.observe(container));
+    };
+
+    animateNumbers();
+  });
+</script>

@@ -1,0 +1,52 @@
+---
+import Icons from "@/helpers/Icons.astro";
+---
+
+<button
+  type="button"
+  class="back-to-top-button border-border-light text-dark hover:border-primary hover:bg-primary pointer-events-none fixed right-5 bottom-45 z-100 flex size-12 items-center justify-center rounded-md border bg-white opacity-0 shadow-lg transition duration-300 hover:text-white [&.scroll-down]:pointer-events-auto [&.scroll-down]:right-5 [&.scroll-down]:opacity-100"
+  data-back-to-top
+  data-cursor-label="Back To Top"
+  data-cursor-type="button"
+  aria-label="Back to top">
+  <Icons icon="ArrowUp" class="size-5" />
+</button>
+
+<script>
+  // @ts-nocheck
+  const isInIframe = () => {
+    try {
+      return window.self !== window.top;
+    } catch {
+      return true;
+    }
+  };
+
+  if (!isInIframe()) {
+    const backToTopButton = document.querySelector("[data-back-to-top]");
+
+    if (backToTopButton) {
+      const toggleBackToTop = () => {
+        backToTopButton.classList.toggle("scroll-down", window.scrollY >= 500);
+      };
+
+      backToTopButton.addEventListener("click", () => {
+        if (window.__techloLenis) {
+          window.__techloLenis.scrollTo(0);
+          return;
+        }
+
+        window.scrollTo({
+          top: 0,
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+            .matches
+            ? "auto"
+            : "smooth",
+        });
+      });
+
+      toggleBackToTop();
+      window.addEventListener("scroll", toggleBackToTop, { passive: true });
+    }
+  }
+</script>

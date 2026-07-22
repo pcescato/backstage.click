@@ -1,46 +1,35 @@
-# Dependencies
+# build output
+dist/
+.output/
+.json/
+
+# dependencies
 node_modules/
 
-# Build output
-dist/
-.astro/
+.unlighthouse
 
-# Environment files
-.env
-.env.*
-!.env.example
-
-# Scanner
-scanner/venv/
-scanner/logs/
-scanner/db_config.py
-scanner/__pycache__/
-
-**/db_config.py
-*db_config*
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Editor
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Logs
-*.log
+# logs
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 pnpm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+pnpm-workspace.yaml
 
-# Scanner credentials
-scanner/db_config.py
-.env.deploy
 
-# Test results  
-test-results/
+# environment variables
+.env
+.env.production
 
-# API Configuration (sensitive data)
-public/api/config.php
-!public/api/config.php.sample
+# macOS-specific files
+.DS_Store
+
+# ignore .astro directory
+.astro
+
+# Local Netlify folder
+.netlify
+.vercel
+
+.claude

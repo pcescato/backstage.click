@@ -1,0 +1,218 @@
+---
+import type { z } from "astro/zod";
+import Icons from "@/helpers/Icons.astro";
+import type { testimonialSectionSchema } from "@/sections.schema";
+import { getEntryCTM } from "@/lib/contentParser.astro";
+import overrideObjects from "@/lib/utils/overrideObjects.ts";
+import { markdownify } from "@/lib/utils/textConverter";
+
+type TestimonialQuoteContent = NonNullable<
+  z.infer<typeof testimonialSectionSchema>
+>;
+
+type Props = {
+  content?: TestimonialQuoteContent;
+  hasSectionSpacing?: boolean;
+};
+
+const defaultContent = (
+  await getEntryCTM("sections", "testimonial", Astro.currentLocale)
+)?.data as TestimonialQuoteContent;
+
+const actualContent = overrideObjects(
+  { ...defaultContent },
+  Astro.props.content,
+) as TestimonialQuoteContent;
+
+const { enable = true, list = [] } = actualContent;
+const { hasSectionSpacing = true } = Astro.props;
+const enabledList = list.filter((item) => item.enable !== false);
+const hasMultipleItems = enabledList.length > 1;
+
+if (!enable || !enabledList.length) {
+  return null;
+}
+---
+
+<section class:list={[!hasSectionSpacing && "pt-0"]}>
+  <div class="bg-theme-dark section-spacing-vertical overflow-hidden">
+    <div
+      class="container"
+      tabindex={hasMultipleItems ? "0" : undefined}
+      data-scroll-reveal="blur-up"
+      data-testimonial-quote-slider
+      data-autoplay="4500">
+      <div class="overflow-hidden" data-testimonial-quote-viewport>
+        <div
+          class="flex transition-transform duration-500 ease-out"
+          data-testimonial-quote-track>
+          {
+            enabledList.map((item, index) => (
+              <figure
+                class="w-full shrink-0 px-4 text-center"
+                data-testimonial-quote-slide
+                aria-hidden={index === 0 ? "false" : "true"}>
+                <Icons
+                  icon="Quote"
+                  fill="currentColor"
+                  stroke-width="0"
+                  class="text-primary mx-auto mb-8 size-16 rotate-180"
+                />
+
+                <blockquote
+                  class="marquee-readable-text md:text-h3-sm mx-auto max-w-5xl text-xl leading-normal text-white"
+                  set:html={markdownify(item.content)}
+                />
+
+                <div class="mt-8 flex justify-center gap-1 text-yellow-400">
+                  {Array.from({ length: 5 }).map(() => (
+                    <Icons
+                      icon="Star"
+                      fill="currentColor"
+                      stroke-width="0"
+                      class="size-4"
+                    />
+                  ))}
+                </div>
+
+                <figcaption class="mt-2 text-center">
+                  <div
+                    class="text-xl font-semibold text-white"
+                    set:html={markdownify(item.customer.name)}
+                  />
+                  <div
+                    class="text-light mt-1"
+                    set:html={markdownify(item.customer.role)}
+                  />
+                </figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </div>
+
+      {
+        hasMultipleItems && (
+          <div class="mt-10 flex items-center justify-center gap-5">
+            <button
+              type="button"
+              class="text-light hover:text-primary flex size-9 items-center justify-center rounded-full bg-white/10 transition-colors"
+              aria-label="Previous testimonial"
+              data-testimonial-quote-prev>
+              <Icons icon="ChevronLeft" class="size-4" />
+            </button>
+            <button
+              type="button"
+              class="text-light hover:text-primary flex size-9 items-center justify-center rounded-full bg-white/10 transition-colors"
+              aria-label="Next testimonial"
+              data-testimonial-quote-next>
+              <Icons icon="ChevronRight" class="size-4" />
+            </button>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  const initTestimonialQuoteSliders = () => {
+    const sliders = document.querySelectorAll(
+      "[data-testimonial-quote-slider]",
+    );
+
+    sliders.forEach((slider) => {
+      if (!(slider instanceof HTMLElement) || slider.dataset.sliderReady)
+        return;
+      slider.dataset.sliderReady = "true";
+
+      const track = slider.querySelector("[data-testimonial-quote-track]");
+      const slides = Array.from(
+        slider.querySelectorAll("[data-testimonial-quote-slide]"),
+      );
+      const previousButton = slider.querySelector(
+        "[data-testimonial-quote-prev]",
+      );
+      const nextButton = slider.querySelector("[data-testimonial-quote-next]");
+      const autoplayDelay = Number(slider.getAttribute("data-autoplay")) || 0;
+
+      if (!(track instanceof HTMLElement) || slides.length < 2) return;
+
+      let activeIndex = 0;
+      let autoplayTimer = 0;
+      let touchStartX = 0;
+
+      const stopAutoplay = () => {
+        window.clearTimeout(autoplayTimer);
+      };
+
+      const startAutoplay = () => {
+        stopAutoplay();
+
+        if (autoplayDelay > 0 && document.visibilityState === "visible") {
+          autoplayTimer = window.setTimeout(() => {
+            setActiveSlide(activeIndex + 1);
+            startAutoplay();
+          }, autoplayDelay);
+        }
+      };
+
+      const setActiveSlide = (index: number) => {
+        activeIndex = (index + slides.length) % slides.length;
+        track.style.transform = `translate3d(-${activeIndex * 100}%, 0, 0)`;
+
+        slides.forEach((slide, slideIndex) => {
+          slide.setAttribute(
+            "aria-hidden",
+            slideIndex === activeIndex ? "false" : "true",
+          );
+        });
+      };
+
+      previousButton?.addEventListener("click", () => {
+        setActiveSlide(activeIndex - 1);
+        startAutoplay();
+      });
+
+      nextButton?.addEventListener("click", () => {
+        setActiveSlide(activeIndex + 1);
+        startAutoplay();
+      });
+
+      slider.addEventListener("touchstart", (event) => {
+        touchStartX = event.touches[0]?.clientX || 0;
+        stopAutoplay();
+      });
+      slider.addEventListener("touchend", (event) => {
+        const touchEndX = event.changedTouches[0]?.clientX || 0;
+        const distance = touchEndX - touchStartX;
+
+        if (Math.abs(distance) > 48) {
+          setActiveSlide(activeIndex + (distance < 0 ? 1 : -1));
+        }
+
+        startAutoplay();
+      });
+
+      slider.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft") setActiveSlide(activeIndex - 1);
+        if (event.key === "ArrowRight") setActiveSlide(activeIndex + 1);
+        startAutoplay();
+      });
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+          startAutoplay();
+        } else {
+          stopAutoplay();
+        }
+      });
+
+      setActiveSlide(0);
+      startAutoplay();
+    });
+  };
+
+  initTestimonialQuoteSliders();
+  document.addEventListener("astro:page-load", initTestimonialQuoteSliders);
+</script>

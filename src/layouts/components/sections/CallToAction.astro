@@ -1,0 +1,139 @@
+---
+import type { z } from "astro/zod";
+import type { Section } from "@/types";
+import { getEntryCTM } from "@/lib/contentParser.astro";
+import overrideObjects from "@/lib/utils/overrideObjects.ts";
+import { markdownify } from "@/lib/utils/textConverter";
+import Button from "@/components/Button.astro";
+import type { ctaSectionSchema } from "@/sections.schema";
+
+// Type for this section data
+type ctaInterface = Section & z.infer<typeof ctaSectionSchema>;
+
+type Props = {
+  content?: ctaInterface;
+  hasSectionSpacing?: boolean;
+};
+
+// Fetching the default content for the this section
+let defaultContent = (
+  await getEntryCTM("sections", "call-to-action", Astro.currentLocale)
+)?.data as ctaInterface;
+const hasContentSource = Boolean(defaultContent || Astro.props.content);
+
+// Merges custom content overrides (e.g., just a title) with defaultContent fallbacks. Enables easy section reuse across pages with partial data changes.
+let actualContent = overrideObjects(
+  { ...defaultContent },
+  Astro.props.content || {},
+) as ctaInterface;
+
+// Extracting required values from 'content' object
+let {
+  enable = true,
+  title,
+  description,
+  button,
+  options,
+} = actualContent as ctaInterface;
+
+const { hasSectionSpacing = true } = Astro.props;
+
+// Extracting required values from 'options' object
+let { appearance = "dark", centeredContent = false } = options || {};
+const isDarkAppearance = appearance === "dark";
+const isCenteredContent = centeredContent || isDarkAppearance;
+const buttonClass = [
+  isDarkAppearance &&
+    "rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case",
+  appearance === "accent" && "effect-color-light",
+  appearance === "light" && "effect-color-accent",
+  button?.class,
+]
+  .filter(Boolean)
+  .join(" ");
+const buttonProps = button && {
+  ...button,
+  hoverEffect: button.hoverEffect || "magnetic-text-flip",
+  variant: button.variant || "fill",
+  class: buttonClass,
+};
+const hasVisibleContent = Boolean(title || description || buttonProps?.enable);
+
+if (!hasContentSource || !enable || !hasVisibleContent) {
+  return null;
+}
+---
+
+<section class:list={["cta-section", !hasSectionSpacing && "pt-0"]}>
+  <div class:list={["relative overflow-hidden"]}>
+    {
+      isDarkAppearance ? (
+        <div class="cta-section-background section-spacing-vertical bg-theme-dark relative overflow-hidden py-20 text-center md:py-24 xl:py-32">
+          <span
+            aria-hidden="true"
+            class="cta-section-dot-pattern cta-section-dot-pattern-start"
+          />
+          <span
+            aria-hidden="true"
+            class="cta-section-dot-pattern cta-section-dot-pattern-end"
+          />
+
+          <div
+            class="relative z-10 container text-center"
+            data-scroll-reveal="blur-up">
+            <div class="mx-auto max-w-5xl">
+              {title && (
+                <h2
+                  class="text-display-6 md:text-display-5 lg:text-display-4 mx-auto text-white"
+                  set:html={markdownify(title)}
+                />
+              )}
+
+              {description && (
+                <div
+                  class="text-light leading-body mx-auto mt-5 max-w-2xl text-base md:mt-6"
+                  set:html={markdownify(description, true)}
+                />
+              )}
+
+              {buttonProps?.enable && (
+                <div class="mt-7">
+                  <Button {...buttonProps} />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div
+          data-scroll-reveal="blur-up"
+          class:list={[
+            "container grid gap-x-20 gap-y-5 xl:gap-x-10",
+            isCenteredContent
+              ? "grid-cols-1 justify-items-center text-center"
+              : "lg:grid-cols-2 lg:place-items-center lg:gap-y-20",
+          ]}>
+          <div class:list={[isCenteredContent ? "max-w-5xl" : "max-w-3xl"]}>
+            {title && (
+              <h2
+                class="text-display-6 xs:text-display-5 md:text-display-4 xl:text-display-3 mx-auto"
+                set:html={markdownify(title)}
+              />
+            )}
+          </div>
+          <div
+            class:list={[
+              "space-y-10",
+              isCenteredContent ? "max-w-2xl" : "max-w-lg",
+            ]}>
+            {description && (
+              <div class="text-lg" set:html={markdownify(description, true)} />
+            )}
+
+            {buttonProps?.enable && <Button {...buttonProps} />}
+          </div>
+        </div>
+      )
+    }
+  </div>
+</section>

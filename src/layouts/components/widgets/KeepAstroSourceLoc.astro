@@ -1,0 +1,45 @@
+---
+const enabled = import.meta.env.DEV;
+
+if (!enabled) {
+  return;
+}
+---
+
+<script>
+  (function () {
+    const KEEP_FILE = "data-astro-source-keep-file";
+    const KEEP_LOC = "data-astro-source-keep-loc";
+
+    function persistAnnotations() {
+      const elements = document.querySelectorAll(
+        "[data-astro-source-file],[data-astro-source-loc],[data-astro-source-keep-file],[data-astro-source-keep-loc]",
+      );
+
+      for (const el of elements) {
+        const file =
+          el.getAttribute("data-astro-source-file") ||
+          el.getAttribute(KEEP_FILE);
+        const loc =
+          el.getAttribute("data-astro-source-loc") || el.getAttribute(KEEP_LOC);
+
+        if (file) el.setAttribute(KEEP_FILE, file);
+        if (loc) el.setAttribute(KEEP_LOC, loc);
+
+        if (file && !el.hasAttribute("data-astro-source-file")) {
+          el.setAttribute("data-astro-source-file", file);
+        }
+        if (loc && !el.hasAttribute("data-astro-source-loc")) {
+          el.setAttribute("data-astro-source-loc", loc);
+        }
+      }
+    }
+
+    document.addEventListener("astro:page-load", persistAnnotations);
+    document.addEventListener("DOMContentLoaded", persistAnnotations);
+
+    persistAnnotations();
+    setTimeout(persistAnnotations, 0);
+    setTimeout(persistAnnotations, 200);
+  })();
+</script>

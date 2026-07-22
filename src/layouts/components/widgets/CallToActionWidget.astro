@@ -1,0 +1,77 @@
+---
+import Button from "@/components/Button.astro";
+import Icons from "@/helpers/Icons.astro";
+import { getEntryCTM } from "@/lib/contentParser.astro";
+import type { sharedButton } from "@/sections.schema";
+import type { z } from "astro/zod";
+
+type CtaButton = z.infer<typeof sharedButton>;
+type CtaContent = {
+  icon?: string;
+  title?: string;
+  description?: string;
+  button?: CtaButton;
+};
+
+const defaultContent = (
+  await getEntryCTM("sections", "call-to-action-widget", Astro.currentLocale)
+)?.data as {
+  contact?: CtaContent;
+};
+
+const content = (defaultContent?.contact || {}) as CtaContent;
+const hasWidgetContent = Boolean(
+  defaultContent?.contact &&
+  (content.icon ||
+    content.title ||
+    content.description ||
+    content.button?.enable),
+);
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+if (!hasWidgetContent) {
+  return null;
+}
+---
+
+<div
+  class:list={[
+    "service-single-cta cta-section-background cta-section-background-darker relative flex min-h-113.5 flex-col items-center justify-center overflow-hidden rounded-2xl px-7 py-12 text-center text-white",
+    className,
+  ]}>
+  {
+    content.icon && (
+      <div class="relative z-10 flex size-22.5 items-center justify-center rounded-xl bg-white/10 backdrop-blur-md">
+        <Icons icon={content.icon} class="size-12" stroke-width="1.7" />
+      </div>
+    )
+  }
+
+  {
+    content.title && (
+      <h3 class="relative z-10 mt-5 text-white" set:html={content.title} />
+    )
+  }
+
+  {
+    content.description && (
+      <p
+        class="text-light leading-body relative z-10 mt-4 text-sm md:text-base"
+        set:html={content.description}
+      />
+    )
+  }
+
+  {
+    content.button?.enable && (
+      <div class="relative z-10 mt-6">
+        <Button {...content.button} />
+      </div>
+    )
+  }
+</div>

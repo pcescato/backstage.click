@@ -1,94 +1,88 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/layout/Header.astro';
-import Footer from '@/components/layout/Footer.astro';
-import { footerNavItems, legalLinks } from '@/config/nav.config';
+import Base from "@/layouts/Base.astro";
 ---
 
-<BaseLayout title="Politique de confidentialité – Backstage">
+<Base
+  title="Politique de confidentialité – Backstage"
+  metaTitle="Politique de confidentialité – Backstage"
+  metaDescription="Politique de confidentialité du site backstage.click."
+  headerLayout="two"
+  headerPosition="fixed"
+>
+  <section class="section-spacing-vertical bg-white">
+    <div class="container">
+      <div class="mx-auto">
+        <h1 class="text-h1-sm md:text-h1">Politique de confidentialité</h1>
 
-  <Header slot="header" position="fixed" size="lg" showActiveState showCta={false} actions={[]} />
+        <div class="text-text-default mt-12 space-y-10 leading-relaxed">
+          <p class="text-sm text-gray-500">Dernière mise à jour : juin 2026</p>
 
-  <div class="min-h-screen pt-24">
-    <section class="bg-background py-16">
-      <div class="mx-auto max-w-3xl px-6">
-        <h1 class="font-display text-foreground text-4xl font-bold tracking-tight md:text-5xl">
-          Politique de confidentialité
-        </h1>
+          <div class="space-y-4">
+            <h2>1. Responsable du traitement</h2>
+            <p>
+              Pascal Cescato – Backstage<br />
+              Villeréal, France<br />
+              <a href="mailto:pascal.cescato@backstage.click">pascal.cescato@backstage.click</a>
+            </p>
 
-        <div class="text-foreground-muted mt-12 space-y-10 leading-relaxed">
-          <section class="space-y-4">
-    <p class="text-sm text-gray-500">Dernière mise à jour : juin 2026</p>
+            <h2>2. Données collectées</h2>
+            <p>Ce site collecte les données suivantes :</p>
+            <ul class="list-disc space-y-2 pl-6">
+              <li><strong>Formulaire de contact</strong> – nom, adresse email, message. Ces données sont utilisées uniquement pour répondre à votre demande et ne sont pas conservées au-delà du nécessaire.</li>
+              <li><strong>Diagnostic technique</strong> – si vous demandez un diagnostic via le formulaire, l'URL de votre site et votre adresse email sont transmis à notre scanner pour générer un rapport. Ces données sont conservées le temps du traitement.</li>
+              <li><strong>Préférences email</strong> – si vous cliquez sur le lien de désabonnement présent dans nos emails, votre adresse email et votre choix (ne plus être contacté, ou limite à 2 emails par an) sont enregistrés dans notre base de données afin de respecter votre préférence.</li>
+            </ul>
 
-    <h2>1. Responsable du traitement</h2>
-        <p>
-      Pascal Cescato – Backstage<br />
-      Villeréal, France<br />
-      <a href="mailto:pascal.cescato@backstage.click">pascal.cescato@backstage.click</a>
-    </p>
+            <h2>3. Finalités du traitement</h2>
+            <ul class="list-disc space-y-2 pl-6">
+              <li>Répondre aux demandes de contact</li>
+              <li>Générer et envoyer un rapport de diagnostic technique</li>
+              <li>Respecter les préférences de contact exprimées</li>
+            </ul>
 
-    <h2>2. Données collectées</h2>
-    <p>Ce site collecte les données suivantes :</p>
-    <ul>
-      <li><strong>Formulaire de contact</strong> – nom, adresse email, message. Ces données sont utilisées uniquement pour répondre à votre demande et ne sont pas conservées au-delà du nécessaire.</li>
-      <li><strong>Diagnostic technique</strong> – si vous demandez un diagnostic via le formulaire, l'URL de votre site et votre adresse email sont transmis à notre scanner pour générer un rapport. Ces données sont conservées le temps du traitement.</li>
-      <li><strong>Préférences email</strong> – si vous cliquez sur le lien de désabonnement présent dans nos emails, votre adresse email et votre choix (ne plus être contacté, ou limite à 2 emails par an) sont enregistrés dans notre base de données afin de respecter votre préférence.</li>
-    </ul>
+            <h2>4. Base légale</h2>
+            <p>
+              Le traitement repose sur votre consentement (article 6.1.a du RGPD) pour le formulaire de contact et le diagnostic, et sur notre intérêt légitime (article 6.1.f) pour la prospection B2B encadrée, conformément aux lignes directrices de la CNIL.
+            </p>
 
-    <h2>3. Finalités du traitement</h2>
-    <ul>
-      <li>Répondre aux demandes de contact</li>
-      <li>Générer et envoyer un rapport de diagnostic technique</li>
-      <li>Respecter les préférences de contact exprimées</li>
-    </ul>
+            <h2>5. Destinataires des données</h2>
+            <p>
+              Vos données ne sont pas transmises à des tiers à des fins commerciales. Elles sont hébergées sur un serveur dédié en France (OVH).
+            </p>
 
-    <h2>4. Base légale</h2>
-    <p>
-      Le traitement repose sur votre consentement (article 6.1.a du RGPD) pour le formulaire de contact et le diagnostic, et sur notre intérêt légitime (article 6.1.f) pour la prospection B2B encadrée, conformément aux lignes directrices de la CNIL.
-    </p>
+            <h2>6. Durée de conservation</h2>
+            <ul class="list-disc space-y-2 pl-6">
+              <li>Données de contact : 12 mois maximum</li>
+              <li>Résultats de diagnostic : 3 mois</li>
+              <li>Préférences de désabonnement : conservées sans limite de durée afin de respecter votre choix</li>
+            </ul>
 
-    <h2>5. Destinataires des données</h2>
-    <p>
-      Vos données ne sont pas transmises à des tiers à des fins commerciales. Elles sont hébergées sur un serveur dédié en France (OVH).
-    </p>
+            <h2>7. Vos droits</h2>
+            <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+            <ul class="list-disc space-y-2 pl-6">
+              <li>Droit d'accès, de rectification et d'effacement</li>
+              <li>Droit d'opposition et de limitation du traitement</li>
+              <li>Droit à la portabilité</li>
+            </ul>
+            <p>
+              Pour exercer ces droits, contactez-nous à
+              <a href="mailto:pascal.cescato@backstage.click">pascal.cescato@backstage.click</a>.
+              Vous pouvez également introduire une réclamation auprès de la
+              <a href="https://www.cnil.fr" target="_blank" rel="noopener">CNIL</a>.
+            </p>
 
-    <h2>6. Durée de conservation</h2>
-    <ul>
-      <li>Données de contact : 12 mois maximum</li>
-      <li>Résultats de diagnostic : 3 mois</li>
-      <li>Préférences de désabonnement : conservées sans limite de durée afin de respecter votre choix</li>
-    </ul>
+            <h2>8. Cookies</h2>
+            <p>
+              Ce site n'utilise pas de cookies de traçage ou publicitaires. Aucun outil d'analytics tiers n'est actif sur ce domaine.
+            </p>
 
-    <h2>7. Vos droits</h2>
-    <p>Conformément au RGPD, vous disposez des droits suivants :</p>
-    <ul>
-      <li>Droit d'accès, de rectification et d'effacement</li>
-      <li>Droit d'opposition et de limitation du traitement</li>
-      <li>Droit à la portabilité</li>
-    </ul>
-    <p>
-      Pour exercer ces droits, contactez-nous à 
-      <a href="mailto:pascal.cescato@backstage.click">pascal.cescato@backstage.click</a>. 
-      Vous pouvez également introduire une réclamation auprès de la 
-      <a href="https://www.cnil.fr" target="_blank" rel="noopener">CNIL</a>.
-    </p>
-
-    <h2>8. Cookies</h2>
-    <p>
-      Ce site n'utilise pas de cookies de traçage ou publicitaires. Aucun outil d'analytics tiers n'est actif sur ce domaine.
-    </p>
-
-    <h2>9. Désabonnement</h2>
-    <p>
-      Chaque email commercial envoyé depuis ce domaine contient un lien de désabonnement. Vous pouvez à tout moment modifier votre préférence via ce lien ou en nous contactant directement.
-    </p>
-  </div>
-          </section>
+            <h2>9. Désabonnement</h2>
+            <p>
+              Chaque email commercial envoyé depuis ce domaine contient un lien de désabonnement. Vous pouvez à tout moment modifier votre préférence via ce lien ou en nous contactant directement.
+            </p>
+          </div>
         </div>
       </div>
-    </section>
-  </div>
-
-  <Footer slot="footer" layout="simple" nav={footerNavItems} legalLinks={legalLinks} />
-</BaseLayout>
-
+    </div>
+  </section>
+</Base>

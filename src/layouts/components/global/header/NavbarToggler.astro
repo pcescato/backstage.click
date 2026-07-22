@@ -1,0 +1,170 @@
+---
+import { useTranslations } from "@/lib/utils/i18nUtils.ts";
+
+interface Props {
+  class?: string;
+  isOffcanvasToggler?: boolean;
+  appearance?: "dark" | "light";
+  [key: string]: any;
+}
+
+const {
+  class: ClassName,
+  isOffcanvasToggler = false,
+  appearance = "light",
+  ...rest
+} = Astro.props;
+
+const isLightToggler = appearance === "light";
+const restAttrs = { ...rest };
+const overlaySelector = restAttrs["data-hs-overlay"];
+const controlledId =
+  restAttrs["aria-controls"] ||
+  (typeof overlaySelector === "string"
+    ? overlaySelector.replace(/^#/, "")
+    : !isOffcanvasToggler
+      ? "nav-menu"
+      : undefined);
+const togglerId =
+  restAttrs.id || (controlledId ? `${controlledId}-toggle` : "nav-toggle");
+const hasPopup =
+  restAttrs["aria-haspopup"] ||
+  (isOffcanvasToggler || overlaySelector ? "dialog" : "menu");
+const expanded = restAttrs["aria-expanded"] || "false";
+const t = await useTranslations(Astro.currentLocale as string);
+
+delete restAttrs.id;
+delete restAttrs["aria-controls"];
+delete restAttrs["aria-expanded"];
+delete restAttrs["aria-haspopup"];
+---
+
+<button
+  id={togglerId}
+  data-navbar-toggler
+  aria-label={t("aria.toggleNavigation")}
+  aria-controls={controlledId}
+  aria-expanded={expanded}
+  aria-haspopup={hasPopup}
+  aria-pressed={expanded}
+  class:list={[
+    "group ms-4 inline-flex h-15 w-15 items-center justify-center rounded border text-center transition",
+    isLightToggler
+      ? "border-white/10 bg-white/10 text-white"
+      : "bg-slate-100 text-slate-800",
+    !isOffcanvasToggler && "hs-dropdown-toggle relative lg:hidden",
+    ClassName,
+  ]}
+  {...restAttrs}>
+  <span class="sr-only">{t("aria.menu")}</span>
+
+  <svg
+    class="pointer-events-none h-6 w-6 fill-current"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg">
+    <!-- Top line -->
+    <rect
+      class="origin-center translate-x-1.75 -translate-y-1.25 transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-pressed:translate-x-0 group-aria-pressed:translate-y-0 group-aria-pressed:rotate-315"
+      y="7"
+      width="9"
+      height="1"
+      rx="1">
+    </rect>
+
+    <!-- Middle line -->
+    <rect
+      class="origin-center transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.8)] group-aria-pressed:rotate-45"
+      y="7"
+      width="16"
+      height="1"
+      rx="1">
+    </rect>
+
+    <!-- Bottom line -->
+    <rect
+      class="origin-center translate-y-1.25 transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-pressed:translate-y-0 group-aria-pressed:rotate-135"
+      y="7"
+      width="9"
+      height="1"
+      rx="1">
+    </rect>
+  </svg>
+</button>
+
+<script>
+  const togglers = document.querySelectorAll<HTMLButtonElement>(
+    "[data-navbar-toggler]",
+  );
+
+  togglers.forEach((btn) => {
+    if (btn.dataset.navbarTogglerReady) return;
+    btn.dataset.navbarTogglerReady = "true";
+
+    const targetSelector = btn.getAttribute("data-hs-overlay");
+    const targetId = btn.getAttribute("aria-controls");
+    const target = targetSelector
+      ? document.querySelector<HTMLElement>(targetSelector)
+      : targetId
+        ? document.getElementById(targetId)
+        : btn.closest(".hs-dropdown")?.querySelector<HTMLElement>(".navbar");
+
+    const syncAriaState = () => {
+      const dropdown = btn.closest<HTMLElement>(".hs-dropdown");
+      const isExpanded = Boolean(
+        target?.classList.contains("open") ||
+        target?.classList.contains("opened") ||
+        dropdown?.classList.contains("open") ||
+        target?.classList.contains("expanded"),
+      );
+
+      btn.setAttribute("aria-expanded", String(isExpanded));
+      btn.setAttribute("aria-pressed", String(isExpanded));
+    };
+
+    btn.addEventListener("click", () => {
+      if (targetSelector && target) {
+        if (!window.$hsOverlayCollection?.some(e => e.element.el === target)) {
+          const isOpening = !target.classList.contains("open");
+          target.classList.toggle("open");
+          target.classList.toggle("opened");
+          document.body.style.overflow = isOpening ? "hidden" : "";
+        }
+      }
+      requestAnimationFrame(syncAriaState);
+      setTimeout(syncAriaState, 80);
+    });
+
+    if (target) {
+      const observer = new MutationObserver(syncAriaState);
+      observer.observe(target, {
+        attributes: true,
+        attributeFilter: ["class", "aria-hidden"],
+      });
+    }
+
+    const dropdown = btn.closest(".hs-dropdown");
+    if (dropdown) {
+      const observer = new MutationObserver(syncAriaState);
+      observer.observe(dropdown, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+    }
+
+    syncAriaState();
+  });
+
+  /* Fallback for close buttons (not hamburger) before Preline loads */
+  document.querySelectorAll<HTMLElement>("[data-hs-overlay]:not([data-navbar-toggler])").forEach((btn) => {
+    if (btn.dataset.hsOverlayReady) return;
+    btn.dataset.hsOverlayReady = "true";
+    const target = document.querySelector<HTMLElement>(btn.getAttribute("data-hs-overlay")!);
+    if (!target) return;
+    btn.addEventListener("click", () => {
+      if (window.$hsOverlayCollection?.some(e => e.element.el === target)) return;
+      target.classList.toggle("open");
+      target.classList.toggle("opened");
+      document.body.style.overflow = target.classList.contains("open") ? "hidden" : "";
+    });
+  });
+</script>

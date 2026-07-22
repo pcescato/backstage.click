@@ -1,0 +1,148 @@
+---
+import Breadcrumbs from "./Breadcrumbs.astro";
+import type { InferEntrySchema } from "astro:content";
+import { sortByDate } from "@/lib/utils/sortFunctions";
+import BlogCard from "@/components/cards/BlogCard.astro";
+import { getCollectionCTM } from "@/lib/contentParser.astro";
+import Pagination from "@/components/widgets/Pagination.astro";
+
+import config from ".astro/config.generated.json";
+
+export interface ContentListProps {
+  breadcrumb?: boolean;
+  breadcrumbExcludedPaths?: string[];
+  class?: string;
+  pagination?: {
+    enable: boolean;
+    currentPage: number;
+  };
+  filter?: {
+    category?: {
+      name: string;
+      slug: string;
+    };
+    tag?: {
+      name: string;
+      slug: string;
+    };
+  };
+  // show filtered content list based on provided taxonomy
+  options?: InferEntrySchema<"blog">["options"];
+  [key: string]: any;
+}
+
+const {
+  class: className,
+  onlyForSearch,
+  content = "blog",
+  pagination,
+  filter,
+  options,
+  breadcrumb,
+  breadcrumbExcludedPaths,
+  ...rest
+} = Astro.props as ContentListProps;
+
+const { layout, limit = false, columns = 2 } = options || {};
+const blogPerPage =
+  Number(config.settings.blogPagination ?? config.settings.pagination) || 0;
+const blogFolder = config.settings.blogFolder as "blog";
+
+// Get content list based on content value
+let list = [] as any[];
+let posts = await getCollectionCTM(blogFolder, Astro.currentLocale);
+list = posts;
+
+// Limit content list
+list =
+  limit && list && pagination?.enable === false
+    ? list.slice(0, limit as number)
+    : list;
+
+// Filter content list based on category (If provided)
+if (filter?.category) {
+  list = list.filter((item) =>
+    item.data.categories.includes(filter.category?.name),
+  );
+}
+
+// Filter content list based on tag (If provided)
+if (filter?.tag) {
+  list = list.filter((item) => item.data.tags.includes(filter.tag?.name));
+}
+
+// Sort list by date
+list = sortByDate(list);
+
+// For Blog List Pagination
+let totalPages = blogPerPage ? Math.ceil(list?.length / blogPerPage) : 1;
+if (content === "blog" && pagination?.enable && blogPerPage) {
+  const indexOfLastPost = pagination?.currentPage * blogPerPage;
+  const indexOfFirstPost = indexOfLastPost - blogPerPage;
+  list = list.slice(indexOfFirstPost, indexOfLastPost);
+}
+
+if (list.length <= 0) return;
+---
+
+<div
+  data-search-only-content={onlyForSearch ? "true" : undefined}
+  class:list={[
+    {
+      hidden: onlyForSearch,
+    },
+    className,
+  ]}>
+  {
+    breadcrumb && (
+      <div class="mb-8">
+        <Breadcrumbs breadcrumbExcludedPaths={breadcrumbExcludedPaths} />
+      </div>
+    )
+  }
+  <div
+    class:list={[
+      "blog-search-results",
+      "gap-x-6 gap-y-8",
+      layout === "grid" && {
+        "grid grid-cols-1": columns === 1,
+        "grid md:grid-cols-2": columns === 2,
+        "grid md:grid-cols-2 lg:grid-cols-3": columns === 3,
+      },
+      layout === "creative" && "space-y-8",
+      {
+        hidden: onlyForSearch,
+        "current-page-content": !onlyForSearch,
+      },
+    ]}
+    {...rest}>
+    {
+      !onlyForSearch &&
+        list.map((item) => <BlogCard content={item} options={options} />)
+    }
+  </div>
+
+  {/* To support posts search functionality, this code is added */}
+  {
+    list
+      .slice(0, 1)
+      .map((item) => (
+        <BlogCard
+          class:list={["template-post-search hidden"]}
+          content={item}
+          options={options}
+          aria-hidden={true}
+        />
+      ))
+  }
+  {
+    pagination?.enable && (
+      <Pagination
+        class="pt-8"
+        collection="blog"
+        currentPage={pagination?.currentPage || 1}
+        totalPages={totalPages}
+      />
+    )
+  }
+</div>

@@ -10,6 +10,7 @@
     "astro": "astro",
     "toml:watch": "node scripts/toml-watcher.mjs",
     "build": "npm run toml:watch && astro build && npm run remove-draft-from-sitemap",
+    "build:prod": "npm run build && node scripts/update-csp.mjs",
     "preview": "astro build && npm run remove-draft-from-sitemap && astro preview",
     "astro-check": "astro check",
     "generate-favicons": "node ./scripts/generate-favicons.mjs",

@@ -28,7 +28,7 @@ jobs:
           CF_RULESET_ID: ${{ secrets.CF_RULESET_ID }}
           CF_RULE_ID: ${{ secrets.CF_RULE_ID }}
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-        run: pnpm build
+        run: pnpm build:prod
 
       - name: Deploy to server via rsync
         uses: burnett01/rsync-deployments@7.0.1

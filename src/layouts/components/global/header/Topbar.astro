@@ -4,7 +4,7 @@ import { markdownify } from "@/lib/utils/textConverter";
 
 import config from ".astro/config.generated.json";
 
-type TopbarContent = "location" | "office-hours";
+type TopbarContent = "location" | "office-hours" | "phone";
 
 interface Props {
   class?: string;
@@ -52,14 +52,25 @@ const sizeClass = size === "compact" ? "py-3 text-sm" : "py-4 text-sm";
           </div>
         )
       }
+
+      {
+        resolvedLeftContent.includes("phone") && (
+          <div class="flex items-center gap-2 hover:underline">
+            <DynamicIcon name="Phone" class="size-4 shrink-0" />
+            <a href={`tel:${phone?.replace(/[^0-9+]/g, '')}`} set:html={markdownify(phone)} />
+          </div>
+        )
+      }
     </div>
 
     <div
       class="flex flex-wrap items-center justify-center gap-4 md:justify-between md:gap-10">
-      <div class="flex items-center gap-2 hover:underline">
-        <DynamicIcon name="Phone" class="size-4 shrink-0" />
-        <span set:html={markdownify(phone)} />
-      </div>
+      {!resolvedLeftContent.includes("phone") && (
+        <div class="flex items-center gap-2 hover:underline">
+          <DynamicIcon name="Phone" class="size-4 shrink-0" />
+          <span set:html={markdownify(phone)} />
+        </div>
+      )}
 
       <div class="flex items-center gap-2 hover:underline">
         <DynamicIcon name="Mail" class="size-4 shrink-0" />

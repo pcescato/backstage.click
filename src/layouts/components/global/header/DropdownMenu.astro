@@ -6,16 +6,27 @@ const { pathname } = Astro.url;
 const { recursive } = Astro.props;
 const menu = Astro.props.menu as NavigationLink;
 
+const stripLocale = (path: string) => {
+  const locale = Astro.currentLocale;
+  if (locale && path.startsWith(`/${locale}/`)) {
+    return path.replace(`/${locale}`, "");
+  }
+  return path;
+};
+
 const normalizeUrl = (url?: string) => {
   if (!url) return "/";
   return url.endsWith("/") ? url : `${url}/`;
 };
 
+const cleanPathname = stripLocale(pathname);
+
 const isMenuActive = (item: NavigationLink): boolean =>
   Boolean(
     item.url &&
-    (pathname === item.url ||
-      normalizeUrl(pathname) === normalizeUrl(item.url)),
+    (cleanPathname === item.url ||
+      normalizeUrl(cleanPathname) === normalizeUrl(item.url) ||
+      (item.url !== "/" && cleanPathname.startsWith(item.url))),
   ) ||
   Boolean(
     item.children?.some((child) => isMenuActive(child as NavigationLink)),
@@ -105,8 +116,9 @@ const isMenuActive = (item: NavigationLink): boolean =>
                   "nav-dropdown-link",
                   {
                     active:
-                      pathname === childUrl ||
-                      normalizeUrl(pathname) === normalizeUrl(childUrl),
+                      cleanPathname === childUrl ||
+                      normalizeUrl(cleanPathname) === normalizeUrl(childUrl) ||
+                      (childUrl !== "/" && cleanPathname.startsWith(childUrl)),
                   },
                 ]}>
                 {child.badge && child.badge.enable ? (

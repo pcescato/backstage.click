@@ -2,7 +2,6 @@
 import NavMenuItem from "@/layouts/components/global/header/MenuItem.astro";
 import { useTranslations } from "@/lib/utils/i18nUtils.ts";
 import { getHeaderMenu } from "@/lib/utils/menu";
-import Button from "@/components/Button.astro";
 
 interface Props {
   isMobile?: boolean;
@@ -16,7 +15,6 @@ const main = getHeaderMenu(t);
 const {
   isMobile,
   class: ClassName,
-  navigationButton = config.settings.navigationButton,
 } = Astro.props;
 ---
 
@@ -25,16 +23,4 @@ const {
   class:list={["navbar", isMobile && "navbar-mobile", ClassName]}
   role="menu">
   {main.map((menu) => <NavMenuItem isMobile={isMobile} menu={menu} />)}
-  {/* Navigation Button For Small Devices */}
-  {
-    navigationButton.enable && (
-      <li class="max-lg:pt-2 lg:hidden" role="menuitem">
-        <Button
-          hoverEffect="creative-fill"
-          {...navigationButton}
-          label={t("navigation.buttonLabel")}
-        />
-      </li>
-    )
-  }
 </ul>

@@ -12,7 +12,7 @@ import Base from "@/layouts/Base.astro";
   <div class="min-h-screen pt-16">
     <section class="border-border pt-12 pb-6 md:pt-20 md:pb-12">
       <div class="mx-auto max-w-6xl px-6 text-center">
-        <span class="bg-brand-500/10 text-brand-500 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium">
+        <span class="bg-accent/10 text-accent mb-4 inline-block rounded-full px-4 py-1 text-sm font-medium">
           IA & automatisation
         </span>
         <h1 class="font-display text-foreground !leading-[1.05] mt-6 !text-4xl md:!text-5xl lg:!text-6xl">
@@ -121,8 +121,11 @@ import Base from "@/layouts/Base.astro";
         </div>
       </div>
     </section>
+<script>
+(()=>{const d=document.querySelectorAll('section.pb-8 details');d.forEach(el=>{el.addEventListener('toggle',()=>{if(el.open)d.forEach(o=>{if(o!==el)o.open=false})})})})();
+</script>
 
-    <section class="invert-section bg-background border-t border-border py-16 md:py-20">
+    <section class="cta-custom border-t py-16 md:py-20">
       <div class="mx-auto max-w-6xl px-6">
         <div class="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
           <div class="space-y-2">
@@ -134,7 +137,7 @@ import Base from "@/layouts/Base.astro";
             </p>
           </div>
           <div class="shrink-0">
-            <a href="/contact" class="btn btn-primary">Prendre rendez-vous →</a>
+            <a href="/contact/" class="text-flip-hover-anim magnetic-hover-anim btn btn-cta rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case"><span class="text-flip-inner" data-content="Prendre rendez-vous →">Prendre rendez-vous →</span></a>
           </div>
         </div>
       </div>

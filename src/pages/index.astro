@@ -1,5 +1,6 @@
 ---
 import Base from "@/layouts/Base.astro";
+import DynamicIcon from "@/helpers/DynamicIcon.astro";
 ---
 
 <Base
@@ -10,43 +11,38 @@ import Base from "@/layouts/Base.astro";
   headerPosition="fixed"
 >
   {/* Hero */}
-  <section class="relative overflow-hidden bg-white py-20 md:py-28">
+  <section class="relative overflow-hidden bg-white py-28 md:py-36 lg:py-40">
     <div class="container">
-      <div class="mx-auto max-w-4xl text-center">
-        <h1 class="text-dark text-h1-sm md:text-h1 leading-tight">
-          Des architectures numériques plus légères.<br />
-          Des systèmes plus performants.
-        </h1>
-        <p class="text-text-default mx-auto mt-6 max-w-2xl text-lg leading-relaxed">
-          J'interviens sur les fondations techniques de votre présence web pour les rendre plus
-          sobres, plus fiables et plus utiles à votre activité.
-        </p>
-        <div class="mt-10 flex flex-wrap justify-center gap-4">
-          <a href="#services" class="btn btn-primary">
-            <span class="btn-text">Voir comment ça fonctionne</span>
-          </a>
-          <a href="/contact/" class="btn btn-outline">
-            <span class="btn-text">Prendre rendez-vous</span>
-          </a>
+      <div class="grid gap-10 md:grid-cols-2 md:items-center">
+        <div>
+          <h1 class="text-dark text-h1-sm md:text-h1 leading-tight">
+            <span class="block">Des architectures numériques plus légères.</span>
+            <span class="block">Des systèmes plus performants.</span>
+          </h1>
+          <div class="mt-12 flex flex-wrap gap-4">
+            <a
+              href="#services"
+              class="text-flip-hover-anim magnetic-hover-anim btn btn-primary rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case">
+              <span class="text-flip-inner" data-content="Voir comment ça fonctionne">Voir comment ça fonctionne</span>
+            </a>
+            <a
+              href="/contact/"
+              class="text-flip-hover-anim magnetic-hover-anim btn btn-outline rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case">
+              <span class="text-flip-inner" data-content="Prendre rendez-vous">Prendre rendez-vous</span>
+            </a>
+          </div>
         </div>
-      </div>
-    </div>
-  </section>
 
-  {/* Conseil et développement web */}
-  <section class="section-spacing-vertical bg-theme-light">
-    <div class="container">
-      <div class="mx-auto max-w-3xl text-center">
-        <h2 class="text-h2-sm md:text-h2">Conseil et développement web</h2>
-        <p class="text-text-default mx-auto mt-6 max-w-3xl text-lg leading-relaxed">
-          J'aide les PME et les organismes de formation à reprendre le contrôle de leurs
-          outils web. Pas d'over-engineering, pas de jargon inutile : je conçois et
-          j'optimise des solutions fluides, rapides et adaptées à votre réalité terrain.
-        </p>
-        <div class="mt-8">
-          <a href="#services" class="btn btn-primary">
-            <span class="btn-text">Voir comment ça fonctionne</span>
-          </a>
+        <div class="rounded-2xl border border-border-light bg-white p-8 shadow-sm">
+          <div class="bg-primary/10 mb-4 flex size-14 items-center justify-center rounded-xl">
+            <DynamicIcon name="combine" class="text-primary size-7" />
+          </div>
+          <h3 class="text-h4 mb-3">Conseil et développement web</h3>
+          <p class="text-text-default leading-relaxed">
+            J'aide les PME et les organismes de formation à reprendre le contrôle de leurs
+            outils web. Pas d'over-engineering, pas de jargon inutile : je conçois et
+            j'optimise des solutions fluides, rapides et adaptées à votre réalité terrain.
+          </p>
         </div>
       </div>
     </div>
@@ -55,9 +51,9 @@ import Base from "@/layouts/Base.astro";
   {/* L'efficacité par la simplicité */}
   <section class="section-spacing-vertical bg-white">
     <div class="container">
-      <div class="mx-auto max-w-3xl text-center">
+      <div class="mx-auto text-center">
         <h2 class="text-h2-sm md:text-h2">L'efficacité par la simplicité</h2>
-        <p class="text-text-default mx-auto mt-6 max-w-3xl text-lg leading-relaxed">
+        <p class="text-text-default mx-auto mt-6 text-lg leading-relaxed">
           Un bon système n'est pas un système où l'on a ajouté tout ce qu'on pouvait,
           mais un système dont on a retiré tout ce qui était inutile. Moins de code superflu
           signifie moins de maintenance, plus de sécurité et une vitesse d'exécution maximale.
@@ -70,89 +66,86 @@ import Base from "@/layouts/Base.astro";
   {/* Services */}
   <section id="services" class="section-spacing-vertical bg-theme-light scroll-mt-28">
     <div class="container">
-      <div class="mx-auto mb-12 max-w-3xl text-center">
+      <div class="mx-auto mb-12 text-center">
         <h2 class="text-h2-sm md:text-h2">Services</h2>
       </div>
 
-      <div class="grid gap-6 md:grid-cols-2">
+      <div class="grid gap-6 md:grid-cols-3">
         {/* Service 1: WordPress */}
-        <article class="bg-body rounded-xl p-8 shadow-sm">
-          <div class="space-y-4">
-            <h3 class="text-h3-sm md:text-h3">Accélérer, sécuriser et pérenniser votre site web</h3>
-            <p class="text-text-default leading-relaxed">
-              Un site lent ou mal conçu détruit votre taux de conversion et votre visibilité. Je
-              ne vends pas une technologie, je livre un résultat : des pages qui chargent
-              instantanément et des fondations techniques solides et durables. Selon vos
-              objectifs, j'interviens pour assainir votre installation WordPress
-              (OpenLiteSpeed, LSCache, CDN), ou je migre votre contenu vers une architecture
-              statique (Jamstack / Astro). Moins de maintenance, zéro faille de sécurité,
-              vitesse maximale.
-            </p>
+        <article class="group rounded-2xl border border-border-light bg-white p-8 shadow-sm transition-all duration-300 hover:drop-shadow-slate-50">
+          <div class="bg-primary/10 mb-6 flex size-18 shrink-0 items-center justify-center rounded-2xl">
+            <DynamicIcon name="rocket" class="text-primary size-9" />
           </div>
+          <h3 class="text-h5 mb-3">Accélérer, sécuriser et pérenniser votre site web</h3>
+          <p class="text-text-default leading-relaxed">
+            Un site lent ou mal conçu détruit votre taux de conversion et votre visibilité. Je
+            ne vends pas une technologie, je livre un résultat : des pages qui chargent
+            instantanément et des fondations techniques solides et durables. Selon vos
+            objectifs, j'interviens pour assainir votre installation WordPress
+            (OpenLiteSpeed, LSCache, CDN), ou je migre votre contenu vers une architecture
+            statique (Jamstack / Astro). Moins de maintenance, zéro faille de sécurité,
+            vitesse maximale.
+          </p>
         </article>
 
         {/* Service 2: GCF Pro */}
-        <article class="bg-body rounded-xl p-8 shadow-sm">
-          <div class="flex h-full flex-col gap-4">
-            <h3 class="text-h3-sm md:text-h3">Pilotez votre organisme de formation sans la lourdeur administrative</h3>
-            <p class="text-text-default leading-relaxed">
-              Les usines à gaz et les outils rigides freinent votre activité. Avec GCF Pro, vous
-              automatisez vos processus administratifs, simplifiez la gestion de vos sessions et
-              reprenez le contrôle total de vos données. Une solution fluide et souveraine,
-              pensée pour le terrain.
-            </p>
-            <div class="mt-auto pt-2">
-              <a href="/gcf-pro" class="text-dark hover:text-accent inline-flex items-center gap-2 text-sm font-medium">
-                Découvrir GCF Pro
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="h-4 w-4 shrink-0" aria-hidden="true">
-                  <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z"></path>
-                </svg>
-              </a>
-            </div>
+        <article class="group rounded-2xl border border-border-light bg-white p-8 shadow-sm transition-all duration-300 hover:drop-shadow-slate-50">
+          <div class="bg-primary/10 mb-6 flex size-18 shrink-0 items-center justify-center rounded-2xl">
+            <img src="/gcf.webp" alt="GCF Pro" class="size-9 object-contain" />
+          </div>
+          <h3 class="text-h5 mb-3">Pilotez votre organisme de formation sans la lourdeur administrative</h3>
+          <p class="text-text-default leading-relaxed">
+            Les usines à gaz et les outils rigides freinent votre activité. Avec GCF Pro, vous
+            automatisez vos processus administratifs, simplifiez la gestion de vos sessions et
+            reprenez le contrôle total de vos données. Une solution fluide et souveraine,
+            pensée pour le terrain.
+          </p>
+          <div class="mt-4 pt-2">
+            <a href="/gcf-pro/" class="text-flip-hover-anim magnetic-hover-anim btn btn-primary rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case">
+              <span class="text-flip-inner" data-content="Découvrir GCF Pro">Découvrir GCF Pro</span>
+            </a>
           </div>
         </article>
 
         {/* Service 3: Acquisition */}
-        <article class="bg-body rounded-xl p-8 shadow-sm">
-          <div class="space-y-4">
-            <h3 class="text-h3-sm md:text-h3">Transformer votre site en outil d'acquisition</h3>
-            <p class="text-text-default leading-relaxed">
-              Votre site incite-t-il à l'action, ou est-ce une vitrine fort jolie mais
-              parfaitement inutile ? Avoir un site techniquement propre ne garantit en rien de
-              générer des clients. J'analyse le parcours de vos utilisateurs et la
-              structure de vos contenus pour aligner votre site avec les intentions de recherche
-              réelles de vos prospects. Moins de blabla générique, plus de clarté : on structure
-              vos pages pour que chaque visiteur comprenne votre valeur et passe à
-              l'action.
-            </p>
+        <article class="group rounded-2xl border border-border-light bg-white p-8 shadow-sm transition-all duration-300 hover:drop-shadow-slate-50">
+          <div class="bg-primary/10 mb-6 flex size-18 shrink-0 items-center justify-center rounded-2xl">
+            <DynamicIcon name="list-check" class="text-primary size-9" />
           </div>
-        </article>
-
-        {/* Service 4: Outils */}
-        <article class="bg-body rounded-xl p-8 shadow-sm">
-          <div class="flex h-full flex-col gap-4">
-            <h3 class="text-h3-sm md:text-h3">Des outils prêts à l'emploi, pas du sur-mesure théorique</h3>
-            <p class="text-text-default leading-relaxed">
-              Infrastructure emailing conforme CNIL, et d'autres outils à venir – des briques
-              que j'utilise moi-même en production, packagées pour être déployées rapidement
-              chez vous.
-            </p>
-            <div class="mt-auto pt-2">
-              <a href="/outils" class="text-dark hover:text-accent inline-flex items-center gap-2 text-sm font-medium">
-                Découvrir les outils
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="h-4 w-4 shrink-0" aria-hidden="true">
-                  <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z"></path>
-                </svg>
-              </a>
-            </div>
-          </div>
+          <h3 class="text-h5 mb-3">Transformer votre site en outil d'acquisition</h3>
+          <p class="text-text-default leading-relaxed">
+            Votre site incite-t-il à l'action, ou est-ce une vitrine fort jolie mais
+            parfaitement inutile ? Avoir un site techniquement propre ne garantit en rien de
+            générer des clients. J'analyse le parcours de vos utilisateurs et la
+            structure de vos contenus pour aligner votre site avec les intentions de recherche
+            réelles de vos prospects. Moins de blabla générique, plus de clarté : on structure
+            vos pages pour que chaque visiteur comprenne votre valeur et passe à
+            l'action.
+          </p>
         </article>
       </div>
 
-      <div class="mt-10 text-center">
-        <a href="/contact/" class="btn btn-primary">
-          <span class="btn-text">Prendre rendez-vous</span>
-        </a>
+      <div class="mt-6">
+        <article class="group rounded-2xl border border-border-light bg-white p-8 shadow-sm transition-all duration-300 hover:drop-shadow-slate-50">
+          <div class="md:flex md:items-start md:gap-8">
+            <div class="bg-primary/10 mb-6 flex size-18 shrink-0 items-center justify-center rounded-2xl md:mb-0">
+              <DynamicIcon name="mail" class="text-primary size-9" />
+            </div>
+            <div class="flex-1">
+              <h3 class="text-h5 mb-3">Des outils prêts à l'emploi, pas du sur-mesure théorique</h3>
+              <p class="text-text-default leading-relaxed">
+                Infrastructure emailing conforme CNIL, et d'autres outils à venir – des briques
+                que j'utilise moi-même en production, packagées pour être déployées rapidement
+                chez vous.
+              </p>
+              <div class="mt-4 pt-2">
+                <a href="/outils/" class="text-flip-hover-anim magnetic-hover-anim btn btn-primary rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case">
+                  <span class="text-flip-inner" data-content="Découvrir les outils">Découvrir les outils</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
       </div>
     </div>
   </section>
@@ -160,7 +153,7 @@ import Base from "@/layouts/Base.astro";
   {/* La preuve par l'exemple */}
   <section class="section-spacing-vertical bg-white">
     <div class="container">
-      <div class="mx-auto max-w-3xl text-center">
+      <div class="mx-auto text-center">
         <h2 class="text-h2-sm md:text-h2">La preuve par l'exemple</h2>
         <p class="text-text-default mt-6 text-lg leading-relaxed">
           Je n'applique pas de recettes génériques ou de théories d'agence. Ce site est
@@ -168,18 +161,33 @@ import Base from "@/layouts/Base.astro";
         </p>
       </div>
 
-      <div class="mt-12 grid gap-8 md:grid-cols-3">
-        <div class="text-center">
-          <p class="text-dark text-4xl font-bold">20+</p>
-          <p class="text-text-default mt-2 text-sm">ans de production réelle</p>
+      <div class="mt-12 grid gap-6 md:grid-cols-3">
+        <div class="rounded-2xl border border-border-light bg-white p-8 drop-shadow-xl drop-shadow-transparent">
+          <div class="flex items-center gap-4">
+            <div class="bg-primary/10 flex size-12 shrink-0 items-center justify-center rounded-xl">
+              <DynamicIcon name="history" class="text-primary size-6" />
+            </div>
+            <p class="text-dark text-4xl font-bold">20+</p>
+          </div>
+          <p class="text-text-default mt-2 text-base">ans de production réelle</p>
         </div>
-        <div class="text-center">
-          <p class="text-dark text-4xl font-bold">100/100</p>
-          <p class="text-text-default mt-2 text-sm">Lighthouse mobile – backstage.click</p>
+        <div class="rounded-2xl border border-border-light bg-white p-8 drop-shadow-xl drop-shadow-transparent">
+          <div class="flex items-center gap-4">
+            <div class="bg-primary/10 flex size-12 shrink-0 items-center justify-center rounded-xl">
+              <DynamicIcon name="rocket" class="text-primary size-6" />
+            </div>
+            <p class="text-dark text-4xl font-bold">100/100</p>
+          </div>
+          <p class="text-text-default mt-2 text-base">Lighthouse mobile – backstage.click</p>
         </div>
-        <div class="text-center">
-          <p class="text-dark text-4xl font-bold">A+</p>
-          <p class="text-text-default mt-2 text-sm">sécurité – backstage.click</p>
+        <div class="rounded-2xl border border-border-light bg-white p-8 drop-shadow-xl drop-shadow-transparent">
+          <div class="flex items-center gap-4">
+            <div class="bg-primary/10 flex size-12 shrink-0 items-center justify-center rounded-xl">
+              <DynamicIcon name="shield-check" class="text-primary size-6" />
+            </div>
+            <p class="text-dark text-4xl font-bold">A+</p>
+          </div>
+          <p class="text-text-default mt-2 text-base">sécurité – backstage.click</p>
         </div>
       </div>
     </div>

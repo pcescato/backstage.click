@@ -122,6 +122,14 @@ delete restAttrs["aria-haspopup"];
     };
 
     btn.addEventListener("click", () => {
+      if (targetSelector && target) {
+        if (!window.$hsOverlayCollection?.some(e => e.element.el === target)) {
+          const isOpening = !target.classList.contains("open");
+          target.classList.toggle("open");
+          target.classList.toggle("opened");
+          document.body.style.overflow = isOpening ? "hidden" : "";
+        }
+      }
       requestAnimationFrame(syncAriaState);
       setTimeout(syncAriaState, 80);
     });
@@ -144,5 +152,19 @@ delete restAttrs["aria-haspopup"];
     }
 
     syncAriaState();
+  });
+
+  /* Fallback for close buttons (not hamburger) before Preline loads */
+  document.querySelectorAll<HTMLElement>("[data-hs-overlay]:not([data-navbar-toggler])").forEach((btn) => {
+    if (btn.dataset.hsOverlayReady) return;
+    btn.dataset.hsOverlayReady = "true";
+    const target = document.querySelector<HTMLElement>(btn.getAttribute("data-hs-overlay")!);
+    if (!target) return;
+    btn.addEventListener("click", () => {
+      if (window.$hsOverlayCollection?.some(e => e.element.el === target)) return;
+      target.classList.toggle("open");
+      target.classList.toggle("opened");
+      document.body.style.overflow = target.classList.contains("open") ? "hidden" : "";
+    });
   });
 </script>

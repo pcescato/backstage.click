@@ -1,12 +1,10 @@
 ---
-import Button from "@/components/Button.astro";
 import Logo from "@/components/global/Logo.astro";
 import HeaderOffcanvasContent from "@/components/widgets/HeaderOffcanvasContent.astro";
 import Offcanvas from "../../widgets/Offcanvas.astro";
 import LanguageSwitcher from "@/layouts/components/global/header/LanguageSwitcher.astro";
 import NavbarToggler from "@/layouts/components/global/header/NavbarToggler.astro";
 import Navbar from "./Navbar.astro";
-import Topbar from "./Topbar.astro";
 import { useTranslations } from "@/lib/utils/i18nUtils.ts";
 import config from ".astro/config.generated.json";
 import type { HeaderLayout } from "@/types";
@@ -52,7 +50,7 @@ const {
 const layoutConfig: Record<HeaderLayout, HeaderLayoutConfig> = {
   two: {
     topbarLayout: "light",
-    topbarLeftContent: ["location"],
+    topbarLeftContent: ["phone"],
     hasDarkAppearance: false,
     isMenuRight: false,
     navbarClass: "navbar-right lg:ps-5",
@@ -95,13 +93,6 @@ const accentAppearance = currentLayout.hasDarkAppearance ? "light" : "dark";
     { "has-sticky-behavior": stickyHeader },
     { fixed: position === "fixed" },
   ]}>
-  <Topbar
-    class="topbar"
-    layout={currentLayout.topbarLayout}
-    leftContent={currentLayout.topbarLeftContent}
-    size={currentLayout.topbarSize}
-  />
-
   <header
     class:list={[
       "header group/header",
@@ -115,7 +106,6 @@ const accentAppearance = currentLayout.hasDarkAppearance ? "light" : "dark";
         {currentLayout.hasDarkAppearance ? <Logo src={logoSrc} /> : <Logo />}
 
         <Navbar
-          navigationButton={navigationButton}
           class:list={[
             currentLayout.isMenuRight && "navbar-right",
             currentLayout.navbarClass,
@@ -126,25 +116,6 @@ const accentAppearance = currentLayout.hasDarkAppearance ? "light" : "dark";
           hasLanguageSwitcher && (
             <div class="ms-auto flex lg:hidden">
               <LanguageSwitcher appearance={accentAppearance} />
-            </div>
-          )
-        }
-
-        {
-          hasDesktopActions && (
-            <div class="hidden gap-3.5 max-lg:ms-auto max-lg:me-4 lg:flex lg:items-center">
-              {hasLanguageSwitcher && (
-                <LanguageSwitcher appearance={accentAppearance} />
-              )}
-
-              {navigationButton.enable && (
-                <Button
-                  variant="fill"
-                  hoverEffect="creative-fill"
-                  {...navigationButton}
-                  label={t("navigation.buttonLabel")}
-                />
-              )}
             </div>
           )
         }
@@ -193,19 +164,14 @@ const accentAppearance = currentLayout.hasDarkAppearance ? "light" : "dark";
 
     let prevScrollPos = window.scrollY;
     const startStickyAt = 0;
-    const hideTopbarAt = 100;
     const minScrollDiff = 50;
 
     const handleScroll = (initial = false) => {
       const currentScrollPos = window.scrollY;
       const scrollDiff = Math.abs(currentScrollPos - prevScrollPos);
-      header.classList.toggle(
-        "is-topbar-hidden",
-        currentScrollPos > hideTopbarAt,
-      );
 
       if (currentScrollPos === 0) {
-        header.classList.remove("scroll-up", "scroll-down", "is-topbar-hidden");
+        header.classList.remove("scroll-up", "scroll-down");
         prevScrollPos = currentScrollPos;
         return;
       }

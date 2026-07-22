@@ -12,15 +12,15 @@ import Base from "@/layouts/Base.astro";
   <div class="min-h-screen pt-16">
     <section class="border-border border-b pt-12 pb-6 md:pt-20 md:pb-12">
       <div class="mx-auto max-w-6xl px-6 text-center">
-        <span class="bg-brand-500/10 text-brand-500 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium">
+        <span class="bg-accent/10 text-accent mb-4 inline-block rounded-full px-4 py-1 text-sm font-medium">
           Outils prêts à l'emploi
         </span>
-        <h1 class="font-display text-foreground max-w-4xl !leading-[1.05] mt-6 !text-4xl md:!text-5xl lg:!text-6xl">
+        <h1 class="font-display text-foreground !leading-[1.05] mt-6 !text-4xl md:!text-5xl lg:!text-6xl">
           Ce que j'utilise moi-même,
           <br />
           packagé pour vous.
         </h1>
-        <p class="text-foreground-muted mx-auto mt-6 max-w-3xl">
+        <p class="text-foreground-muted mx-auto mt-6">
           Pas de sur-mesure théorique. Des briques que j'ai déjà construites et fait tourner en
           production, livrables rapidement.
         </p>
@@ -115,7 +115,7 @@ import Base from "@/layouts/Base.astro";
                   </p>
                   <p class="text-foreground text-2xl font-bold">600€ HT</p>
                 </div>
-                <a href="/contact" class="btn btn-primary">Demander cet outil →</a>
+                <a href="/contact/" class="text-flip-hover-anim magnetic-hover-anim btn btn-primary rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case"><span class="text-flip-inner" data-content="Demander cet outil →">Demander cet outil →</span></a>
               </div>
             </div>
           </div>
@@ -193,7 +193,7 @@ import Base from "@/layouts/Base.astro";
                   </p>
                   <p class="text-foreground text-2xl font-bold">790€ HT</p>
                 </div>
-                <a href="/contact" class="btn btn-primary">Commander un audit →</a>
+                <a href="/contact/" class="text-flip-hover-anim magnetic-hover-anim btn btn-primary rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case"><span class="text-flip-inner" data-content="Commander un audit →">Commander un audit →</span></a>
               </div>
             </div>
           </div>
@@ -201,16 +201,20 @@ import Base from "@/layouts/Base.astro";
       </div>
     </section>
 
-    <section class="invert-section bg-background border-t border-border py-20">
-      <div class="mx-auto max-w-6xl px-6 text-center">
-        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
-          Un besoin qui ne rentre pas dans une case ?
-        </h2>
-        <p class="text-foreground-muted mt-6 text-lg leading-relaxed">
-          Mes outils viennent de projets réels. D'autres sont en préparation. Un besoin spécifique en attendant ? Contactez-moi.
-        </p>
-        <div class="mt-10 flex justify-center">
-          <a href="/contact" class="btn btn-primary">Prendre rendez-vous →</a>
+    <section class="cta-custom border-t py-16 md:py-20">
+      <div class="mx-auto max-w-6xl px-6">
+        <div class="grid items-center gap-8 md:grid-cols-3">
+          <div class="space-y-4 md:col-span-2">
+            <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+              Un besoin qui ne rentre pas dans une case ?
+            </h2>
+            <p class="text-foreground-muted text-base leading-relaxed">
+              Mes outils viennent de projets réels. D'autres sont en préparation. Un besoin spécifique en attendant ? Contactez-moi.
+            </p>
+          </div>
+          <div class="flex flex-col gap-4 md:items-end">
+            <a href="/contact/" class="text-flip-hover-anim magnetic-hover-anim btn btn-cta rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case"><span class="text-flip-inner" data-content="Prendre rendez-vous →">Prendre rendez-vous →</span></a>
+          </div>
         </div>
       </div>
     </section>

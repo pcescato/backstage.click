@@ -54,10 +54,15 @@ const isMagneticTextFlipHoverEffect = hoverEffect === "magnetic-text-flip";
 const hasCustomButtonVariant =
   typeof className === "string" && /\bbtn-[\w-]+\b/.test(className);
 
-const resolvedRel = url.startsWith("http")
+const resolvedUrl =
+  url.startsWith("http") || url === "#" || url.endsWith("/")
+    ? url
+    : `${url}/`;
+
+const resolvedRel = resolvedUrl.startsWith("http")
   ? rel || "noopener noreferrer"
   : rel || undefined;
-const resolvedTarget = url.startsWith("http")
+const resolvedTarget = resolvedUrl.startsWith("http")
   ? target || "_blank"
   : target || undefined;
 
@@ -89,7 +94,7 @@ const buttonClasses = [
       rel={resolvedRel}
       target={resolvedTarget}
       class:list={buttonClasses}
-      href={getLocaleUrlCTM(url, Astro.currentLocale)}
+      href={getLocaleUrlCTM(resolvedUrl, Astro.currentLocale)}
       {...rest}>
       <ButtonContent
         {...{

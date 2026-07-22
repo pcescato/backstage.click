@@ -1,5 +1,6 @@
 ---
 import Base from "@/layouts/Base.astro";
+import DynamicIcon from "@/helpers/DynamicIcon.astro";
 ---
 
 <Base
@@ -12,14 +13,14 @@ import Base from "@/layouts/Base.astro";
   {/* Hero */}
   <section class="relative overflow-hidden bg-white py-20 md:py-28">
     <div class="container">
-      <div class="mx-auto max-w-4xl text-center">
+      <div class="mx-auto text-center">
         <span class="bg-accent/10 text-accent mb-4 inline-block rounded-full px-4 py-1 text-sm font-medium">
           Diagnostic gratuit
         </span>
         <h1 class="text-dark text-h1-sm md:text-h1 leading-tight">
           Votre site a peut-être un problème que vous ne voyez pas.
         </h1>
-        <p class="text-text-default mx-auto mt-6 max-w-3xl text-lg leading-relaxed">
+        <p class="text-text-default mx-auto mt-6 text-lg leading-relaxed">
           Un diagnostic gratuit révèle en quelques minutes l'état réel de votre site :
           performances, sécurité, obsolescence. Vous recevez le rapport complet par email.
         </p>
@@ -30,41 +31,44 @@ import Base from "@/layouts/Base.astro";
   {/* Ce que le diagnostic révèle */}
   <section class="section-spacing-vertical bg-theme-light">
     <div class="container">
-      <div class="mx-auto mb-12 max-w-3xl text-center">
+      <div class="mx-auto mb-12 text-center">
         <h2 class="text-h2-sm md:text-h2">Ce que le diagnostic révèle</h2>
       </div>
 
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <article class="bg-body rounded-xl p-8 shadow-sm">
-          <div class="space-y-4">
-            <h3 class="text-h3-sm md:text-h3">Performance Lighthouse</h3>
-            <p class="text-text-default leading-relaxed">
-              Score de 0 à 100 sur mobile. En dessous de 50, bon nombre de visiteurs quitte la
-              page avant d'avoir vu le contenu.
-            </p>
+        <div class="rounded-2xl border border-border-light bg-white p-8 drop-shadow-xl drop-shadow-transparent">
+          <div class="bg-primary/10 mb-6 flex size-18 items-center justify-center rounded-2xl">
+            <DynamicIcon name="gauge" class="text-primary size-9" />
           </div>
-        </article>
+          <h3 class="text-h3-sm mb-4 s:text-h3">Performance Lighthouse</h3>
+          <p class="text-text-default leading-relaxed">
+            Score de 0 à 100 sur mobile. En dessous de 50, bon nombre de visiteurs quitte la
+            page avant d'avoir vu le contenu.
+          </p>
+        </div>
 
-        <article class="bg-body rounded-xl p-8 shadow-sm">
-          <div class="space-y-4">
-            <h3 class="text-h3-sm md:text-h3">Grade de sécurité</h3>
-            <p class="text-text-default leading-relaxed">
-              De A+ à F, vérifiable publiquement en quelques secondes. Un grade entre B et F
-              indique des headers de sécurité manquants, corrigeables en 30 minutes.
-            </p>
+        <div class="rounded-2xl border border-border-light bg-white p-8 drop-shadow-xl drop-shadow-transparent">
+          <div class="bg-primary/10 mb-6 flex size-18 items-center justify-center rounded-2xl">
+            <DynamicIcon name="shield-check" class="text-primary size-9" />
           </div>
-        </article>
+          <h3 class="text-h3-sm mb-4 md:text-h3">Grade de sécurité</h3>
+          <p class="text-text-default leading-relaxed">
+            De A+ à F, vérifiable publiquement en quelques secondes. Un grade entre B et F
+            indique des headers de sécurité manquants, corrigeables en 30 minutes.
+          </p>
+        </div>
 
-        <article class="bg-body rounded-xl p-8 shadow-sm">
-          <div class="space-y-4">
-            <h3 class="text-h3-sm md:text-h3">Logiciels obsolètes</h3>
-            <p class="text-text-default leading-relaxed">
-              Les dernières versions de PHP et de WordPress reçoivent régulièrement des correctifs
-              de sécurité. Les précédentes ne sont plus maintenues et présentent un risque majeur
-              pour la sécurité de votre site.
-            </p>
+        <div class="rounded-2xl border border-border-light bg-white p-8 drop-shadow-xl drop-shadow-transparent">
+          <div class="bg-primary/10 mb-6 flex size-18 items-center justify-center rounded-2xl">
+            <DynamicIcon name="recycle" class="text-primary size-9" />
           </div>
-        </article>
+          <h3 class="text-h3-sm mb-4 md:text-h3">Logiciels obsolètes</h3>
+          <p class="text-text-default leading-relaxed">
+            Les dernières versions de PHP et de WordPress reçoivent régulièrement des correctifs
+            de sécurité. Les précédentes ne sont plus maintenues et présentent un risque majeur
+            pour la sécurité de votre site.
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -72,7 +76,7 @@ import Base from "@/layouts/Base.astro";
   {/* Exemple réel */}
   <section class="section-spacing-vertical bg-white">
     <div class="container">
-      <div class="mx-auto max-w-3xl text-center">
+      <div class="mx-auto text-center">
         <span class="bg-accent/10 text-accent mb-4 inline-block rounded-full px-4 py-1 text-sm font-medium">
           Exemple réel
         </span>
@@ -157,7 +161,7 @@ import Base from "@/layouts/Base.astro";
   {/* Formulaire */}
   <section class="section-spacing-vertical bg-theme-light">
     <div class="container">
-      <div class="mx-auto max-w-2xl">
+      <div class="mx-auto">
         <div class="text-center">
           <h2 class="text-h2-sm md:text-h2">Demandez votre diagnostic gratuit</h2>
           <p class="text-text-default mt-6 text-lg leading-relaxed">
@@ -211,8 +215,8 @@ import Base from "@/layouts/Base.astro";
 
           <div id="diag-error" class="hidden text-sm text-red-600"></div>
 
-          <button type="submit" id="diag-submit" class="btn btn-primary w-full justify-center">
-            <span class="btn-text">Recevoir mon diagnostic →</span>
+          <button type="submit" id="diag-submit" class="text-flip-hover-anim magnetic-hover-anim btn btn-primary w-full justify-center rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case">
+            <span class="btn-text text-flip-inner" data-content="Recevoir mon diagnostic →">Recevoir mon diagnostic →</span>
           </button>
 
           <p class="text-text-default text-center text-sm">

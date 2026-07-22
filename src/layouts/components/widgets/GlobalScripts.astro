@@ -251,21 +251,21 @@ const clientThemeConfig = JSON.stringify({
       initLenisSmoothScroll();
     });
 
+    const canHover = window.matchMedia("(hover: hover)").matches;
+    if (canHover) {
+      initOnFirstInteraction(["pointerover"], () => {
+        initCreativeHoverAnimation();
+        initMagneticHoverAnimation();
+      });
+    }
+
     runIdle(async () => {
       await initLucide();
       await loadPrelineComponents();
       await initImageLightbox();
       initMarqueeAutoPause();
 
-      const canHover = window.matchMedia("(hover: hover)").matches;
       initHorizontalScroll();
-
-      if (canHover) {
-        initOnFirstInteraction(["pointerover"], () => {
-          initCreativeHoverAnimation();
-          initMagneticHoverAnimation();
-        });
-      }
     });
   };
 

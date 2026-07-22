@@ -12,11 +12,11 @@ import Base from "@/layouts/Base.astro";
   <div class="min-h-screen pt-16">
     <section class="border-border border-b pt-12 pb-6 md:pt-20 md:pb-12">
       <div class="mx-auto max-w-6xl px-6 text-center">
-        <span class="bg-brand-500/10 text-brand-500 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium">Contact</span>
-        <h1 class="font-display text-foreground max-w-4xl !leading-[1.05] mt-6 !text-4xl md:!text-5xl lg:!text-6xl">
+        <span class="bg-accent/10 text-accent mb-4 inline-block rounded-full px-4 py-1 text-sm font-medium">Contact</span>
+        <h1 class="font-display text-foreground !leading-[1.05] mt-6 !text-4xl md:!text-5xl lg:!text-6xl">
           Réserver un créneau ou écrire directement
         </h1>
-        <p class="text-foreground-muted mx-auto mt-6 max-w-3xl">
+        <p class="text-foreground-muted mx-auto mt-6">
           15 minutes suffisent pour faire le point.
         </p>
       </div>
@@ -112,8 +112,8 @@ import Base from "@/layouts/Base.astro";
 
             <div id="contact-error" class="hidden text-sm text-destructive"></div>
 
-            <button type="submit" id="contact-submit" class="btn btn-primary w-full">
-              Envoyer →
+            <button type="submit" id="contact-submit" class="text-flip-hover-anim magnetic-hover-anim btn btn-primary w-full">
+              <span class="btn-text text-flip-inner" data-content="Envoyer →">Envoyer →</span>
             </button>
           </form>
 

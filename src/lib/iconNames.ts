@@ -1,6 +1,17 @@
 type LiteralUnion<T extends string> = T | (string & Record<never, never>);
 
 export const knownIconNames = [
+  "Bot",
+  "CalendarRange",
+  "Combine",
+  "Database",
+  "Gauge",
+  "Globe",
+  "Recycle",
+  "Rocket",
+  "Server",
+  "ServerCog",
+  "SquarePen",
   "ArrowRight",
   "ArrowUp",
   "ArrowUpRight",
@@ -18,6 +29,7 @@ export const knownIconNames = [
   "Headphones",
   "Languages",
   "Link",
+  "ListChecks",
   "Mail",
   "MailOpen",
   "MapPin",
@@ -32,6 +44,7 @@ export const knownIconNames = [
   "Search",
   "Send",
   "Settings",
+  "ShieldCheck",
   "Star",
   "ThumbsUp",
   "TriangleRight",

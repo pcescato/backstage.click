@@ -1,3 +1,17 @@
+/* Custom details/summary marker: + closed, - open */
+details summary {
+  list-style: none;
+}
+details summary::before {
+  content: "+";
+  display: inline-block;
+  width: 1.5em;
+  font-weight: bold;
+}
+details[open] summary::before {
+  content: "−";
+}
+
 /* content style */
 .prose-styles {
   @apply prose max-w-none;

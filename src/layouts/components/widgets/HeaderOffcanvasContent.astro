@@ -1,16 +1,14 @@
 ---
-import Social from "./Social.astro";
 import Logo from "../global/Logo.astro";
 import config from ".astro/config.generated.json";
 import Icons from "@/helpers/Icons.astro";
-import social from "@/config/social.json";
 import Navbar from "../global/header/Navbar.astro";
 import { markdownify } from "@/lib/utils/textConverter";
 import { useTranslations } from "@/lib/utils/i18nUtils.ts";
 
 const {
   settings: {
-    headerOffcanvas: { enable, logo, description },
+    headerOffcanvas: { enable, logo },
     contactInfo: { address, phone, email },
   },
 } = config;
@@ -37,18 +35,7 @@ if (!enable) {
   </button>
 
   <Logo class="text-dark justify-start" src={logo} />
-  {
-    (description || t("headerOffcanvas.description")) && (
-      <p
-        set:html={markdownify(description || t("headerOffcanvas.description"))}
-      />
-    )
-  }
 
-  <Social
-    linkType="follow"
-    list={social.main.filter((social) => social.enable)}
-  />
   <div class="mb-10 pt-10 lg:hidden">
     <Navbar isMobile={true} navigationButton={navigationButton} />
   </div>

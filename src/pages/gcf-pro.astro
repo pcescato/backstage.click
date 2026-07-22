@@ -10,24 +10,24 @@ import Base from "@/layouts/Base.astro";
   headerPosition="fixed"
 >
   <div class="min-h-screen pt-16">
-    <section class="border-border border-b pt-12 pb-6 md:pt-20 md:pb-12">
+    <section class="border-border pt-12 pb-6 md:pt-20 md:pb-12">
       <div class="mx-auto max-w-6xl px-6 text-center">
-        <span class="bg-brand-500/10 text-brand-500 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium">Logiciel de gestion</span>
-        <h1 class="font-display text-foreground max-w-4xl !text-4xl !leading-[1.05] mt-6 md:!text-5xl lg:!text-6xl">
+        <span class="bg-accent/10 text-accent mb-4 inline-block rounded-full px-4 py-1 text-sm font-medium">Logiciel de gestion</span>
+        <h1 class="font-display text-foreground !text-4xl !leading-[1.05] mt-6 md:!text-5xl lg:!text-6xl">
           Fini les abonnements SaaS.
           <br />
           GCF Pro installé chez vous, pour toujours.
         </h1>
-        <p class="text-foreground-muted mx-auto mt-6 max-w-3xl">
+        <p class="text-text-default mx-auto mt-6 text-lg leading-relaxed">
           Solution on-premise à licence perpétuelle. Vos données restent sur votre serveur. Vous payez
           une seule fois.
         </p>
       </div>
     </section>
 
-    <section class="border-border bg-background border-b py-20">
+    <section class="border-border bg-background py-20">
       <div class="mx-auto max-w-6xl px-6">
-        <div class="mx-auto mb-12 max-w-3xl text-center">
+        <div class="mx-auto mb-12 text-center">
           <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
             Comparatif
           </h2>
@@ -99,9 +99,9 @@ import Base from "@/layouts/Base.astro";
       </div>
     </section>
 
-    <section class="border-border bg-background-secondary border-b py-20">
+    <section class="border-border bg-background-secondary py-20">
       <div class="mx-auto max-w-6xl px-6">
-        <div class="mx-auto mb-12 max-w-3xl text-center">
+        <div class="mx-auto mb-12 text-center">
           <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
             Ce que couvre GCF Pro
           </h2>
@@ -217,18 +217,21 @@ import Base from "@/layouts/Base.astro";
       </div>
     </section>
 
-    <section class="invert-section bg-background border-border border-t py-20">
-      <div class="mx-auto max-w-2xl px-6 text-center">
-        <h2 class="font-display text-foreground text-3xl font-bold tracking-tight md:text-4xl">
-          Prêt à reprendre le contrôle ?
-        </h2>
-        <p class="text-foreground-muted mt-6 text-lg leading-relaxed">
-          Licence annuelle 1 490 € HT ou licence perpétuelle 3 900 € HT. La formation Administrateur
-          (3h) est éligible OPCO/CPF.
-        </p>
-        <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-          <a href="https://gcfpro.fr" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Découvrir GCF Pro →</a>
-          <a href="https://gcfpro.fr/demo/" target="_blank" rel="noopener noreferrer" class="btn btn-outline">Demander une démo</a>
+    <section class="cta-custom border-t py-16 md:py-20">
+      <div class="mx-auto max-w-6xl px-6">
+        <div class="grid items-center gap-8 md:grid-cols-3">
+          <div class="space-y-4 md:col-span-2">
+            <h2 class="font-display text-foreground text-2xl font-bold tracking-tight md:text-3xl">
+              Prêt à reprendre le contrôle ?
+            </h2>
+            <p class="text-foreground-muted text-base leading-relaxed">
+              Licence annuelle 1 490 € HT ou licence perpétuelle 3 900 € HT. La formation Administrateur
+              (3h) est éligible OPCO/CPF.
+            </p>
+          </div>
+          <div class="flex flex-col gap-4 md:items-end">
+            <a href="https://gcfpro.fr" target="_blank" rel="noopener noreferrer" class="text-flip-hover-anim magnetic-hover-anim btn btn-cta rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case"><span class="text-flip-inner" data-content="Découvrir GCF Pro →">Découvrir GCF Pro →</span></a>
+          </div>
         </div>
       </div>
     </section>

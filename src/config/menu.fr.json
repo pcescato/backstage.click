@@ -46,8 +46,7 @@
     {
       "enable": true,
       "name": "GCF Pro",
-      "url": "https://gcfpro.fr/",
-      "rel": "noopener noreferrer"
+      "url": "/gcf-pro/"
     },
     {
       "enable": true,
@@ -97,7 +96,7 @@
         {
           "enable": true,
           "name": "GCF Pro",
-          "url": "https://gcfpro.fr/"
+          "url": "/gcf-pro/"
         },
         {
           "enable": true,

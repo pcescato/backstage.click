@@ -12,7 +12,7 @@ import Base from "@/layouts/Base.astro";
   <div class="min-h-screen pt-16">
     <section class="border-border pt-12 pb-6 md:pt-20 md:pb-12">
       <div class="mx-auto max-w-6xl px-6 text-center">
-        <span class="bg-brand-500/10 text-brand-500 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium">
+        <span class="bg-accent/10 text-accent mb-4 inline-block rounded-full px-4 py-1 text-sm font-medium">
           Applications métier
         </span>
         <h1 class="font-display text-foreground !leading-[1.05] mt-6 !text-4xl md:!text-5xl lg:!text-6xl">
@@ -25,7 +25,7 @@ import Base from "@/layouts/Base.astro";
       <div class="mx-auto max-w-6xl px-6">
         <p class="text-foreground-muted text-base leading-relaxed md:text-lg md:leading-relaxed">
           Un CRM générique ne colle jamais tout à fait à votre métier. Vous adaptez vos process à l'outil, vous payez un abonnement par utilisateur qui grimpe avec la croissance, et le jour où vous voulez exporter vos données ou changer de solution, c'est un chantier.</p>
-          <p>Je développe des CRM et ERP sur-mesure, pensés pour votre métier réel, hébergés chez vous ou chez un prestataire de votre choix, sans dépendance à un éditeur tiers.
+          <p class="text-foreground-muted text-base leading-relaxed md:text-lg md:leading-relaxed">Je développe des CRM et ERP sur-mesure, pensés pour votre métier réel, hébergés chez vous ou chez un prestataire de votre choix, sans dépendance à un éditeur tiers.
         </p>
       </div>
     </section>
@@ -72,25 +72,25 @@ import Base from "@/layouts/Base.astro";
         </h2>
 
         <div class="mt-8 grid gap-6 md:grid-cols-2">
-          <div class="bg-secondary rounded-lg p-6">
+          <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
             <div class="space-y-3">
               <h3 class="font-display text-foreground text-xl font-bold">GCF Pro</h3>
-              <p class="text-foreground-muted text-sm font-medium">ERP pour organismes de formation Qualiopi</p>
+              <p class="text-foreground-muted text-base font-medium">ERP pour organismes de formation Qualiopi</p>
             </div>
-            <p class="text-foreground-muted mt-4 text-sm leading-relaxed">
+            <p class="text-foreground-muted mt-4 text-base leading-relaxed">
               Un ERP complet pour organismes de formation certifiés Qualiopi : gestion des stagiaires, des dossiers de financement, des sessions inter/intra, des capacités d'accueil avec contrainte assurantielle, tables de référence administrables. Développé en PHP/MVC natif, déployé en auto-hébergement. Disponible en licence à vie (3 900 € HT) ou en abonnement annuel (1 490 € HT/an), avec installation et formation incluses en option.
             </p>
             <div class="mt-4 pt-2">
-              <a href="https://gcfpro.fr" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Découvrir GCF Pro →</a>
+              <a href="https://gcfpro.fr" target="_blank" rel="noopener noreferrer" class="text-flip-hover-anim magnetic-hover-anim btn btn-primary rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case"><span class="text-flip-inner" data-content="Découvrir GCF Pro →">Découvrir GCF Pro →</span></a>
             </div>
           </div>
 
-          <div class="bg-secondary rounded-lg p-6">
+          <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
             <div class="space-y-3">
               <h3 class="font-display text-foreground text-xl font-bold">CRM Chauffagistes</h3>
-              <p class="text-foreground-muted text-sm font-medium">CRM/SAV pour artisans chauffagistes et plombiers</p>
+              <p class="text-foreground-muted text-base font-medium">CRM/SAV pour artisans chauffagistes et plombiers</p>
             </div>
-            <p class="text-foreground-muted mt-4 text-sm leading-relaxed">
+            <p class="text-foreground-muted mt-4 text-base leading-relaxed">
               Né d'un projet client réel (transformation d'une installation WordPress/Bookly/WooCommerce), devenu un produit autonome. Gestion multi-sites, contrats de maintenance rattachés aux équipements et non aux occupants, calcul de TVA selon l'âge du bâtiment, relances de renouvellement automatiques avec prise en compte des jours fériés français, synchronisation hors-ligne pour les techniciens sur le terrain. Une revue de sécurité indépendante a permis d'identifier et corriger les points critiques avant mise en production.
             </p>
           </div>
@@ -146,8 +146,11 @@ import Base from "@/layouts/Base.astro";
         </div>
       </div>
     </section>
+<script>
+(()=>{const d=document.querySelectorAll('section.pb-8 details');d.forEach(el=>{el.addEventListener('toggle',()=>{if(el.open)d.forEach(o=>{if(o!==el)o.open=false})})})})();
+</script>
 
-    <section class="invert-section bg-background border-t border-border py-16 md:py-20">
+    <section class="cta-custom border-t py-16 md:py-20">
       <div class="mx-auto max-w-6xl px-6">
         <div class="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
           <div class="space-y-2">
@@ -159,7 +162,7 @@ import Base from "@/layouts/Base.astro";
             </p>
           </div>
           <div class="shrink-0">
-            <a href="/contact" class="btn btn-primary">Prendre rendez-vous →</a>
+            <a href="/contact/" class="text-flip-hover-anim magnetic-hover-anim btn btn-cta rounded-md px-7 py-4.5 text-base leading-6 font-semibold normal-case"><span class="text-flip-inner" data-content="Prendre rendez-vous →">Prendre rendez-vous →</span></a>
           </div>
         </div>
       </div>

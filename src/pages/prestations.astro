@@ -1,64 +1,91 @@
 ---
 import Base from "@/layouts/Base.astro";
 import { getCollection } from "astro:content";
-import PageHeader from "@/components/widgets/PageHeader.astro";
+import DynamicIcon from "@/helpers/DynamicIcon.astro";
 
 const prestations = await getCollection("prestations", ({ id }) => {
   return !id.includes("-index");
 });
 
 const pageData = {
-  title: "Prestations",
+  title: "20 ans de production réelle.",
   metaTitle: "Prestations – Backstage",
-  metaDescription: "Prestations de développement, conseil, DevOps et automatisation pour projets web et applications métier.",
+  metaDescription: "Développeur full-stack indépendant. CRM/ERP sur-mesure, WordPress, DevOps, IA & automatisation. 20 ans de production réelle.",
+};
+
+const iconMap: Record<string, string> = {
+  "crm-erp-pme": "calendar-range",
+  wordpress: "rocket",
+  "devops-deploiement": "server-cog",
+  "ia-automatisation": "bot",
 };
 ---
 
 <Base {...pageData} fitToScreen={false}>
-  <PageHeader
-    content={{
-      title: pageData.title,
-      description: pageData.metaDescription,
-    }}
-  />
-
-  <section class="section-spacing-vertical">
-    <div class="container">
-      <div class="grid gap-8 md:grid-cols-2">
-        {
-          prestations.map((prestation) => (
-            <a
-              href={`/prestations/${prestation.data.customSlug || prestation.id.split("/").pop()?.replace(/\.(mdx?|MDX?)$/, "")}/`}
-              class="group block rounded-2xl border border-border-light bg-white p-8 transition-all duration-300 hover:shadow-card-hover">
-              <h3 class="text-h4 text-dark group-hover:text-primary mb-3 font-semibold transition-colors duration-300">
-                {prestation.data.title}
-              </h3>
-              {prestation.data.description && (
-                <p class="text-text-default leading-body text-base">
-                  {prestation.data.description}
-                </p>
-              )}
-              <span class="text-primary mt-4 inline-flex items-center gap-1 text-sm font-semibold">
-                Voir les détails
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="transition-transform duration-300 group-hover:translate-x-1">
-                  <path d="M5 12h14" />
-                  <path d="m12 5 7 7-7 7" />
-                </svg>
-              </span>
-            </a>
-          ))
-        }
+  <div class="min-h-screen pt-16">
+    <section class="border-border pt-12 pb-6 md:pt-20 md:pb-12">
+      <div class="mx-auto max-w-6xl px-6 text-center">
+        <h1 class="font-display text-foreground !leading-[1.05] !text-4xl md:!text-5xl lg:!text-6xl">
+          20 ans de production réelle.
+        </h1>
+        <p class="text-foreground-muted mx-auto mt-6 text-lg leading-relaxed">
+          Pas de théorie d'agence. Développeur full-stack indépendant. J'interviens de l'analyse à la mise en production – sans intermédiaire, sans délégation des décisions techniques.
+        </p>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <section class="section-spacing-vertical">
+      <div class="container">
+        <div class="mx-auto grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {
+            prestations.map((prestation, index) => {
+              const slug = prestation.data.customSlug || prestation.id.split("/").pop()?.replace(/\.(mdx?|MDX?)$/, "");
+              const iconName = iconMap[slug || ""] || "briefcase";
+              return (
+                <div
+                  data-scroll-reveal="fade-up"
+                  data-scroll-reveal-delay={index * 90}>
+                  <a
+                    href={`/prestations/${slug}/`}
+                    class="group relative flex flex-col gap-y-8 rounded-2xl border border-border-light bg-white p-8 drop-shadow-xl drop-shadow-transparent transition-all duration-300 hover:drop-shadow-slate-50 md:flex-row md:gap-y-0 md:p-8">
+                    <div class="bg-primary/10 group-hover:bg-primary mr-6 flex size-18 shrink-0 items-center justify-center rounded-2xl transition-all duration-300">
+                      <DynamicIcon
+                        name={iconName}
+                        class="text-primary size-9 group-hover:text-white"
+                      />
+                    </div>
+
+                    <div class="flex flex-1 flex-col">
+                      <h3 class="text-h6 mb-3 text-dark" set:html={prestation.data.title} />
+                      {prestation.data.description && (
+                        <p class="mb-6 text-lg text-text-default line-clamp-2" set:html={prestation.data.description} />
+                      )}
+
+                      <span class="text-primary mt-auto inline-flex items-center gap-1 text-sm font-semibold">
+                        En savoir plus
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="transition-transform duration-300 group-hover:translate-x-1">
+                          <path d="M5 12h14" />
+                          <path d="m12 5 7 7-7 7" />
+                        </svg>
+                      </span>
+                    </div>
+                  </a>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+    </section>
+  </div>
 </Base>

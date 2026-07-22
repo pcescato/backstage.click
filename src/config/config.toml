@@ -5,10 +5,10 @@
   tagline          = "Développement web & conseil pour TPE et organismes de formation"
   taglineSeparator = " - "
   baseUrl          = "https://backstage.click/"
-  logo             = "/backstage-logo.webp"
-  logoAlternate    = "/backstage-logo.webp"
-  logoText         = "Backstage"
-  logoWidth        = "24px"
+  logo             = "/images/backstage-logo.webp"
+  logoAlternate    = "/images/backstage-logo.webp"
+  logoText         = ""
+  logoWidth        = "306px"
   logoHeight       = "36px"
 
   trailingSlash = true
@@ -95,13 +95,13 @@
     showDefaultLangInUrl = false
 
   [settings.contactInfo]
-    phone       = ""
+    phone       = "+33 6 34 29 08 46"
     email       = "[contact@backstage.click](mailto:contact@backstage.click)"
-    address     = ""
+    address     = "21 Place de la Libération - 47210 Villeréal, France"
     officeHours = ""
 
   [settings.headerOffcanvas]
-    enable      = false
+    enable      = true
     logo        = ""
     description = ""
 

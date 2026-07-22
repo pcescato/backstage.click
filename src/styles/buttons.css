@@ -59,7 +59,7 @@
 
 /* Button Animation */
 .magnetic-hover-anim:not([disabled="true"]) {
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease-out;
   will-change: transform;
 }
 .creative-hover-anim:not([disabled="true"]) {
@@ -173,4 +173,29 @@
       @apply -inset-s-full top-full;
     }
   }
+}
+
+/* CTA sections: bg #2e303e, text white, buttons inverted */
+.cta-custom {
+  background-color: #2e303e;
+  color: #fff;
+}
+.cta-custom h2,
+.cta-custom p {
+  color: #fff;
+}
+.cta-custom .btn-cta {
+  background-color: #fff;
+  color: #2e303e;
+}
+.text-flip-hover-anim.btn-cta .text-flip-inner::before,
+.text-flip-hover-anim.btn-cta .text-flip-inner::after {
+  color: #2e303e;
+}
+
+.btn,
+.text-flip-hover-anim {
+  will-change: transform;
+  transition: transform 0.2s ease-out;
+  transform: translate(0px, 0px);
 }

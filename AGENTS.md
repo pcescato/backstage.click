@@ -8,9 +8,21 @@ This project is an Astro and Tailwind CSS theme. Follow the existing component, 
 - Shared widgets live in `src/layouts/components/widgets/`.
 - Cards live in `src/layouts/components/cards/`.
 - Content lives in `src/content/` and is grouped by collection and language.
-- Section content files live in `src/content/sections/{language}/`.
+- Section content files live in `src/content/sections/{language}/` (currently `english/` and `french/`).
 - Section schemas and shared content option schemas live in `src/sections.schema.ts`.
 - Global styles live in `src/styles/`; check `base.css`, `components.css`, `safe.css`, and `theme.css` before adding classes or values.
+- Config files live in `src/config/`: `config.toml` (site settings), `menu.en.json` / `menu.fr.json` (nav), `social.json`, `fonts.json`, `language.json`.
+
+## Path Aliases (tsconfig.json)
+
+- `@/*` → `src/*`
+- `@/components/*` → `src/layouts/components/*`
+- `@/shortcodes/*` → `src/layouts/shortcodes/*`
+- `@/helpers/*` → `src/layouts/helpers/*`
+
+## TOML Config Pipeline
+
+`src/config/config.toml` is the source of truth for site settings. A build-time script converts it to `.astro/config.generated.json` (gitignored). During `npm run dev`, the toml-watcher runs automatically to regenerate on changes. If you edit `config.toml` directly in a non-dev context, run `node scripts/toml-watcher.mjs` first.
 
 ## Section Conventions
 
@@ -82,6 +94,10 @@ marquee:
 - Prefer static rendering. Add client JavaScript only for real interaction.
 - Initialize shared browser behavior through existing global/widget scripts instead of duplicating inline logic.
 
+## Content Collections
+
+Content collections are defined in `src/content.config.ts`. The main collections: `blog`, `services`, `pages`, `sections`, `homepage`, `team`, `author`. When renaming or moving folders referenced in `config.toml` (`blogFolder`, `servicesFolder`), update all three locations: the config, `src/content/` folder, and `src/content.config.ts`.
+
 ## Forms And Preline
 
 - Use the theme contact/form components for inputs, selects, radios, checkboxes, and date fields.
@@ -96,8 +112,23 @@ marquee:
 - Keep content editable through `.md` or `.mdx` files.
 - Do not leave placeholders like "Lorem ipsum" unless an existing file already uses placeholder content intentionally.
 
+## i18n And Multilingual
+
+- Languages are defined in `src/config/language.json` and enabled/disabled in `config.toml` under `[settings.multilingual]`.
+- Pages live under `src/pages/[...lang]/` — all page routes are language-aware by default.
+- Section content files must exist for every enabled language (e.g. `english/`, `french/`).
+- Translatable UI strings live in `src/i18n/en.json` and `src/i18n/fr.json`.
+
+## Icons
+
+- Lucide is the icon library. For inline (build-time) use, add the import in `src/layouts/helpers/Icons.astro` and register its name in `src/lib/iconNames.ts`.
+- `DynamicIcon.astro` accepts a Lucide name at runtime as a fallback.
+
 ## Verification
 
 - Run `npm run astro-check` after code or schema changes.
 - Run `npm run build` for broad theme changes, content collection changes, or anything that affects routing/assets.
 - Do not commit generated output such as `dist/`.
+
+
+

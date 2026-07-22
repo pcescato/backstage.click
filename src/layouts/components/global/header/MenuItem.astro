@@ -6,6 +6,16 @@ import { getLocaleUrlCTM } from "@/lib/utils/i18nUtils";
 const menu = Astro.props.menu as NavigationLink;
 const { pathname } = Astro.url;
 const menuUrl = menu.url || "/";
+
+const stripLocale = (path: string) => {
+  const locale = Astro.currentLocale;
+  if (locale && path.startsWith(`/${locale}/`)) {
+    return path.replace(`/${locale}`, "");
+  }
+  return path;
+};
+
+const cleanPathname = stripLocale(pathname);
 ---
 
 {
@@ -32,7 +42,9 @@ const menuUrl = menu.url || "/";
             "nav-link",
             {
               "nav-link-active":
-                pathname === `${menuUrl}/` || pathname === menuUrl,
+                cleanPathname === `${menuUrl}/` ||
+                cleanPathname === menuUrl ||
+                (menuUrl !== "/" && cleanPathname.startsWith(menuUrl)),
             },
           ]}>
           {menu.badge && menu.badge.enable ? (

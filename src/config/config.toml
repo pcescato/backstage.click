@@ -8,7 +8,7 @@
   logo             = "/images/backstage-logo.webp"
   logoAlternate    = "/images/backstage-logo.webp"
   logoText         = ""
-  logoWidth        = "306px"
+  logoWidth        = "309px"
   logoHeight       = "36px"
 
   trailingSlash = true

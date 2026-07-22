@@ -22,10 +22,6 @@ type HeaderLayoutConfig = {
   navbarClass?: string;
 };
 
-const isCategoryFilteredPage = ["/category/", "/tag/"].some((path) =>
-  Astro.url.pathname.includes(`/${config.settings.blogFolder}${path}`),
-);
-
 const {
   site: { logoAlternate },
   settings: { stickyHeader, navigationButton: navBtnConfig, headerOffcanvas },
@@ -77,8 +73,7 @@ const resolvedLayout = isAvailableLayout(headerLayout)
     ? layout
     : "two";
 const currentLayout = layoutConfig[resolvedLayout];
-const hasLanguageSwitcher =
-  config.settings.multilingual.enable && !isCategoryFilteredPage;
+const hasLanguageSwitcher = config.settings.multilingual.enable;
 
 const navigationButton = { ...navBtnConfig, ...customNavigationButton };
 

@@ -44,10 +44,7 @@ const resolvedCanonical = getLocaleUrlCTM(
 
 // If multilingual is enabled, add rel alternate link tags
 const alternateTags: Array<{ hreflang: string; href: string }> = [];
-if (
-  config.settings.multilingual.enable &&
-  !resolvedCanonical.includes("blog/category/")
-) {
+if (config.settings.multilingual.enable) {
   supportedLanguages.forEach((lang) => {
     alternateTags.push({
       hreflang: lang.languageCode,

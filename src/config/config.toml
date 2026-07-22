@@ -42,12 +42,8 @@
 
 # Theme settings
 [settings]
-  blogFolder     = "blog"
-  servicesFolder = "services"
-
-  blogPagination = 6
-  pagination     = 8
-  stickyHeader   = true
+  pagination   = 8
+  stickyHeader = true
 
   contactFormAction = ""
   contactFormProvider = "formsubmit.co"

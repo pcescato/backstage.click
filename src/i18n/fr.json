@@ -59,14 +59,6 @@
     "addressLabel": "Adresse",
     "contactLabel": "Contact"
   },
-  "blog": {
-    "authorPrefix": "Par",
-    "category": "Catégorie",
-    "tagsLabel": "Tags :",
-    "share": "Partager :",
-    "paginationPrevious": "Précédent",
-    "paginationNext": "Suivant"
-  },
   "navigation": {
     "buttonLabel": "Nous contacter"
   },

@@ -1,6 +1,5 @@
 ---
 import config from ".astro/config.generated.json";
-let faviconPath = "/images/favicons";
 
 const favicons: {
   rel: string;
@@ -12,38 +11,39 @@ const favicons: {
   {
     rel: "apple-touch-icon",
     sizes: "180x180",
-    href: `${faviconPath}/apple-touch-icon.png`,
+    href: "/images/favicons/apple-touch-icon.png",
   },
   {
     rel: "icon",
     type: "image/png",
     sizes: "96x96",
-    href: `${faviconPath}/favicon-96x96.png`,
+    href: "/images/favicons/favicon-96x96.png",
   },
   {
     rel: "icon",
     type: "image/png",
     sizes: "192x192",
-    href: `${faviconPath}/web-app-manifest-192x192.png`,
+    href: "/images/favicons/web-app-manifest-192x192.png",
   },
   {
     rel: "icon",
     type: "image/png",
     sizes: "512x512",
-    href: `${faviconPath}/web-app-manifest-512x512.png`,
+    href: "/images/favicons/web-app-manifest-512x512.png",
   },
   {
     rel: "icon",
-    type: "image/svg+xml",
-    href: `${faviconPath}/favicon.svg`,
+    type: "image/webp",
+    sizes: "512x512",
+    href: "/backstage-favicon.webp",
   },
   {
     rel: "shortcut icon",
-    href: `${faviconPath}/favicon.ico`,
+    href: "/images/favicons/favicon.ico",
   },
   {
     rel: "manifest",
-    href: `${faviconPath}/site.webmanifest`,
+    href: "/images/favicons/site.webmanifest",
   },
 ];
 

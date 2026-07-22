@@ -90,10 +90,12 @@ function toCspHash(scriptContent) {
   return `'sha256-${digest}'`;
 }
 
-function buildCspHeader(hashes) {
-  const hashSegment = hashes.length > 0 ? ` ${hashes.join(' ')}` : '';
+const CLOUDFLARE_HEADER_VALUE_LIMIT = 4000;
 
-  return [
+function buildCspHeader(hashes) {
+  let hashSegment = hashes.length > 0 ? ` ${hashes.join(' ')}` : '';
+
+  const directives = [
     "default-src 'self'",
     `script-src 'self'${hashSegment} https://assets.calendly.com`,
     'frame-src https://assets.calendly.com https://calendly.com',
@@ -103,7 +105,20 @@ function buildCspHeader(hashes) {
     "connect-src 'self'",
     "base-uri 'self'",
     "form-action 'self'",
-  ].join('; ');
+  ];
+
+  let csp = directives.join('; ');
+
+  if (csp.length > CLOUDFLARE_HEADER_VALUE_LIMIT) {
+    console.warn(
+      `CSP header (${csp.length} chars) exceeds Cloudflare ${CLOUDFLARE_HEADER_VALUE_LIMIT} char limit. Falling back to 'unsafe-inline'.`,
+    );
+    hashSegment = " 'unsafe-inline'";
+    directives[1] = `script-src 'self'${hashSegment} https://assets.calendly.com`;
+    csp = directives.join('; ');
+  }
+
+  return csp;
 }
 
 async function fetchRule(endpoint, apiToken, ruleId) {

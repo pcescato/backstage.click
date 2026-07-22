@@ -67,6 +67,18 @@ async function getHtmlFiles(dir) {
   return nestedFiles.flat();
 }
 
+function isJsMimeType(mime) {
+  if (!mime) return true;
+  const jsMimes = [
+    'text/javascript',
+    'application/javascript',
+    'application/ecmascript',
+    'text/ecmascript',
+    'module',
+  ];
+  return jsMimes.includes(mime.trim().toLowerCase());
+}
+
 function extractInlineScripts(html) {
   const scripts = [];
   const scriptTagPattern = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
@@ -76,6 +88,17 @@ function extractInlineScripts(html) {
     const content = match[2] ?? '';
 
     if (/\bsrc\s*=/.test(attributes)) {
+      continue;
+    }
+
+    const typeMatch = attributes.match(/\btype\s*=\s*["']([^"']+)["']/);
+    const type = typeMatch ? typeMatch[1] : null;
+
+    if (!isJsMimeType(type)) {
+      continue;
+    }
+
+    if (!content.trim()) {
       continue;
     }
 
@@ -93,7 +116,7 @@ function toCspHash(scriptContent) {
 const CLOUDFLARE_HEADER_VALUE_LIMIT = 4000;
 
 function buildCspHeader(hashes) {
-  let hashSegment = hashes.length > 0 ? ` ${hashes.join(' ')}` : '';
+  const hashSegment = hashes.length > 0 ? ` ${hashes.join(' ')}` : '';
 
   const directives = [
     "default-src 'self'",
@@ -107,15 +130,13 @@ function buildCspHeader(hashes) {
     "form-action 'self'",
   ];
 
-  let csp = directives.join('; ');
+  const csp = directives.join('; ');
 
   if (csp.length > CLOUDFLARE_HEADER_VALUE_LIMIT) {
-    console.warn(
-      `CSP header (${csp.length} chars) exceeds Cloudflare ${CLOUDFLARE_HEADER_VALUE_LIMIT} char limit. Falling back to 'unsafe-inline'.`,
+    throw new Error(
+      `CSP header (${csp.length} chars) exceeds Cloudflare ${CLOUDFLARE_HEADER_VALUE_LIMIT} char limit. ` +
+      'Reduce inline scripts or move them to external files.',
     );
-    hashSegment = " 'unsafe-inline'";
-    directives[1] = `script-src 'self'${hashSegment} https://assets.calendly.com`;
-    csp = directives.join('; ');
   }
 
   return csp;

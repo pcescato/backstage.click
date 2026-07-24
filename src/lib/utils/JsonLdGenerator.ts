@@ -79,10 +79,21 @@ export default function JsonLdGenerator(content: JSONLDProps, Astro: any) {
 
   // Add `publisher` to jsonLdData
   jsonLdData.publisher = {
-    "@type": "Organization",
-    name: config.seo.author,
+    "@type": "ProfessionalService",
+    "@id": `${Astro.url.origin}/#organization`,
+    name: config.site.title,
     url: trailingSlashChecker(Astro.url.origin),
-    sameAs: social.main.filter((item) => item.enable).map((item) => item.url),
+    description: config.site.description,
+  
+    founder: {
+      "@type": "Person",
+      name: config.seo.author,
+    },
+  
+    sameAs: social.main
+      .filter((item) => item.enable)
+      .map((item) => item.url),
+  
     logo: {
       "@type": "ImageObject",
       url: absoluteUrl(config.site.logo, Astro),

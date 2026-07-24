@@ -82,12 +82,25 @@ export function createBlogPostSchema(post: {
       url: post.author.url,
     },
     publisher: {
-      '@type': 'Organization',
+      '@type': 'ProfessionalService',
+      '@id': `${siteConfig.url}/#organization`,
       name: siteConfig.name,
+      url: siteConfig.url,
+      description: siteConfig.description,
+    
+      founder: {
+        '@type': 'Person',
+        name: siteConfig.author,
+      },
+    
       logo: {
         '@type': 'ImageObject',
-        url: `${siteConfig.url}/logo.png`,
+        url: `${siteConfig.url}/images/backstage-logo.webp`,
       },
+    
+      sameAs: siteConfig.socialLinks
+        .filter((social) => social.enable)
+        .map((social) => social.url),
     },
     mainEntityOfPage: {
       '@type': 'WebPage',

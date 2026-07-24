@@ -30,8 +30,7 @@ export interface SiteConfig {
   };
   /**
    * Branding configuration
-   * Logo files: Replace SVGs in src/assets/branding/
-   * Favicon: Replace in public/favicon.svg
+   * Logo and favicon live in public/images/
    */
   branding: {
     /** Logo alt text for accessibility */
@@ -53,9 +52,9 @@ export interface SiteConfig {
 }
 
 const siteConfig: SiteConfig = {
-  name: 'Backstage',
+  name: 'Backstage.click',
   description:
-    'Audit, migration et optimisation de sites web pour organismes de formation et TPE/PME',
+    'Conseil informatique indépendant pour TPE et PME : développement web, optimisation WordPress, applications métier, automatisation et accompagnement technique.',
   url: SITE_URL || 'https://backstage.click',
   ogImage: '/og-default.svg',
   author: 'Pascal Cescato',
@@ -71,14 +70,12 @@ const siteConfig: SiteConfig = {
     google: GOOGLE_SITE_VERIFICATION,
     bing: BING_SITE_VERIFICATION,
   },
-  // Branding: Logo files live in src/assets/branding/
-  // Replace the SVG files there with your own branding
   branding: {
     logo: {
       alt: 'Backstage',
     },
     favicon: {
-      svg: '/favicon.svg',
+      svg: '/backstage-favicon.webp',
     },
     colors: {
       themeColor: '#262626',

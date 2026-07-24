@@ -1,5 +1,6 @@
 ---
 import Base from "@/layouts/Base.astro";
+import DynamicIcon from "@/helpers/DynamicIcon.astro";
 ---
 
 <Base
@@ -27,12 +28,12 @@ import Base from "@/layouts/Base.astro";
         <div class="grid gap-6 md:grid-cols-2">
           <div>
             <button id="tab-rendez-vous" data-tab="content-rendez-vous" class="contact-tab w-full bg-card px-6 py-3 text-left text-sm font-semibold text-foreground transition-colors">
-              Prendre rendez-vous
+              <DynamicIcon name="CalendarDays" class="mr-2 size-4 inline-block" />Prendre rendez-vous
             </button>
           </div>
           <div>
             <button id="tab-message" data-tab="content-message" class="contact-tab w-full bg-transparent px-6 py-3 text-left text-sm font-semibold text-foreground-muted transition-colors">
-              Écrire un message
+              <DynamicIcon name="PencilLine" class="mr-2 size-4 inline-block" />Écrire un message
             </button>
           </div>
         </div>

@@ -1,8 +1,8 @@
 # Site Configuration
 [site]
-  title            = "Backstage"
-  description      = "Audit, optimisation et migration de sites WordPress. Conseil technique indépendant pour PME et organismes de formation. Basé en Nouvelle-Aquitaine, full remote."
-  tagline          = "Développement web & conseil pour TPE et organismes de formation"
+  title            = "Backstage.click"
+  description      = "Backstage.click accompagne les TPE et PME dans leurs projets numériques : conseil informatique, développement web, optimisation WordPress, applications métier, automatisation et audit technique. Basé en Nouvelle-Aquitaine, intervention locale et à distance."
+  tagline          = "Développement web & conseil informatique pour TPE et PME"
   taglineSeparator = " - "
   baseUrl          = "https://backstage.click/"
   logo             = "/images/backstage-logo.webp"
@@ -17,19 +17,27 @@
     path  = "/images/favicons"
     image = "/backstage-favicon.webp"
 
+
 # SEO Metadata
 [seo]
-  author = "Backstage"
+  author = "Pascal Cescato"
+
   keywords = [
+    "consultant informatique",
+    "conseil informatique PME",
     "développement web",
+    "site web performant",
     "maintenance WordPress",
+    "migration WordPress",
     "migration Astro",
     "DevOps",
     "CRM sur-mesure",
     "ERP PME",
-    "IA automatisation",
+    "applications métier",
+    "automatisation IA",
     "Nouvelle-Aquitaine",
   ]
+
   robots = "index, follow"
 
   [seo.robotsTxt]
@@ -39,6 +47,7 @@
   [seo.sitemap]
     enable  = true
     exclude = []
+
 
 # Theme settings
 [settings]
@@ -90,11 +99,13 @@
     disableLanguages     = []
     showDefaultLangInUrl = false
 
+
   [settings.contactInfo]
     phone       = "+33 6 34 29 08 46"
-    email       = "[contact@backstage.click](mailto:contact@backstage.click)"
+    email       = "contact@backstage.click"
     address     = "21 Place de la Libération - 47210 Villeréal, France"
     officeHours = ""
+
 
   [settings.headerOffcanvas]
     enable      = true
@@ -106,10 +117,12 @@
       label  = ""
       url    = "/contact/"
 
+
 [settings.navigationButton]
   enable = true
   label  = "Contact"
   url    = "/contact/"
+
 
 [settings.markup.tableOfContents]
   enable     = false
@@ -118,12 +131,14 @@
   ordered    = false
   startLevel = 1
 
+
 [opengraph]
   image       = "/og-default.svg"
   ogLocale    = "fr_FR"
   ogType      = "website"
   twitter     = ""
   twitterCard = "summary_large_image"
+
 
 [head]
   content = """
